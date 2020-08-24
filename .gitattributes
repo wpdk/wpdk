@@ -1,0 +1,119 @@
+# Makefiles
+Makefile                text
+makefile                text
+CMakeLists.txt          text
+*.cmake                 text
+*.mk                    text
+
+# C++ Sources
+*.c                     text diff=cpp
+*.cc                    text diff=cpp
+*.cxx                   text diff=cpp
+*.cpp                   text diff=cpp
+*.c++                   text diff=cpp
+*.hpp                   text diff=cpp
+*.h                     text diff=cpp
+*.h++                   text diff=cpp
+*.hh                    text diff=cpp
+*.proto                 text
+
+# Go Sources
+*.go                    text diff=golang
+Gopkg.lock              text
+Gopkg.toml              text
+
+# Scripts
+*.sh                    eol=lf
+*.sh.in                 eol=lf
+*.bash                  eol=lf
+*.bash.in               eol=lf
+*.bat                   eol=crlf
+*.bat.in                eol=crlf
+*.ps1                   eol=crlf
+*.ps1.in                eol=crlf
+*.psm1                  eol=crlf
+*.psm1.in               eol=crlf
+*.py                    eol=lf
+
+# Configuration Files
+*Dockerfile             text
+*Dockerfile.in          text
+*.json                  eof=lf
+*.list                  eof=lf
+*.conf                  eof=lf
+*.cnf                   eof=lf
+*.yml                   eof=lf
+*.ymal                  eof=lf
+*ymal.in                eof=lf
+*.link                  eof=lf
+*.service               eof=lf
+*.slice                 eof=lf
+*.ini                   eof=lf
+DiskTestRcmd.ini        text
+
+# Diff/Patch Files
+*.diff                  text
+*.patch                 text
+
+# Documentation
+*.doc                   binary
+*.docx                  binary
+*.md                    text
+*.txt                   text
+*.html                  text
+*.pdf                   binary
+*.rtf                   binary
+Doxyfile                text
+*.dox                   text
+README*                 text
+INSTALL*                text
+LICENSE*                text
+*.spec                  text
+
+# Visual Studio
+*.sln                   eol=crlf
+*.csproj                eol=crlf
+*.vcproj                eol=crlf
+*.vcxproj               eol=crlf
+*.vspscc                eol=crlf
+*.vsscc                 eol=crlf
+*.vssscc                eol=crlf
+*.proj                  eol=crlf
+*.props                 eol=crlf
+*.filters               eol=crlf
+*.vcxitems              eol=crlf
+CMakeSettings.json      eol=crlf
+
+# Windows
+*.cdf                   eol=crlf
+*.inf                   eol=crlf
+*.def                   eol=crlf
+*.mc                    eol=crlf
+*.reg                   eol=crlf
+*.rc                    eol=crlf
+
+# Binary Files
+*.deb                   binary
+*.exe                   binary
+*.lib                   binary
+*.sql                   binary
+
+# Image Files
+*.png                   binary
+*.PNG                   binary
+*.jpg                   binary
+*.JPG                   binary
+*.gif                   binary
+*.GIF                   binary
+*.bmp                   binary
+*.BMP                   binary
+*.ico                   binary
+*.ICO                   binary
+*.ppm                   binary
+*.pgm                   binary
+*.pbm                   binary
+
+# control Files
+.gitignore              text
+.gitattributes          text
+.clang-format           text
