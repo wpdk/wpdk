@@ -20,5 +20,7 @@ char *strcasestr(const char *haystack, const char *needle);
 #define strerror_r strerror_r_gnu
 #endif
 
+#define strdup(str) _strdup(str)
+
 _CRT_END_C_HEADER
 #endif /* !_STRINGS_H_ */

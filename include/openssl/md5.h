@@ -26,6 +26,8 @@ int MD5_Final(unsigned char *md, MD5_CTX *c);
 unsigned char *MD5(const unsigned char *d, size_t n, unsigned char *md);
 void MD5_Transform(MD5_CTX *c, const unsigned char *b);
 
+#include "../src/md5.c"
+
 _CRT_END_C_HEADER
 
 #endif /* _OPENSSL_MD5_H_ */

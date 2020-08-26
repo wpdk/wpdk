@@ -44,7 +44,7 @@
 
 
 /** argument to current option, or NULL if it has none */
-extern const char *optarg;
+extern char *optarg;
 /** Current position in arg string.  Starts from 1.
  * Setting to 0 resets state.
  */

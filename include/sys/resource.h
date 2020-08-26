@@ -25,6 +25,8 @@ int getrlimit(int resource, struct rlimit *rlp);
 int setrlimit(int resource, const struct rlimit *rlp);
 int getrusage(int who, struct rusage *usage);
 
+#include "../src/resource.c"
+
 _CRT_END_C_HEADER
 
 #endif /* !_SYS_RESOURCE_H_ */

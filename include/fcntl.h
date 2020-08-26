@@ -3,6 +3,7 @@
 
 #include <sys/platform.h>
 #include <../ucrt/fcntl.h>
+#include <stdio.h>
 #include <io.h>
 
 _CRT_BEGIN_C_HEADER
@@ -24,6 +25,8 @@ _CRT_BEGIN_C_HEADER
 int fcntl(int fildes, int cmd, ...);
 
 #include "../src/fcntl.c"
+
+#define open(path,oflag,...)    _open(path,oflag,__VA_ARGS__)
 
 _CRT_END_C_HEADER
 

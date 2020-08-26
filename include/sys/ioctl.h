@@ -10,6 +10,8 @@ _CRT_BEGIN_C_HEADER
 
 int ioctl(int fd, unsigned long request, ...);
 
+#include "../src/ioctl.c"
+
 _CRT_END_C_HEADER
 
 #endif /* !__SYS_IOCTL_H_ */

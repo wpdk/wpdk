@@ -3,6 +3,7 @@
 
 #include <sys/platform.h>
 #include <sys/time.h>
+#include <stdio.h>
 #include <io.h>
 
 _CRT_BEGIN_C_HEADER
@@ -20,17 +21,23 @@ _CRT_BEGIN_C_HEADER
 #define _SC_NPROCESSORS_ONLN    2
 #define _SC_PAGESIZE            3
 
-pid_t getpid(void);
-int truncate(const char *path, off_t length);
+pid_t fork(void);
 int ftruncate(int fd, off_t length);
-unsigned sleep(unsigned seconds);
-int usleep(useconds_t useconds);
-long sysconf(int name);
-
+pid_t getpid(void);
 int isatty(int fildes);
+unsigned sleep(unsigned seconds);
+long sysconf(int name);
+int truncate(const char *path, off_t length);
 char *ttyname(int fildes);
+int usleep(useconds_t useconds);
 
 #include "../src/unistd.c"
+
+#define access(path,amode)  _access(path,amode)
+#define read(fildes,buf,nbyte) _read(fildes,buf,nbyte)
+#define write(fildes,buf,nbyte) _write(fildes,buf,nbyte)
+#define close _close
+#define unlink _unlink
 
 _CRT_END_C_HEADER
 #endif /* !_UNISTD_H_ */

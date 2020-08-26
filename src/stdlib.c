@@ -46,3 +46,9 @@ inline static int rand_r(unsigned int *seedp)
     // HACK - incomplete implementation
     return rand();
 }
+
+
+inline static void *__real_calloc(size_t nelem, size_t elsize)
+{
+    return calloc(nelem, elsize);
+}

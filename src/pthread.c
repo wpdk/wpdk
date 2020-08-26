@@ -13,6 +13,12 @@ inline static int pthread_mutexattr_init(pthread_mutexattr_t *attr)
 }
 
 
+inline static int __real_pthread_mutexattr_init(pthread_mutexattr_t *attr)
+{
+    return pthread_mutexattr_init(attr);
+}
+
+
 inline static int pthread_mutexattr_destroy(pthread_mutexattr_t *attr)
 {
     if (!attr) return EINVAL;
@@ -90,6 +96,13 @@ inline static int pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutex
     InitializeCriticalSection(&mutex->lock);
     return 0;
 }
+
+
+inline static int __real_pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *mutexattr)
+{
+    return pthread_mutex_init(mutex, mutexattr);
+}
+
 
 inline static int pthread_mutex_destroy(pthread_mutex_t *mutex)
 {
@@ -185,6 +198,82 @@ inline static int pthread_spin_unlock(pthread_spinlock_t *lock)
 }
 
 
+inline static int pthread_condattr_init(pthread_condattr_t *attr)
+{
+    if (!attr) return EINVAL;
+    attr->pshared = PTHREAD_PROCESS_PRIVATE;
+    return 0;
+}
+
+
+inline static int pthread_condattr_destroy(pthread_condattr_t *attr)
+{
+    if (!attr) return EINVAL;
+    return 0;
+}
+
+
+inline static int pthread_condattr_getpshared(const pthread_condattr_t *attr, int *pshared)
+{
+    if (!attr || !pshared) return EINVAL;
+    *pshared = attr->pshared;
+    return 0;
+}
+
+
+inline static int pthread_condattr_setpshared(pthread_condattr_t *attr, int pshared)
+{
+    if (!attr || pshared < PTHREAD_PROCESS_PRIVATE || pshared > PTHREAD_PROCESS_SHARED)
+        return EINVAL;
+
+    attr->pshared = pshared;
+    return 0;
+}
+
+
+inline static int pthread_cond_init(pthread_cond_t *cond, const pthread_condattr_t *attr)
+{
+    if (!cond || !attr) return EINVAL;
+
+    InitializeConditionVariable(&cond->cond);
+    return 0;
+}
+
+
+inline static int pthread_cond_destroy(pthread_cond_t *cond)
+{
+    return 0;
+}
+
+
+inline static int pthread_cond_signal(pthread_cond_t *cond)
+{
+    WakeConditionVariable(&cond->cond);
+    return 0;
+}
+
+
+inline static int pthread_cond_broadcast(pthread_cond_t *cond)
+{
+    WakeAllConditionVariable(&cond->cond);
+    return 0;
+}
+
+
+inline static int pthread_cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex)
+{
+    SleepConditionVariableCS(&cond->cond, &mutex->lock, INFINITE);
+	return 0;
+}
+
+
+inline static int pthread_cond_timedwait(pthread_cond_t *cond, pthread_mutex_t *mutex, const struct timespec *abstime)
+{
+    // HACK - implementation
+    return pthread_cond_wait(cond, mutex);
+}
+
+
 inline static int pthread_attr_init(pthread_attr_t *attr)
 {
     if (!attr) return EINVAL;
@@ -243,6 +332,34 @@ inline static int pthread_cancel(pthread_t thread)
 
 
 inline static void pthread_exit(void *value_ptr)
+{
+    // HACK - unimplemented
+}
+
+
+inline static int pthread_setcancelstate(int state, int *oldstate)
+{
+    // HACK - unimplemented
+    if (!oldstate || state < PTHREAD_CANCEL_DISABLE || state > PTHREAD_CANCEL_ENABLE)
+        return EINVAL;
+
+    *oldstate = PTHREAD_CANCEL_DISABLE;
+    return 0;
+}
+
+
+inline static int pthread_setcanceltype(int type, int *oldtype)
+{
+    // HACk - unimplemented
+    if (!oldtype || type < PTHREAD_CANCEL_DEFERRED || type > PTHREAD_CANCEL_ASYNCHRONOUS)
+        return EINVAL;
+
+    *oldtype = PTHREAD_CANCEL_DEFERRED;
+    return 0;
+}
+
+
+inline static void pthread_testcancel(void)
 {
     // HACK - unimplemented
 }

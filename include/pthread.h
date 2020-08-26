@@ -35,7 +35,6 @@ int pthread_mutexattr_setpshared(pthread_mutexattr_t *attr, int pshared);
 
 typedef struct { CRITICAL_SECTION lock; } pthread_mutex_t;
 
-
 // HACK - defer to later to init
 #define PTHREAD_MUTEX_INITIALIZER { {(void*)-1,-1,0,0,0,0} }
 
@@ -56,6 +55,27 @@ int pthread_spin_trylock(pthread_spinlock_t *lock);
 int pthread_spin_unlock(pthread_spinlock_t *lock);
 
 
+typedef struct { int pshared; } pthread_condattr_t;
+
+int pthread_condattr_init(pthread_condattr_t *attr);
+int pthread_condattr_destroy(pthread_condattr_t *attr);
+int pthread_condattr_getpshared(const pthread_condattr_t *attr, int *pshared);
+int pthread_condattr_setpshared(pthread_condattr_t *attr, int pshared);
+
+
+typedef struct { CONDITION_VARIABLE cond; } pthread_cond_t;
+
+// HACK - defer to later to init
+#define PTHREAD_COND_INITIALIZER {0}
+
+int pthread_cond_init(pthread_cond_t *cond, const pthread_condattr_t *attr);
+int pthread_cond_destroy(pthread_cond_t *cond);
+int pthread_cond_signal(pthread_cond_t *cond);
+int pthread_cond_broadcast(pthread_cond_t *cond);
+int pthread_cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex);
+int pthread_cond_timedwait(pthread_cond_t *cond, pthread_mutex_t *mutex, const struct timespec *abstime);
+
+
 typedef struct pthread_attr_s {
     void *x;
 } pthread_attr_t;
@@ -71,6 +91,16 @@ int pthread_join(pthread_t thread, void **value_ptr);
 int pthread_detach(pthread_t);
 int pthread_cancel(pthread_t);
 void pthread_exit(void *value_ptr);
+
+#define PTHREAD_CANCEL_DISABLE  0
+#define PTHREAD_CANCEL_ENABLE   1
+
+#define PTHREAD_CANCEL_DEFERRED     0
+#define PTHREAD_CANCEL_ASYNCHRONOUS 1 
+
+int pthread_setcancelstate(int state, int *oldstate);
+int pthread_setcanceltype(int type, int *oldtype);
+void pthread_testcancel(void);
 
 #include "../src/pthread.c"
 

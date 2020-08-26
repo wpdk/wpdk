@@ -66,3 +66,10 @@ inline static long sysconf(int name)
 
     return -1;
 }
+
+
+inline static pid_t fork()
+{
+    // HACK - implement
+    return -1;
+}

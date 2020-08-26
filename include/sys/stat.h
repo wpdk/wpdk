@@ -31,7 +31,11 @@ _CRT_BEGIN_C_HEADER
 #define S_IWOTH     S_IWRITE
 #define S_IXOTH     S_IEXEC
 
+int mknod(const char *path, mode_t mode, dev_t dev);
+
 #include "../src/stat.c"
+
+#define chmod(path,mode)    _chmod(path,mode)
 
 _CRT_END_C_HEADER
 

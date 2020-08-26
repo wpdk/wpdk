@@ -1,0 +1,16 @@
+*.~
+*.a
+*.cmd
+*.d
+*.gcda
+*.gcno
+*.kdev4
+*.ko
+*.log
+*.o
+*.pyc
+*.so
+*.so.*
+*.swp
+*.tmp
+*.exe

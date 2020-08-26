@@ -25,7 +25,7 @@ inline static int setrlimit(int resource, const struct rlimit *rlp)
 
 inline static int getrusage(int who, struct rusage *usage)
 {
-    if (!r_usage || who != RUSAGE_THREAD)
+    if (!usage || who != RUSAGE_THREAD)
         return EINVAL;
 
     // HACK - not implemented

@@ -5,11 +5,11 @@
 inline static void *mmap(void *addr, size_t len, int prot, int flags, int fildes, off_t off)
 {
     // HACK
-    return EINVAL;
+    return NULL;
 }
 
 
-inline static int munmap(void *addr, size_t)
+inline static int munmap(void *addr, size_t len)
 {
     // HACK
     return EINVAL;
