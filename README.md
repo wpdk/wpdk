@@ -1,2 +1,2 @@
-# wpdk
+# WPDK
 Windows Platform Development Kit
