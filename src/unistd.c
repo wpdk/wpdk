@@ -73,3 +73,31 @@ inline static pid_t fork()
     // HACK - implement
     return -1;
 }
+
+
+inline static int daemon(int nochdir, int noclose)
+{
+    // HACK - implement
+    return -1;
+}
+
+
+inline static ssize_t read(int fildes, void *buf, size_t nbyte)
+{
+    // HACK - off_t is 32 bits
+    return _read(fildes, buf, nbyte);
+}
+
+
+inline static ssize_t write(int fildes, const void *buf, size_t nbyte)
+{
+    // HACK - off_t is 32 bits ???
+    return _write(fildes, buf, nbyte);
+}
+
+
+inline static off_t lseek(int fildes, off_t offset, int whence)
+{
+    // HACK - off_t is 32 bits
+    return _lseek(fildes, offset, whence);
+}

@@ -19,7 +19,8 @@ struct termios {
     cc_t c_cc[NCCS];
 };
 
-#define ECHO 1
+#define ECHO        1
+#define ICANON      2
 
 #define TCSANOW     1
 #define TCSADRAIN   2

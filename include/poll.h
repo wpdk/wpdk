@@ -2,7 +2,7 @@
 #define	_POLL_H_
 
 #include <sys/platform.h>
-#include <winsock2.h>
+#include <sys/socket.h>
 
 _CRT_BEGIN_C_HEADER
 

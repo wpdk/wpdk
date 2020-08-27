@@ -30,12 +30,14 @@ long sysconf(int name);
 int truncate(const char *path, off_t length);
 char *ttyname(int fildes);
 int usleep(useconds_t useconds);
+int daemon(int nochdir, int noclose);
+ssize_t read(int fildes, void *buf, size_t nbyte);
+ssize_t write(int fildes, const void *buf, size_t nbyte);
+off_t lseek(int fildes, off_t offset, int whence);
 
 #include "../src/unistd.c"
 
 #define access(path,amode)  _access(path,amode)
-#define read(fildes,buf,nbyte) _read(fildes,buf,nbyte)
-#define write(fildes,buf,nbyte) _write(fildes,buf,nbyte)
 #define close _close
 #define unlink _unlink
 

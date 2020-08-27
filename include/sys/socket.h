@@ -24,7 +24,16 @@ struct msghdr {
 ssize_t recvmsg(int socket, struct msghdr *message, int flags);
 ssize_t sendmsg(int socket, const struct msghdr *message, int flags);
 
+int _getsockopt(int socket, int level, int option_name,
+       void *option_value, socklen_t *option_len);
+
+int _setsockopt(int socket, int level, int option_name,
+       const void *option_value, socklen_t option_len);
+
 #include "../src/socket.c"
+
+#define setsockopt _setsockopt
+#define getsockopt _getsockopt
 
 _CRT_END_C_HEADER
 
