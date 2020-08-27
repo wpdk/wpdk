@@ -1,6 +1,16 @@
+mkdir lib
+
 cd src
-clang -c -I..\include getopt.c
-llvm-ar crDs libwpdk.a getopt.o
-move libwpdk.a ..\lib\libwpdk.a
-rem cl -c -I..\include getopt.c
+cl -c -I..\include -D_CRT_SECURE_NO_WARNINGS -D_CRT_NONSTDC_NO_WARNINGS -D_CRT_DECLARE_NONSTDC_NAMES=0 getopt.c
+lib /out:wpdk.lib getopt.obj
+move wpdk.lib ..\lib\wpdk.lib
+del getopt.obj
+
+cl -c _empty.c
+lib /out:empty.lib _empty.obj
+copy empty.lib ..\lib\numa.lib
+copy empty.lib ..\lib\rt.lib
+copy empty.lib ..\lib\uuid.lib
+move empty.lib ..\lib\crypto.lib
+del _empty.obj
 cd ..
