@@ -15,3 +15,5 @@
 *.swp
 *.tmp
 *.exe
+*.lib
+lib/
