@@ -11,6 +11,7 @@ lib /out:empty.lib _empty.obj
 copy empty.lib ..\lib\numa.lib
 copy empty.lib ..\lib\rt.lib
 copy empty.lib ..\lib\uuid.lib
+copy empty.lib ..\lib\pthread.lib
 move empty.lib ..\lib\crypto.lib
 del _empty.obj
 cd ..
