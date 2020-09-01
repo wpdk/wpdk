@@ -13,10 +13,10 @@ long int random(void);
 void srandom(unsigned int seed);
 int rand_r(unsigned int *seedp);
 
-#ifdef _WPDK_WRAP_
-// HACK - temporary hack to handle mocking
 void *__wrap_calloc(size_t nelem, size_t elsize);
-#define calloc(nelem,elsize) __wrap_calloc(nelem,elsize)
+
+#ifndef _WPDK_BUILD_LIB_
+#define calloc(nelem,elsize) __wrap_calloc(nelem, elsize);
 #endif
 
 _CRT_END_C_HEADER

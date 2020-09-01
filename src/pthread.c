@@ -2,7 +2,7 @@
 #include <pthread.h>
 
 
-int pthread_mutexattr_init(pthread_mutexattr_t *attr)
+int __real_pthread_mutexattr_init(pthread_mutexattr_t *attr)
 {
     if (!attr) return EINVAL;
 
@@ -10,12 +10,6 @@ int pthread_mutexattr_init(pthread_mutexattr_t *attr)
     attr->robust = PTHREAD_MUTEX_STALLED;
     attr->pshared = PTHREAD_PROCESS_PRIVATE;
     return 0;
-}
-
-
-int __real_pthread_mutexattr_init(pthread_mutexattr_t *attr)
-{
-    return pthread_mutexattr_init(attr);
 }
 
 
@@ -87,7 +81,7 @@ int pthread_mutexattr_setpshared(pthread_mutexattr_t *attr, int pshared)
 }
 
 
-int pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *mutexattr)
+int __real_pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *mutexattr)
 {
     if (!mutex)
         return EINVAL;
@@ -98,12 +92,6 @@ int pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *mutexa
     // HACK - and spin count!
     InitializeCriticalSection(&mutex->lock);
     return 0;
-}
-
-
-int __real_pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *mutexattr)
-{
-    return pthread_mutex_init(mutex, mutexattr);
 }
 
 

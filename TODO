@@ -8,3 +8,5 @@ enable static asserts
 Fix nvme bit definitions and any initialisation (rename reserved to find)
 
 afunix - only works on build 17063 onwards
+
+Fix env inclusion for unit tests

@@ -24,7 +24,6 @@ typedef struct pthread_mutexattr_s {
     int pshared;
 } pthread_mutexattr_t;
 
-int pthread_mutexattr_init(pthread_mutexattr_t *attr);
 int pthread_mutexattr_destroy(pthread_mutexattr_t *attr);
 int pthread_mutexattr_gettype(const pthread_mutexattr_t *attr, int *type);
 int pthread_mutexattr_settype(pthread_mutexattr_t *attr, int type);
@@ -38,7 +37,6 @@ typedef struct { CRITICAL_SECTION lock; } pthread_mutex_t;
 // HACK - defer to later to init
 #define PTHREAD_MUTEX_INITIALIZER { {(void*)-1,-1,0,0,0,0} }
 
-int pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *mutexattr);
 int pthread_mutex_lock(pthread_mutex_t *mutex);
 int pthread_mutex_trylock(pthread_mutex_t *mutex);
 int pthread_mutex_unlock(pthread_mutex_t *mutex);
@@ -101,6 +99,19 @@ void pthread_exit(void *value_ptr);
 int pthread_setcancelstate(int state, int *oldstate);
 int pthread_setcanceltype(int type, int *oldtype);
 void pthread_testcancel(void);
+
+int __wrap_pthread_mutexattr_init(pthread_mutexattr_t *attr);
+int __wrap_pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *mutexattr);
+
+#ifndef _WPDK_BUILD_LIB_
+static inline int pthread_mutexattr_init(pthread_mutexattr_t *attr) {
+    return __wrap_pthread_mutexattr_init(attr);
+}
+
+static inline int pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *mutexattr) {
+    return __wrap_pthread_mutex_init(mutex, mutexattr);
+}
+#endif
 
 _CRT_END_C_HEADER
 

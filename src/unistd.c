@@ -105,7 +105,7 @@ off_t lseek(int fildes, off_t offset, int whence)
 }
 
 
-int unlink(const char *path)
+int __real_unlink(const char *path)
 {
     return _unlink(path);
 }

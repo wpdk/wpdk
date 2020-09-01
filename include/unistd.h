@@ -34,9 +34,15 @@ unsigned sleep(unsigned seconds);
 long sysconf(int name);
 int truncate(const char *path, off_t length);
 char *ttyname(int fildes);
-int unlink(const char *path);
 int usleep(useconds_t useconds);
 ssize_t write(int fildes, const void *buf, size_t nbyte);
+
+int __wrap_unlink(const char *path);
+
+#ifndef _WPDK_BUILD_LIB_
+#define unlink _unlink
+#define _unlink(path) __wrap_unlink(path)
+#endif
 
 _CRT_END_C_HEADER
 

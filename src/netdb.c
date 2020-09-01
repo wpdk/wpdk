@@ -2,7 +2,7 @@
 #include <netdb.h>
 
 
-extern int _startup_socket();
+int _socket_startup();
 
 
 int _getaddrinfo(const char *node, const char *service,
