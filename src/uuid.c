@@ -44,7 +44,7 @@ int uuid_parse(const char *in, uuid_t uu)
 {
     UUID id;
 
-    if (UuidFromString((char *)in, &id) == RPC_S_OK) {
+    if (UuidFromString((unsigned char *)in, &id) == RPC_S_OK) {
         memcpy(uu, &id, sizeof(uuid_t));
         return 0;
     }
@@ -70,7 +70,7 @@ int uuid_compare(const uuid_t uu1, const uuid_t uu2)
 
 void uuid_unparse(const uuid_t uu, char *out)
 {
-    static unsigned char invalid[] = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx";
+    static const char invalid[] = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx";
     RPC_STATUS rc;
     RPC_CSTR str;
     UUID id;
@@ -83,7 +83,7 @@ void uuid_unparse(const uuid_t uu, char *out)
         return;
     }
 
-    strcpy_s(out, uuid_string_len, str);
+    strcpy_s(out, uuid_string_len, (const char *)str);
     RpcStringFree(&str);
 }
 
