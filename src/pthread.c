@@ -89,7 +89,10 @@ inline static int pthread_mutexattr_setpshared(pthread_mutexattr_t *attr, int ps
 
 inline static int pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *mutexattr)
 {
-    if (!mutex || !mutexattr || mutexattr->type != PTHREAD_MUTEX_NORMAL)
+    if (!mutex)
+        return EINVAL;
+ 
+    if (mutexattr && (mutexattr->type < PTHREAD_MUTEX_NORMAL || mutexattr->type > PTHREAD_MUTEX_RECURSIVE))
         return EINVAL;
 
     // HACK - and spin count!
@@ -108,7 +111,10 @@ inline static int pthread_mutex_destroy(pthread_mutex_t *mutex)
 {
     if (!mutex) return EINVAL;
 
-    DeleteCriticalSection(&mutex->lock);
+    // HACK - for now this needs to be a no-op
+    // HACK revisit with extensive pthreads checking code
+
+    // DeleteCriticalSection(&mutex->lock);
     return 0;
 }
 
@@ -116,6 +122,9 @@ inline static int pthread_mutex_destroy(pthread_mutex_t *mutex)
 inline static int pthread_mutex_lock(pthread_mutex_t *mutex)
 {
     if (!mutex) return EINVAL;
+
+    // HACK - NASTY to get unit tests running
+    if (!mutex->lock.DebugInfo) InitializeCriticalSection(&mutex->lock);
 
     EnterCriticalSection(&mutex->lock);
     return 0;
@@ -164,7 +173,8 @@ inline static int pthread_spin_destroy(pthread_spinlock_t *lock)
 {
     if (!lock) return EINVAL;
 
-    DeleteCriticalSection(&lock->lock);
+    // HACK - leave this out for now to avoid reuse after destroy issues
+    // DeleteCriticalSection(&lock->lock);
     return 0;
 }
 
@@ -233,7 +243,7 @@ inline static int pthread_condattr_setpshared(pthread_condattr_t *attr, int psha
 
 inline static int pthread_cond_init(pthread_cond_t *cond, const pthread_condattr_t *attr)
 {
-    if (!cond || !attr) return EINVAL;
+    if (!cond) return EINVAL;
 
     InitializeConditionVariable(&cond->cond);
     return 0;
