@@ -1,0 +1,8 @@
+// HACK - to do list
+
+Sanity checks for pthreads to make sure init/destroy calls are being used correctly
+Move wpdk into source / header split and build a shared library (quicker debugging turnaround)
+
+SPDK
+enable static asserts
+Fix nvme bit definitions and any initialisation (rename reserved to find)
