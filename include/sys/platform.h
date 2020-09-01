@@ -58,7 +58,10 @@
 /*
  * Avoid a collision between the clang headers and the Platform SDK
  */
+#ifdef __clang__
 #define _m_prefetchw __m_prefetchw
+#endif
+
 #include <windows.h>
 #undef _m_prefetchw
 

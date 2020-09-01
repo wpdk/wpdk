@@ -5,7 +5,7 @@
 #include <io.h>
 
 
-inline static int mkstemp(char *path)
+int mkstemp(char *path)
 {
     if (_mktemp(path) == NULL)
         return -1;
@@ -15,7 +15,7 @@ inline static int mkstemp(char *path)
 }
 
 
-inline static int posix_memalign(void **memptr, size_t alignment, size_t size)
+int posix_memalign(void **memptr, size_t alignment, size_t size)
 {
     // HACK - not aligned - just basic malloc for now
     if (!memptr || !size)
@@ -28,27 +28,27 @@ inline static int posix_memalign(void **memptr, size_t alignment, size_t size)
 }
 
 
-inline static void srandom(unsigned int seed)
+void srandom(unsigned int seed)
 {
     srand(seed);
 }
 
 
-inline static long int random(void)
+long int random(void)
 {
     // HACK 16 bits instead of 32-bits
     return rand();
 }
 
 
-inline static int rand_r(unsigned int *seedp)
+int rand_r(unsigned int *seedp)
 {
     // HACK - incomplete implementation
     return rand();
 }
 
 
-inline static void *__real_calloc(size_t nelem, size_t elsize)
+void *__real_calloc(size_t nelem, size_t elsize)
 {
     return calloc(nelem, elsize);
 }

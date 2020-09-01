@@ -13,8 +13,6 @@ long int random(void);
 void srandom(unsigned int seed);
 int rand_r(unsigned int *seedp);
 
-#include "../src/stdlib.c"
-
 #ifdef _WPDK_WRAP_
 // HACK - temporary hack to handle mocking
 void *__wrap_calloc(size_t nelem, size_t elsize);

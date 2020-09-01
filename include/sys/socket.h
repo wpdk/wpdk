@@ -5,8 +5,6 @@
 #include <sys/_iovec.h>
 #include <winsock2.h>
 #include <ws2tcpip.h>
-
-//HACK - only works on build 17063 onwards
 #include <afunix.h>
 
 _CRT_BEGIN_C_HEADER
@@ -30,10 +28,12 @@ int _getsockopt(int socket, int level, int option_name,
 int _setsockopt(int socket, int level, int option_name,
        const void *option_value, socklen_t option_len);
 
-#include "../src/socket.c"
-
+#ifndef _WPDK_BUILD_LIB_
 #define setsockopt _setsockopt
 #define getsockopt _getsockopt
+//HACK - move to netdb
+#define getaddrinfo _getaddrinfo
+#endif
 
 _CRT_END_C_HEADER
 

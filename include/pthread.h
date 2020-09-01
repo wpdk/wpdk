@@ -102,8 +102,6 @@ int pthread_setcancelstate(int state, int *oldstate);
 int pthread_setcanceltype(int type, int *oldtype);
 void pthread_testcancel(void);
 
-#include "../src/pthread.c"
-
 _CRT_END_C_HEADER
 
 #endif /* _PTHREAD_H_ */

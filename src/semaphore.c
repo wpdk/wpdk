@@ -1,8 +1,9 @@
 #include <sys/platform.h>
+#include <limits.h>
 #include <semaphore.h>
 
 
-inline static int sem_init(sem_t *sem, int pshared, unsigned int value)
+int sem_init(sem_t *sem, int pshared, unsigned int value)
 {
     if (!sem) return EINVAL;
 
@@ -17,7 +18,7 @@ inline static int sem_init(sem_t *sem, int pshared, unsigned int value)
 }
 
 
-inline static int sem_destroy(sem_t *sem)
+int sem_destroy(sem_t *sem)
 {
     if (!sem || !sem->h)
         return EINVAL;
@@ -29,7 +30,7 @@ inline static int sem_destroy(sem_t *sem)
 }
 
 
-inline static int sem_post(sem_t *sem)
+int sem_post(sem_t *sem)
 {
     if (!sem || !sem->h)
         return EINVAL;
@@ -43,7 +44,7 @@ inline static int sem_post(sem_t *sem)
 }
 
 
-inline static int sem_wait(sem_t *sem)
+int sem_wait(sem_t *sem)
 {
     if (!sem || !sem->h)
         return EINVAL;
@@ -57,7 +58,7 @@ inline static int sem_wait(sem_t *sem)
 }
 
 
-inline static int sem_trywait(sem_t *sem)
+int sem_trywait(sem_t *sem)
 {
     if (!sem || !sem->h)
         return EINVAL;
@@ -71,7 +72,7 @@ inline static int sem_trywait(sem_t *sem)
 }
 
 
-inline static int sem_timedwait(sem_t *sem, const struct timespec *abs_timeout)
+int sem_timedwait(sem_t *sem, const struct timespec *abs_timeout)
 {
     // HACK - handle timed wait
     return sem_wait(sem);

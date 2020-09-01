@@ -15,8 +15,6 @@ struct ifaddrs {
 int getifaddrs(struct ifaddrs **ifap);
 void freeifaddrs(struct ifaddrs *ifa);
 
-#include "../src/ifaddrs.c"
-
 _CRT_END_C_HEADER
 
 #endif /* !_IFADDRS_H_ */

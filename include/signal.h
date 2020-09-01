@@ -46,8 +46,6 @@ int pthread_sigmask(int how, const sigset_t *set, sigset_t *oset);
 
 int kill(pid_t pid, int sig);
 
-#include "../src/signal.c"
-
 _CRT_END_C_HEADER
 
 #endif /* !_SIGNAL_H_ */

@@ -56,8 +56,6 @@ int mknod(const char *path, mode_t mode, dev_t dev);
 int stat(const char *path, struct stat *buf);
 int fstat(int fildes, struct stat *buf);
 
-#include "../src/stat.c"
-
 #define chmod(path,mode)    _chmod(path,mode)
 
 _CRT_END_C_HEADER

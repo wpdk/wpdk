@@ -7,19 +7,19 @@
 #undef uuid_t
 
 
-inline static void uuid_clear(uuid_t uu)
+void uuid_clear(uuid_t uu)
 {
     memcpy(uu, &GUID_NULL, sizeof(uuid_t));
 }
 
 
-inline static void uuid_copy(uuid_t dst, const uuid_t src)
+void uuid_copy(uuid_t dst, const uuid_t src)
 {
     memcpy(dst, src, sizeof(uuid_t));
 }
 
 
-inline static int uuid_is_null(const uuid_t uu)
+int uuid_is_null(const uuid_t uu)
 {
     GUID id;
     memcpy(&id, uu, sizeof(uuid_t));
@@ -27,7 +27,7 @@ inline static int uuid_is_null(const uuid_t uu)
 }
 
 
-inline static void uuid_generate(uuid_t out)
+void uuid_generate(uuid_t out)
 {
     UUID id;
 
@@ -40,7 +40,7 @@ inline static void uuid_generate(uuid_t out)
 }
 
 
-inline static int uuid_parse(const char *in, uuid_t uu)
+int uuid_parse(const char *in, uuid_t uu)
 {
     UUID id;
 
@@ -53,7 +53,7 @@ inline static int uuid_parse(const char *in, uuid_t uu)
 }
 
 
-inline static int uuid_compare(const uuid_t uu1, const uuid_t uu2)
+int uuid_compare(const uuid_t uu1, const uuid_t uu2)
 {
     RPC_STATUS status;
     UUID id1, id2;
@@ -68,7 +68,7 @@ inline static int uuid_compare(const uuid_t uu1, const uuid_t uu2)
 
 #define uuid_string_len 37
 
-inline static void uuid_unparse(const uuid_t uu, char *out)
+void uuid_unparse(const uuid_t uu, char *out)
 {
     static unsigned char invalid[] = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx";
     RPC_STATUS rc;
@@ -88,14 +88,14 @@ inline static void uuid_unparse(const uuid_t uu, char *out)
 }
 
 
-inline static void uuid_unparse_upper(const uuid_t uu, char *out)
+void uuid_unparse_upper(const uuid_t uu, char *out)
 {
     uuid_unparse(uu, out);
     _strupr_s(out, uuid_string_len);
 }
 
 
-inline static void uuid_unparse_lower(const uuid_t uu, char *out)
+void uuid_unparse_lower(const uuid_t uu, char *out)
 {
     uuid_unparse(uu, out);
     _strlwr_s(out, uuid_string_len);

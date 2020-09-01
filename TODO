@@ -6,3 +6,5 @@ Move wpdk into source / header split and build a shared library (quicker debuggi
 SPDK
 enable static asserts
 Fix nvme bit definitions and any initialisation (rename reserved to find)
+
+afunix - only works on build 17063 onwards

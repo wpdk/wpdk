@@ -14,13 +14,12 @@ char *strerror_r_gnu(int errnum, char *buf, size_t buflen);
 
 char *strcasestr(const char *haystack, const char *needle);
 
-#include "../src/strings.c"
-
+#ifndef _WPDK_BUILD_LIB_
 #if defined(__USE_GNU)
 #define strerror_r strerror_r_gnu
 #endif
-
 #define strdup(str) _strdup(str)
+#endif
 
 _CRT_END_C_HEADER
 #endif /* !_STRINGS_H_ */

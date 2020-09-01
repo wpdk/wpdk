@@ -29,8 +29,6 @@ struct termios {
 int tcsetattr(int fildes, int optional_actions, const struct termios *termios_p);
 int tcgetattr(int fildes, struct termios *termios_p);
 
-#include "../src/termios.c"
-
 _CRT_END_C_HEADER
 
 #endif /* !_TERMIOS_H_ */

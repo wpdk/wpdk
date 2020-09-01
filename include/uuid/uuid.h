@@ -17,8 +17,6 @@ void uuid_unparse(const uuid_t uu, char *out);
 void uuid_unparse_upper(const uuid_t uu, char *out);
 void uuid_unparse_lower(const uuid_t uu, char *out);
 
-#include "../src/uuid.c"
-
 _CRT_END_C_HEADER
 
 #endif /* _UUID_UUID_H_ */

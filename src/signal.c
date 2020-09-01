@@ -2,7 +2,7 @@
 #include <signal.h>
 
 
-inline static int sigemptyset(sigset_t *set)
+int sigemptyset(sigset_t *set)
 {
     // HACK - set errno
     if (!set) return -1;
@@ -12,7 +12,7 @@ inline static int sigemptyset(sigset_t *set)
 }
 
 
-inline static int sigfillset(sigset_t *set)
+int sigfillset(sigset_t *set)
 {
     // HACK - set errno
     if (!set) return -1;
@@ -22,7 +22,7 @@ inline static int sigfillset(sigset_t *set)
 }
 
 
-inline static int sigaddset(sigset_t *set, int signo)
+int sigaddset(sigset_t *set, int signo)
 {
     // HACK - set errno
     if (!set || signo < 1 || signo >= NSIG) return -1;
@@ -32,7 +32,7 @@ inline static int sigaddset(sigset_t *set, int signo)
 }
 
 
-inline static int sigdelset(sigset_t *set, int signo)
+int sigdelset(sigset_t *set, int signo)
 {
     // HACK - set errno
     if (!set || signo < 1 || signo >= NSIG) return -1;
@@ -42,21 +42,21 @@ inline static int sigdelset(sigset_t *set, int signo)
 }
 
 
-inline static int sigaction(int sig, const struct sigaction *act, struct sigaction *oact)
+int sigaction(int sig, const struct sigaction *act, struct sigaction *oact)
 {
     // HACK - not implemented
     return -1;
 }
 
 
-inline static int pthread_sigmask(int how, const sigset_t *set, sigset_t *oset)
+int pthread_sigmask(int how, const sigset_t *set, sigset_t *oset)
 {
     // HACK - not implemented
     return -1;
 }
 
 
-inline static int kill(pid_t pid, int sig)
+int kill(pid_t pid, int sig)
 {
     // HACK - implementation
     return -1;

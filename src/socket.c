@@ -1,42 +1,55 @@
 #include <sys/platform.h>
 #include <sys/socket.h>
 
-inline static ssize_t recvmsg(int socket, struct msghdr *message, int flags)
+
+int _socket_startup()
+{
+    WORD wVersionRequested;
+    WSADATA wsaData;
+    int err;
+
+    wVersionRequested = MAKEWORD(2, 2);
+
+    err = WSAStartup(wVersionRequested, &wsaData);
+    return (err != 0) ? 0 : 1;
+}
+
+
+ssize_t recvmsg(int socket, struct msghdr *message, int flags)
 {
     // HACK - not implemented
     return -1;
 }
 
 
-inline static ssize_t sendmsg(int socket, const struct msghdr *message, int flags)
+ssize_t sendmsg(int socket, const struct msghdr *message, int flags)
 {
     // HACK - not implemented
     return -1;
 }
 
 
-inline static ssize_t __real_recvmsg(int socket, struct msghdr *message, int flags)
+ssize_t __real_recvmsg(int socket, struct msghdr *message, int flags)
 {
     return recvmsg(socket, message, flags);
 }
 
 
-inline static ssize_t __real_sendmsg(int socket, const struct msghdr *message, int flags)
+ssize_t __real_sendmsg(int socket, const struct msghdr *message, int flags)
 {
     return sendmsg(socket, message, flags);
 }
 
 
-inline static int _getsockopt(int socket, int level, int option_name,
+int _getsockopt(int socket, int level, int option_name,
        void *option_value, socklen_t *option_len)
 {
     return getsockopt(socket, level, option_name, (char *)option_value, option_len);
 }
 
 
-inline static int _setsockopt(int socket, int level, int option_name,
+int _setsockopt(int socket, int level, int option_name,
        const void *option_value, socklen_t option_len)
 {
     return setsockopt(socket, level, option_name, (const char *)option_value, option_len);
 }
-

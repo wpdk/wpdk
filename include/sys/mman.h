@@ -22,8 +22,6 @@ int munmap(void *addr, size_t len);
 int shm_open(const char *name, int oflag, mode_t mode);
 int shm_unlink(const char *name);
 
-#include "../src/mman.c"
-
 _CRT_END_C_HEADER
 
 #endif /* !_SYS_MMAN_H_ */

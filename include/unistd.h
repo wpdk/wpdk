@@ -21,22 +21,23 @@ _CRT_BEGIN_C_HEADER
 #define _SC_NPROCESSORS_ONLN    2
 #define _SC_PAGESIZE            3
 
+int access(const char *path, int amode);
+int close(int fildes);
+int daemon(int nochdir, int noclose);
 pid_t fork(void);
 int ftruncate(int fd, off_t length);
 pid_t getpid(void);
 int isatty(int fildes);
+off_t lseek(int fildes, off_t offset, int whence);
+ssize_t read(int fildes, void *buf, size_t nbyte);
 unsigned sleep(unsigned seconds);
 long sysconf(int name);
 int truncate(const char *path, off_t length);
 char *ttyname(int fildes);
+int unlink(const char *path);
 int usleep(useconds_t useconds);
-int daemon(int nochdir, int noclose);
-ssize_t read(int fildes, void *buf, size_t nbyte);
 ssize_t write(int fildes, const void *buf, size_t nbyte);
-off_t lseek(int fildes, off_t offset, int whence);
-
-#include "../src/unistd.c"
 
 _CRT_END_C_HEADER
-#endif /* !_UNISTD_H_ */
 
+#endif /* !_UNISTD_H_ */

@@ -10,8 +10,6 @@ typedef	unsigned int nfds_t;
 
 int poll(struct pollfd fds[], nfds_t nfds, int timeout);
 
-#include "../src/poll.c"
-
 _CRT_END_C_HEADER
 
 #endif /* !_POLL_H_ */

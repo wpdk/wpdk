@@ -2,7 +2,7 @@
 #include <sys/resource.h>
 
 
-inline static int getrlimit(int resource, struct rlimit *rlp)
+int getrlimit(int resource, struct rlimit *rlp)
 {
     if (!rlp || resource != RLIMIT_CORE)
         return EINVAL;
@@ -13,7 +13,7 @@ inline static int getrlimit(int resource, struct rlimit *rlp)
 }
 
 
-inline static int setrlimit(int resource, const struct rlimit *rlp)
+int setrlimit(int resource, const struct rlimit *rlp)
 {
     if (!rlp || resource != RLIMIT_CORE)
         return EINVAL;
@@ -23,7 +23,7 @@ inline static int setrlimit(int resource, const struct rlimit *rlp)
 }
 
 
-inline static int getrusage(int who, struct rusage *usage)
+int getrusage(int who, struct rusage *usage)
 {
     if (!usage || who != RUSAGE_THREAD)
         return EINVAL;

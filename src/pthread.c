@@ -2,7 +2,7 @@
 #include <pthread.h>
 
 
-inline static int pthread_mutexattr_init(pthread_mutexattr_t *attr)
+int pthread_mutexattr_init(pthread_mutexattr_t *attr)
 {
     if (!attr) return EINVAL;
 
@@ -13,13 +13,13 @@ inline static int pthread_mutexattr_init(pthread_mutexattr_t *attr)
 }
 
 
-inline static int __real_pthread_mutexattr_init(pthread_mutexattr_t *attr)
+int __real_pthread_mutexattr_init(pthread_mutexattr_t *attr)
 {
     return pthread_mutexattr_init(attr);
 }
 
 
-inline static int pthread_mutexattr_destroy(pthread_mutexattr_t *attr)
+int pthread_mutexattr_destroy(pthread_mutexattr_t *attr)
 {
     if (!attr) return EINVAL;
 
@@ -27,7 +27,7 @@ inline static int pthread_mutexattr_destroy(pthread_mutexattr_t *attr)
 }
 
 
-inline static int pthread_mutexattr_gettype(const pthread_mutexattr_t *attr, int *type)
+int pthread_mutexattr_gettype(const pthread_mutexattr_t *attr, int *type)
 {
     if (!attr || !type)
         return EINVAL;
@@ -37,7 +37,7 @@ inline static int pthread_mutexattr_gettype(const pthread_mutexattr_t *attr, int
 }
 
 
-inline static int pthread_mutexattr_settype(pthread_mutexattr_t *attr, int type)
+int pthread_mutexattr_settype(pthread_mutexattr_t *attr, int type)
 {
     if (!attr || type < PTHREAD_MUTEX_NORMAL || type > PTHREAD_MUTEX_RECURSIVE)
         return EINVAL;
@@ -47,7 +47,7 @@ inline static int pthread_mutexattr_settype(pthread_mutexattr_t *attr, int type)
 }
 
 
-inline static int pthread_mutexattr_getrobust(const pthread_mutexattr_t *attr, int *robust)
+int pthread_mutexattr_getrobust(const pthread_mutexattr_t *attr, int *robust)
 {
     if (!attr || !robust)
         return EINVAL;
@@ -57,7 +57,7 @@ inline static int pthread_mutexattr_getrobust(const pthread_mutexattr_t *attr, i
 }
 
 
-inline static int pthread_mutexattr_setrobust(pthread_mutexattr_t *attr, int robust)
+int pthread_mutexattr_setrobust(pthread_mutexattr_t *attr, int robust)
 {
     if (!attr || robust < PTHREAD_MUTEX_STALLED || robust > PTHREAD_MUTEX_ROBUST)
         return EINVAL;
@@ -67,7 +67,7 @@ inline static int pthread_mutexattr_setrobust(pthread_mutexattr_t *attr, int rob
 }
 
 
-inline static int pthread_mutexattr_getpshared(const pthread_mutexattr_t *attr, int *pshared)
+int pthread_mutexattr_getpshared(const pthread_mutexattr_t *attr, int *pshared)
 {
     if (!attr || !pshared)
         return EINVAL;
@@ -77,7 +77,7 @@ inline static int pthread_mutexattr_getpshared(const pthread_mutexattr_t *attr, 
 }
 
 
-inline static int pthread_mutexattr_setpshared(pthread_mutexattr_t *attr, int pshared)
+int pthread_mutexattr_setpshared(pthread_mutexattr_t *attr, int pshared)
 {
     if (!attr || pshared < PTHREAD_PROCESS_PRIVATE || pshared > PTHREAD_PROCESS_SHARED)
         return EINVAL;
@@ -87,7 +87,7 @@ inline static int pthread_mutexattr_setpshared(pthread_mutexattr_t *attr, int ps
 }
 
 
-inline static int pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *mutexattr)
+int pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *mutexattr)
 {
     if (!mutex)
         return EINVAL;
@@ -101,13 +101,13 @@ inline static int pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutex
 }
 
 
-inline static int __real_pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *mutexattr)
+int __real_pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *mutexattr)
 {
     return pthread_mutex_init(mutex, mutexattr);
 }
 
 
-inline static int pthread_mutex_destroy(pthread_mutex_t *mutex)
+int pthread_mutex_destroy(pthread_mutex_t *mutex)
 {
     if (!mutex) return EINVAL;
 
@@ -119,7 +119,7 @@ inline static int pthread_mutex_destroy(pthread_mutex_t *mutex)
 }
 
 
-inline static int pthread_mutex_lock(pthread_mutex_t *mutex)
+int pthread_mutex_lock(pthread_mutex_t *mutex)
 {
     if (!mutex) return EINVAL;
 
@@ -131,7 +131,7 @@ inline static int pthread_mutex_lock(pthread_mutex_t *mutex)
 }
 
 
-inline static int pthread_mutex_trylock(pthread_mutex_t *mutex)
+int pthread_mutex_trylock(pthread_mutex_t *mutex)
 {
     if (!mutex) return EINVAL;
 
@@ -142,7 +142,7 @@ inline static int pthread_mutex_trylock(pthread_mutex_t *mutex)
 }
 
 
-inline static int pthread_mutex_unlock(pthread_mutex_t *mutex)
+int pthread_mutex_unlock(pthread_mutex_t *mutex)
 {
     if (!mutex) return EINVAL;
 
@@ -151,14 +151,14 @@ inline static int pthread_mutex_unlock(pthread_mutex_t *mutex)
 }
 
 
-inline static int pthread_mutex_consistent(pthread_mutex_t *mutex)
+int pthread_mutex_consistent(pthread_mutex_t *mutex)
 {
     //HACK - not implemented
     return 0;
 }
 
 
-inline static int pthread_spin_init(pthread_spinlock_t *lock, int pshared)
+int pthread_spin_init(pthread_spinlock_t *lock, int pshared)
 {
     if (!lock || pshared < PTHREAD_PROCESS_PRIVATE || pshared > PTHREAD_PROCESS_SHARED)
         return EINVAL;
@@ -169,7 +169,7 @@ inline static int pthread_spin_init(pthread_spinlock_t *lock, int pshared)
 }
 
 
-inline static int pthread_spin_destroy(pthread_spinlock_t *lock)
+int pthread_spin_destroy(pthread_spinlock_t *lock)
 {
     if (!lock) return EINVAL;
 
@@ -179,7 +179,7 @@ inline static int pthread_spin_destroy(pthread_spinlock_t *lock)
 }
 
 
-inline static int pthread_spin_lock(pthread_spinlock_t *lock)
+int pthread_spin_lock(pthread_spinlock_t *lock)
 {
     if (!lock) return EINVAL;
 
@@ -188,7 +188,7 @@ inline static int pthread_spin_lock(pthread_spinlock_t *lock)
 }
 
 
-inline static int pthread_spin_trylock(pthread_spinlock_t *lock)
+int pthread_spin_trylock(pthread_spinlock_t *lock)
 {
     if (!lock) return EINVAL;
 
@@ -199,7 +199,7 @@ inline static int pthread_spin_trylock(pthread_spinlock_t *lock)
 }
 
 
-inline static int pthread_spin_unlock(pthread_spinlock_t *lock)
+int pthread_spin_unlock(pthread_spinlock_t *lock)
 {
     if (!lock) return EINVAL;
 
@@ -208,7 +208,7 @@ inline static int pthread_spin_unlock(pthread_spinlock_t *lock)
 }
 
 
-inline static int pthread_condattr_init(pthread_condattr_t *attr)
+int pthread_condattr_init(pthread_condattr_t *attr)
 {
     if (!attr) return EINVAL;
     attr->pshared = PTHREAD_PROCESS_PRIVATE;
@@ -216,14 +216,14 @@ inline static int pthread_condattr_init(pthread_condattr_t *attr)
 }
 
 
-inline static int pthread_condattr_destroy(pthread_condattr_t *attr)
+int pthread_condattr_destroy(pthread_condattr_t *attr)
 {
     if (!attr) return EINVAL;
     return 0;
 }
 
 
-inline static int pthread_condattr_getpshared(const pthread_condattr_t *attr, int *pshared)
+int pthread_condattr_getpshared(const pthread_condattr_t *attr, int *pshared)
 {
     if (!attr || !pshared) return EINVAL;
     *pshared = attr->pshared;
@@ -231,7 +231,7 @@ inline static int pthread_condattr_getpshared(const pthread_condattr_t *attr, in
 }
 
 
-inline static int pthread_condattr_setpshared(pthread_condattr_t *attr, int pshared)
+int pthread_condattr_setpshared(pthread_condattr_t *attr, int pshared)
 {
     if (!attr || pshared < PTHREAD_PROCESS_PRIVATE || pshared > PTHREAD_PROCESS_SHARED)
         return EINVAL;
@@ -241,7 +241,7 @@ inline static int pthread_condattr_setpshared(pthread_condattr_t *attr, int psha
 }
 
 
-inline static int pthread_cond_init(pthread_cond_t *cond, const pthread_condattr_t *attr)
+int pthread_cond_init(pthread_cond_t *cond, const pthread_condattr_t *attr)
 {
     if (!cond) return EINVAL;
 
@@ -250,61 +250,61 @@ inline static int pthread_cond_init(pthread_cond_t *cond, const pthread_condattr
 }
 
 
-inline static int pthread_cond_destroy(pthread_cond_t *cond)
+int pthread_cond_destroy(pthread_cond_t *cond)
 {
     return 0;
 }
 
 
-inline static int pthread_cond_signal(pthread_cond_t *cond)
+int pthread_cond_signal(pthread_cond_t *cond)
 {
     WakeConditionVariable(&cond->cond);
     return 0;
 }
 
 
-inline static int pthread_cond_broadcast(pthread_cond_t *cond)
+int pthread_cond_broadcast(pthread_cond_t *cond)
 {
     WakeAllConditionVariable(&cond->cond);
     return 0;
 }
 
 
-inline static int pthread_cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex)
+int pthread_cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex)
 {
     SleepConditionVariableCS(&cond->cond, &mutex->lock, INFINITE);
 	return 0;
 }
 
 
-inline static int pthread_cond_timedwait(pthread_cond_t *cond, pthread_mutex_t *mutex, const struct timespec *abstime)
+int pthread_cond_timedwait(pthread_cond_t *cond, pthread_mutex_t *mutex, const struct timespec *abstime)
 {
     // HACK - implementation
     return pthread_cond_wait(cond, mutex);
 }
 
 
-inline static int pthread_attr_init(pthread_attr_t *attr)
+int pthread_attr_init(pthread_attr_t *attr)
 {
     if (!attr) return EINVAL;
     return 0;
 }
 
 
-inline static int pthread_attr_destroy(pthread_attr_t *attr)
+int pthread_attr_destroy(pthread_attr_t *attr)
 {
     if (!attr) return EINVAL;
     return 0;
 }
 
 
-inline static pthread_t pthread_self()
+pthread_t pthread_self()
 {
     return GetCurrentThreadId();
 }
 
 
-inline static int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_routine)(void*), void *arg)
+int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_routine)(void*), void *arg)
 {
     // HACK - check implementation
 	HANDLE hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)start_routine, arg, 0, (LPDWORD)thread);
@@ -320,34 +320,34 @@ inline static int pthread_create(pthread_t *thread, const pthread_attr_t *attr, 
 }
 
 
-inline static int pthread_join(pthread_t thread, void **value_ptr)
+int pthread_join(pthread_t thread, void **value_ptr)
 {
     // HACK - unimplemented
     return EINVAL;
 }
 
 
-inline static int pthread_detach(pthread_t thread)
+int pthread_detach(pthread_t thread)
 {
     // HACK - unimplemented
     return EINVAL;
 }
 
 
-inline static int pthread_cancel(pthread_t thread)
+int pthread_cancel(pthread_t thread)
 {
     // HACK - unimplemented
     return EINVAL;
 }
 
 
-inline static void pthread_exit(void *value_ptr)
+void pthread_exit(void *value_ptr)
 {
     // HACK - unimplemented
 }
 
 
-inline static int pthread_setcancelstate(int state, int *oldstate)
+int pthread_setcancelstate(int state, int *oldstate)
 {
     // HACK - unimplemented
     if (!oldstate || state < PTHREAD_CANCEL_DISABLE || state > PTHREAD_CANCEL_ENABLE)
@@ -358,7 +358,7 @@ inline static int pthread_setcancelstate(int state, int *oldstate)
 }
 
 
-inline static int pthread_setcanceltype(int type, int *oldtype)
+int pthread_setcanceltype(int type, int *oldtype)
 {
     // HACk - unimplemented
     if (!oldtype || type < PTHREAD_CANCEL_DEFERRED || type > PTHREAD_CANCEL_ASYNCHRONOUS)
@@ -369,7 +369,7 @@ inline static int pthread_setcanceltype(int type, int *oldtype)
 }
 
 
-inline static void pthread_testcancel(void)
+void pthread_testcancel(void)
 {
     // HACK - unimplemented
 }

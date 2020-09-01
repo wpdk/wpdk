@@ -32,9 +32,9 @@ _CRT_BEGIN_C_HEADER
 
 int fcntl(int fildes, int cmd, ...);
 
-#include "../src/fcntl.c"
-
+#ifndef _WPDK_BUILD_LIB_
 #define open(path,oflag,...)    _open(path,oflag,__VA_ARGS__)
+#endif
 
 _CRT_END_C_HEADER
 

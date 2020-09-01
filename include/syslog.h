@@ -21,8 +21,6 @@ void openlog(const char *ident, int option, int facility);
 void syslog(int priority, const char *format, ...);
 void closelog(void);
 
-#include "../src/syslog.c"
-
 _CRT_END_C_HEADER
 
 #endif /* !_SYS_SYSLOG_H_ */
