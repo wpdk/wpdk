@@ -22,7 +22,8 @@ inline static int ftruncate(int fd, off_t length)
 inline static int usleep(useconds_t useconds)
 {
     // HACK - check
-    SleepEx((DWORD)(useconds / 1000), TRUE);
+    // HACK - it's sleeping way too long - null it out for now
+    //SleepEx((DWORD)(useconds / 1000), TRUE);
     return 0;
 }
 
@@ -100,4 +101,22 @@ inline static off_t lseek(int fildes, off_t offset, int whence)
 {
     // HACK - off_t is 32 bits
     return _lseek(fildes, offset, whence);
+}
+
+
+inline static int unlink(const char *path)
+{
+    return _unlink(path);
+}
+
+
+inline static int access(const char *pathname, int mode)
+{
+    return _access(pathname, mode);
+}
+
+
+inline static int close(int fildes)
+{
+    return _close(fildes);
 }

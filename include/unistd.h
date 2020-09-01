@@ -37,10 +37,6 @@ off_t lseek(int fildes, off_t offset, int whence);
 
 #include "../src/unistd.c"
 
-#define access(path,amode)  _access(path,amode)
-#define close _close
-#define unlink _unlink
-
 _CRT_END_C_HEADER
 #endif /* !_UNISTD_H_ */
 
