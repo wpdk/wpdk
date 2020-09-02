@@ -10,3 +10,8 @@ Fix nvme bit definitions and any initialisation (rename reserved to find)
 afunix - only works on build 17063 onwards
 
 Fix env inclusion for unit tests
+
+Use #define __wrap_ for names to map to wpdk_ (or change wrap macro definition?)
+
+Watch out for dllimport declarations - they override the static inline definitions and prevent the wrapper being private.
+

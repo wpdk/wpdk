@@ -117,7 +117,11 @@ int access(const char *pathname, int mode)
 }
 
 
+#include <sys/socket.h>
+
 int close(int fildes)
 {
-    return _close(fildes);
+    // HACK - assume socket for now
+    return closesocket((SOCKET)fildes);
+    // return _close(fildes);
 }

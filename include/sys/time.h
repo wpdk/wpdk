@@ -2,7 +2,8 @@
 #define	_SYS_TIME_H_
 
 #include <sys/platform.h>
-#include <winsock2.h>
+#include <sys/socket.h>
+#include <sys/select.h>
 #include <time.h>
 
 _CRT_BEGIN_C_HEADER

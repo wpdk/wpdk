@@ -2,18 +2,19 @@
 #define _NETDB_H_
 
 #include <sys/platform.h>
-#include <winsock2.h>
-#include <ws2tcpip.h>
-#include <afunix.h>
+#include <sys/socket.h>
 
 _CRT_BEGIN_C_HEADER
 
-int _getaddrinfo(const char *node, const char *service,
+int wpdk_getaddrinfo(const char *node, const char *service,
                        const struct addrinfo *hints,
                        struct addrinfo **res);
 
+const char *wpdk_gai_strerror(int ecode);
+
 #ifndef _WPDK_BUILD_LIB_
-#define getaddrinfo _getaddrinfo
+#define getaddrinfo wpdk_getaddrinfo
+#define gai_strerror wpdk_gai_strerror
 #endif
 
 _CRT_END_C_HEADER
