@@ -2,9 +2,10 @@
 #include <sys/socket.h>
 #include <fcntl.h>
 
-// HACK - very rough sketch
 
-void wpdk_seterrno_wsa(int wsaerr);
+int wpdk_is_socket(int fd);
+int wpdk_socket_error();
+SOCKET wpdk_get_socket(int fd);
 
 
 int fcntl(int fildes, int cmd, ...)
@@ -12,6 +13,7 @@ int fcntl(int fildes, int cmd, ...)
 	u_long mode;
 	int rc, arg;
 	va_list ap;
+	SOCKET s;
 
 	switch (cmd) {
 		case F_GETFD:
@@ -26,18 +28,24 @@ int fcntl(int fildes, int cmd, ...)
 			arg = va_arg(ap, int);
 			va_end(ap);
 
-			// HACK - maybe use WSAIoctl
-			// HACK - how to tell if this is a socket
+			if (wpdk_is_socket(fildes)) {
+				mode = (arg & O_NONBLOCK) != 0;
+				s = wpdk_get_socket(fildes);
 
-			mode = (arg & O_NONBLOCK) != 0;
-			rc = ioctlsocket((SOCKET)fildes, FIONBIO, &mode);
+				if (s == INVALID_SOCKET)
+					return -1;
 
-			if (rc == SOCKET_ERROR) {
-				wpdk_seterrno_wsa(WSAGetLastError());
-				return -1;
+				rc = ioctlsocket(s, FIONBIO, &mode);
+
+				if (rc == SOCKET_ERROR)
+					return wpdk_socket_error();
+
+				return 0;
 			}
 
-			return 0;
+			// HACK - maybe use WSAIoctl
+			// HACK - how to tell if this is a socket
+			break;
 
 		case F_GETLK:
 		case F_SETLK:

@@ -2,15 +2,17 @@
 #include <netdb.h>
 
 
-int _socket_startup();
+int wpdk_socket_startup();
 
 
 int wpdk_getaddrinfo(const char *node, const char *service,
 					 const struct addrinfo *hints, struct addrinfo **res)
 {
-	if (!_socket_startup())
+	// HACK - error code
+	
+	if (!wpdk_socket_startup())
 		return EINVAL;
-		
+
 	return getaddrinfo(node, service, hints, res);
 }
 
