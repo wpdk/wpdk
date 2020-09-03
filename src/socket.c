@@ -116,7 +116,7 @@ int wpdk_socket(int domain, int type, int protocol)
 }
 
 
-int wpdk_closesocket(int socket)
+int wpdk_close_socket(int socket)
 {
 	SOCKET s = wpdk_get_socket(socket);
 
@@ -288,11 +288,93 @@ ssize_t wpdk_recvfrom(int socket, void *buffer, size_t length,
 }
 
 
+WSABUF *wpdk_get_wsabuf(WSABUF *pBuffer, ULONG count, const struct iovec *iov, int iovlen)
+{
+	int i;
+
+	if (iovlen > count)
+		pBuffer = calloc(iovlen, sizeof(struct iovec));
+
+	if (!pBuffer)
+		return 0;
+
+	for (i = 0; i < iovlen; i++) {
+		pBuffer[i].buf = iov[i].iov_base;
+		pBuffer[i].len = iov[i].iov_len;
+	}
+
+	return pBuffer;
+}
+
+
+ssize_t wpdk_socket_readv(int fildes, const struct iovec *iov, int iovcnt)
+{
+	SOCKET s = wpdk_get_socket(fildes);
+	WSABUF *pBuffer, buf[10];
+	DWORD flags = 0;
+	DWORD nbytes;	
+	int rc;
+
+	if (s == INVALID_SOCKET)
+		return -1;
+
+	pBuffer = wpdk_get_wsabuf(buf, sizeof(buf) / sizeof(buf[0]), iov, iovcnt);
+
+	if (!pBuffer) {
+		_set_errno(ENOMEM);
+		return -1;
+	}
+
+	rc = WSARecv(s, pBuffer, iovcnt, &nbytes, &flags, NULL, NULL);	
+
+	if (pBuffer != buf) free(pBuffer);
+
+	if (rc == SOCKET_ERROR)
+		return wpdk_socket_error();
+
+	return nbytes;
+}
+
+
 ssize_t wpdk_recvmsg(int socket, struct msghdr *message, int flags)
 {
-	// HACK - TODO
-	return -1;
-//	return recvmsg(socket, message, flags);
+	SOCKET s = wpdk_get_socket(socket);
+	WSABUF *pBuffer, buf[10];
+	WSAMSG msg = { 0 };
+	DWORD nbytes;
+	int rc;
+
+	if (s == INVALID_SOCKET)
+		return -1;
+
+	pBuffer = wpdk_get_wsabuf(buf, sizeof(buf) / sizeof(buf[0]),
+							  message->msg_iov, message->msg_iovlen);
+	if (!pBuffer) {
+		_set_errno(ENOMEM);
+		return -1;
+	}
+
+	msg.name = message->msg_name;
+	msg.namelen = message->msg_namelen;
+	msg.lpBuffers = pBuffer;
+	msg.dwBufferCount = message->msg_iovlen;
+	msg.dwFlags = message->msg_flags;
+	msg.Control.buf = message->msg_control;
+	msg.Control.len = message->msg_controllen;
+
+	// HACK - use WSARecv for now
+	rc = WSARecv(s, msg.lpBuffers, msg.dwBufferCount, &nbytes, &msg.dwFlags, NULL, NULL);
+//	rc = WSARecvMsg(s, &msg, &nbytes, NULL, NULL);
+
+	if (pBuffer != buf) free(pBuffer);
+
+	if (rc == SOCKET_ERROR)
+		return wpdk_socket_error();
+
+	message->msg_flags = msg.dwFlags;
+	message->msg_control = msg.Control.buf;
+	message->msg_controllen = msg.Control.len;
+	return nbytes;
 }
 
 
@@ -313,11 +395,70 @@ ssize_t wpdk_send(int socket, const void *buffer, size_t length, int flags)
 }
 
 
+ssize_t wpdk_socket_writev(int fildes, const struct iovec *iov, int iovcnt)
+{
+	SOCKET s = wpdk_get_socket(fildes);
+	WSABUF *pBuffer, buf[10];
+	DWORD nbytes;
+	int rc;
+
+	if (s == INVALID_SOCKET)
+		return -1;
+
+	pBuffer = wpdk_get_wsabuf(buf, sizeof(buf) / sizeof(buf[0]), iov, iovcnt);
+
+	if (!pBuffer) {
+		_set_errno(ENOMEM);
+		return -1;
+	}
+
+	rc = WSASend(s, pBuffer, iovcnt, &nbytes, 0, NULL, NULL);	
+
+	if (pBuffer != buf) free(pBuffer);
+
+	if (rc == SOCKET_ERROR)
+		return wpdk_socket_error();
+
+	return nbytes;
+}
+
+
 ssize_t wpdk_sendmsg(int socket, const struct msghdr *message, int flags)
 {
-	// HACK - TODO
-	return -1;
-//	return sendmsg(socket, message, flags);
+	SOCKET s = wpdk_get_socket(socket);
+	WSABUF *pBuffer, buf[10];
+	WSAMSG msg = { 0 };
+	DWORD nbytes;
+	int rc;
+
+	if (s == INVALID_SOCKET)
+		return -1;
+
+	pBuffer = wpdk_get_wsabuf(buf, sizeof(buf) / sizeof(buf[0]),
+							  message->msg_iov, message->msg_iovlen);
+	if (!pBuffer) {
+		_set_errno(ENOMEM);
+		return -1;
+	}
+
+	msg.name = message->msg_name;
+	msg.namelen = message->msg_namelen;
+	msg.lpBuffers = pBuffer;
+	msg.dwBufferCount = message->msg_iovlen;
+	msg.dwFlags = message->msg_flags;
+	msg.Control.buf = message->msg_control;
+	msg.Control.len = message->msg_controllen;
+
+	// HACK - use WSASend instead
+	rc = WSASend(s, msg.lpBuffers, msg.dwBufferCount, &nbytes, msg.dwFlags, NULL, NULL);
+	// rc = WSASendMsg(s, &msg, flags, &nbytes, NULL, NULL);
+
+	if (pBuffer != buf) free(pBuffer);
+
+	if (rc == SOCKET_ERROR)
+		return wpdk_socket_error();
+
+	return nbytes;
 }
 
 

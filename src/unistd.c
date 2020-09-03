@@ -4,7 +4,9 @@
 
 
 int wpdk_is_socket(int fd);
-int wpdk_closesocket(int socket);
+int wpdk_close_socket(int socket);
+int wpdk_is_epoll(int fd);
+int wpdk_close_epoll(int fd);
 
 
 pid_t getpid()
@@ -128,8 +130,11 @@ int access(const char *pathname, int mode)
 
 int close(int fildes)
 {
+	if (wpdk_is_epoll(fildes))
+		return wpdk_close_epoll(fildes);
+
 	if (wpdk_is_socket(fildes))
-		return wpdk_closesocket(fildes);
+		return wpdk_close_socket(fildes);
 
 	return _close(fildes);
 }

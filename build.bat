@@ -1,7 +1,7 @@
 mkdir lib
 
 cd src
-cl -c -I..\include -D_CRT_SECURE_NO_WARNINGS -D_CRT_NONSTDC_NO_WARNINGS -D_CRT_DECLARE_NONSTDC_NAMES=0 -D_WPDK_BUILD_LIB_ *.c
+cl -c -Z7 -I..\include -D_CRT_SECURE_NO_WARNINGS -D_CRT_NONSTDC_NO_WARNINGS -D_CRT_DECLARE_NONSTDC_NAMES=0 -D_WPDK_BUILD_LIB_ *.c
 
 lib /out:empty.lib empty.obj
 copy empty.lib ..\lib\numa.lib

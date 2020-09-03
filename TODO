@@ -16,3 +16,11 @@ Use #define __wrap_ for names to map to wpdk_ (or change wrap macro definition?)
 Watch out for dllimport declarations - they override the static inline definitions and prevent the wrapper being private.
 
 SetThreadDescription - https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-setthreaddescription
+
+Overload fopen to map pathnames
+
+Change header protection definitions
+Fix spaces / tabs
+
+Rename _CRT_BEGIN / _CRT_END
+
