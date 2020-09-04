@@ -24,3 +24,4 @@ Fix spaces / tabs
 
 Rename _CRT_BEGIN / _CRT_END
 
+Need a driver for local files (e.g aio equivalent)

@@ -44,7 +44,6 @@ int fcntl(int fildes, int cmd, ...)
 			}
 
 			// HACK - maybe use WSAIoctl
-			// HACK - how to tell if this is a socket
 			break;
 
 		case F_GETLK:

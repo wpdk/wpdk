@@ -17,25 +17,40 @@ pid_t getpid()
 
 int truncate(const char *path, off_t length)
 {
-	// HACK
+	// HACK - truncate
 	return EINVAL;
 }
 
 
 int ftruncate(int fd, off_t length)
 {
-	// HACK
-	return EINVAL;
+	return (_chsize_s(fd, length) == 0) ? 0 : -1;
 }
 
 
 int usleep(useconds_t useconds)
 {
-	// HACK - check
-	// HACK - it's sleeping way too long - null it out for now
+	static LARGE_INTEGER freq;
+	LARGE_INTEGER now, end;
 
-	// HACK - Unhack for now!!
-	SleepEx((DWORD)(useconds / 1000), TRUE);
+	if (useconds >= 10000) {
+		SleepEx((DWORD)(useconds / 1000), TRUE);
+		return 0;
+	}
+
+	if (freq.QuadPart == 0)
+		QueryPerformanceFrequency(&freq);
+	
+	QueryPerformanceCounter(&now);
+	end.QuadPart = now.QuadPart + (useconds * freq.QuadPart) / 1000000;
+
+	while (now.QuadPart < end.QuadPart) {
+		if (SwitchToThread() == 0)
+			YieldProcessor();
+
+		QueryPerformanceCounter(&now);
+	}
+
 	return 0;
 }
 
