@@ -45,14 +45,14 @@ int sigdelset(sigset_t *set, int signo)
 int sigaction(int sig, const struct sigaction *act, struct sigaction *oact)
 {
     // HACK - not implemented
-    return -1;
+    return 0;
 }
 
 
 int pthread_sigmask(int how, const sigset_t *set, sigset_t *oset)
 {
     // HACK - not implemented
-    return -1;
+    return 0;
 }
 
 
