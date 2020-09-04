@@ -30,3 +30,5 @@ Use SPDK_CONFIG_WPDK for some definitions rather than _WIN32
 Add dllimport/export to header files
 
 Add wpdk_ to all definitions in headers?
+
+Closing one end of AF_UNIX should generate SIGPIPE signal.

@@ -10,9 +10,11 @@
 int wpdk_socket_rc(int rc);
 int wpdk_socket_error();
 void wpdk_socket_seterrno();
+const char *wpdk_get_path(const char *path);
 
 long wpdk_socket_ready;
 SOCKET *wpdk_socket_fds;
+int *wpdk_socket_domains;
 
 static const int maxsockets = 512;
 static const int socketbase = 0x10000;
@@ -23,6 +25,7 @@ int wpdk_socket_startup()
 	WORD wVersionRequested = MAKEWORD(2, 2);
 	WSADATA wsaData;
 	int wsaerr, i;
+	int *domains;
 	SOCKET *fds;
 
 	fds = (SOCKET *)calloc(maxsockets, sizeof(SOCKET));
@@ -32,16 +35,28 @@ int wpdk_socket_startup()
 		return 0;
 	}
 
+	domains = (int *)calloc(maxsockets, sizeof(int));
+
+	if (domains == NULL) {
+		free(fds);
+		_set_errno(ENOMEM);
+		return -1;
+	}
+
 	wsaerr = WSAStartup(wVersionRequested, &wsaData);
 
 	if (wsaerr != 0) {
 		wpdk_socket_seterrno(wsaerr);
+		free(domains);
 		free(fds);
 		return 0;
 	}
 
 	for (i = 0; i < maxsockets; i++)
 		fds[i] = INVALID_SOCKET;
+
+	if (InterlockedCompareExchangePointer(&wpdk_socket_domains, domains, NULL) != NULL)
+		free(domains);
 
 	if (InterlockedCompareExchangePointer(&wpdk_socket_fds, fds, NULL) != NULL)
 		free(fds);
@@ -59,19 +74,22 @@ int wpdk_socket_cleanup()
 	if (WSACleanup() == SOCKET_ERROR)
 		return wpdk_socket_error();
 
+	// HACK - need to free fd and domain lists
 	return 0;
 }
 
 
-int wpdk_allocate_socket(SOCKET s)
+int wpdk_allocate_socket(SOCKET s, int domain)
 {
 	int i;
 	
 	// HACK - how to select exchange size?
 	for (i = 0; i < maxsockets; i++)
 		if (wpdk_socket_fds[i] == INVALID_SOCKET)
-			if (InterlockedCompareExchange64(&wpdk_socket_fds[i], s, INVALID_SOCKET) == INVALID_SOCKET)
+			if (InterlockedCompareExchange64(&wpdk_socket_fds[i], s, INVALID_SOCKET) == INVALID_SOCKET) {
+				wpdk_socket_domains[i] = domain;
 				return socketbase + i;
+			}
 
 	closesocket(s);
 	_set_errno(EMFILE);
@@ -112,7 +130,7 @@ int wpdk_socket(int domain, int type, int protocol)
 	if (s == INVALID_SOCKET)
 		return wpdk_socket_error();
 
-	return wpdk_allocate_socket(s);
+	return wpdk_allocate_socket(s, domain);
 }
 
 
@@ -138,28 +156,48 @@ int wpdk_close_socket(int socket)
 int wpdk_accept(int socket, struct sockaddr *address, socklen_t *address_len)
 {
 	SOCKET s = wpdk_get_socket(socket);
+	int domain;
 
 	if (s == INVALID_SOCKET)
 		return -1;
 	
+	domain = wpdk_socket_domains[socket - socketbase];
+
 	s = accept(s, address, address_len);
 
 	if (s == INVALID_SOCKET)
 		return wpdk_socket_error();
 
-	return wpdk_allocate_socket(s);
+	return wpdk_allocate_socket(s, domain);
 }
 
 
 int wpdk_bind(int socket, const struct sockaddr *address, socklen_t address_len)
 {
+	struct sockaddr_un un, *addr = (struct sockaddr_un *)address;
 	SOCKET s = wpdk_get_socket(socket);
+	socklen_t len = address_len;
+	const char *cp;
 	int rc;
 
 	if (s == INVALID_SOCKET)
 		return -1;
-	
-	rc = bind(s, address, address_len);
+
+	if (address->sa_family == AF_UNIX) {
+		if (address_len > sizeof(un)) {
+			_set_errno(EINVAL);
+			return -1;
+		}
+
+		cp = wpdk_get_path(addr->sun_path);
+		un.sun_family = addr->sun_family;
+		strncpy(un.sun_path, cp, sizeof(un.sun_path));
+
+		addr = &un;
+		len = sizeof(un);
+	}
+
+	rc = bind(s, (struct sockaddr *)addr, len);
 
 	if (rc == SOCKET_ERROR)
 		return wpdk_socket_error();
@@ -487,6 +525,11 @@ int wpdk_setsockopt(int socket, int level, int option_name, const void *option_v
 
 	if (s == INVALID_SOCKET)
 		return -1;
+
+	// Setting SO_REUSEADDR for AF_UNIX causes the bind to fail
+	if (option_name == SO_REUSEADDR)
+		if (wpdk_socket_domains[socket - socketbase] == AF_UNIX)
+			return 0;
 
 	rc = setsockopt(s, level, option_name, (const char *)option_value, option_len);
 

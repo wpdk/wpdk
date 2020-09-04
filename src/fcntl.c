@@ -10,8 +10,18 @@ SOCKET wpdk_get_socket(int fd);
 
 const char *wpdk_get_path(const char *path)
 {
-	const char *cp = strrchr(path, '/');
-	return (!cp) ? path : cp + 1;
+	if (!path) return path;
+
+	if (!strncmp(path, "/tmp/", 5))
+		return path + 5;
+
+	if (!strncmp(path, "/var/tmp/", 9))
+		return path + 9;
+
+	if (strrchr(path, '/') == path)
+		return path + 1;
+
+	return path;
 }
 
 
