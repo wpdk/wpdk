@@ -1,25 +1,25 @@
-#ifndef _UNISTD_H_
-#define	_UNISTD_H_
+#ifndef _WPDK_UNISTD_H_
+#define	_WPDK_UNISTD_H_
 
 #include <sys/platform.h>
 #include <sys/time.h>
 #include <stdio.h>
 #include <io.h>
 
-_CRT_BEGIN_C_HEADER
+_WPDK_BEGIN_C_HEADER
 
-#define F_OK    1
-#define X_OK    2
-#define W_OK    4
-#define R_OK    8
+#define F_OK	1
+#define X_OK	2
+#define W_OK	4
+#define R_OK	8
 
-#define STDIN_FILENO    0
-#define STDOUT_FILENO   1
-#define STDERR_FILENO   2
+#define STDIN_FILENO	0
+#define STDOUT_FILENO	1
+#define STDERR_FILENO	2
 
-#define _SC_NPROCESSORS_CONF    1
-#define _SC_NPROCESSORS_ONLN    2
-#define _SC_PAGESIZE            3
+#define _SC_NPROCESSORS_CONF	1
+#define _SC_NPROCESSORS_ONLN	2
+#define _SC_PAGESIZE			3
 
 int access(const char *path, int amode);
 int close(int fildes);
@@ -44,6 +44,6 @@ int __wrap_unlink(const char *path);
 #define _unlink(path) __wrap_unlink(path)
 #endif
 
-_CRT_END_C_HEADER
+_WPDK_END_C_HEADER
 
-#endif /* !_UNISTD_H_ */
+#endif /* !_WPDK_UNISTD_H_ */

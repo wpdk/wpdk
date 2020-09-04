@@ -32,8 +32,8 @@
  * $FreeBSD$
  */
 
-#ifndef _SYS_QUEUE_H_
-#define	_SYS_QUEUE_H_
+#ifndef _WPDK_SYS_QUEUE_H_
+#define	_WPDK_SYS_QUEUE_H_
 
 #include <sys/cdefs.h>
 
@@ -868,4 +868,4 @@ struct {								\
 		(head2)->tqh_last = &(head2)->tqh_first;		\
 } while (0)
 
-#endif /* !_SYS_QUEUE_H_ */
+#endif /* !_WPDK_SYS_QUEUE_H_ */

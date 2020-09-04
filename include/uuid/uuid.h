@@ -1,9 +1,9 @@
-#ifndef _UUID_UUID_H_
-#define	_UUID_UUID_H_
+#ifndef _WPDK_UUID_UUID_H_
+#define	_WPDK_UUID_UUID_H_
 
 #include <sys/platform.h>
 
-_CRT_BEGIN_C_HEADER
+_WPDK_BEGIN_C_HEADER
 
 typedef unsigned char uuid_t[16];
 
@@ -17,6 +17,6 @@ void uuid_unparse(const uuid_t uu, char *out);
 void uuid_unparse_upper(const uuid_t uu, char *out);
 void uuid_unparse_lower(const uuid_t uu, char *out);
 
-_CRT_END_C_HEADER
+_WPDK_END_C_HEADER
 
-#endif /* _UUID_UUID_H_ */
+#endif /* _WPDK_UUID_UUID_H_ */

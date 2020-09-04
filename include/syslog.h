@@ -1,9 +1,9 @@
-#ifndef _SYS_SYSLOG_H_
-#define _SYS_SYSLOG_H_
+#ifndef _WPDK_SYSLOG_H_
+#define _WPDK_SYSLOG_H_
 
 #include <sys/platform.h>
 
-_CRT_BEGIN_C_HEADER
+_WPDK_BEGIN_C_HEADER
 
 #define	LOG_EMERG	0
 #define	LOG_ALERT	1
@@ -21,6 +21,6 @@ void openlog(const char *ident, int option, int facility);
 void syslog(int priority, const char *format, ...);
 void closelog(void);
 
-_CRT_END_C_HEADER
+_WPDK_END_C_HEADER
 
-#endif /* !_SYS_SYSLOG_H_ */
+#endif /* !_WPDK_SYSLOG_H_ */

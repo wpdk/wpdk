@@ -2,8 +2,8 @@
  * Copyright(c) 2019 Intel Corporation
  */
 
-#ifndef _SCHED_H_
-#define _SCHED_H_
+#ifndef _WPDK_SCHED_H_
+#define _WPDK_SCHED_H_
 
 /**
  * This file is added to support the common code in eal_common_thread.c
@@ -98,4 +98,4 @@ do { \
 }
 #endif
 
-#endif /* _SCHED_H_ */
+#endif /* _WPDK_SCHED_H_ */

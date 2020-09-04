@@ -1,5 +1,5 @@
-#ifndef _SYS_SOCKET_H_
-#define _SYS_SOCKET_H_
+#ifndef _WPDK_SYS_SOCKET_H_
+#define _WPDK_SYS_SOCKET_H_
 
 #include <sys/platform.h>
 #include <sys/_iovec.h>
@@ -17,7 +17,7 @@ int wpdk_undefined_function(void);
 #include <ws2tcpip.h>
 #include <afunix.h>
 
-_CRT_BEGIN_C_HEADER
+_WPDK_BEGIN_C_HEADER
 
 struct msghdr {
 	void *msg_name;
@@ -82,6 +82,6 @@ static inline ssize_t sendmsg(int socket, const struct msghdr *message, int flag
 #define socketpair wpdk_socketpair
 #endif
 
-_CRT_END_C_HEADER
+_WPDK_END_C_HEADER
 
-#endif /* !_SYS_SOCKET_H_ */
+#endif /* !_WPDK_SYS_SOCKET_H_ */

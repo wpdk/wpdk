@@ -1,27 +1,27 @@
-#ifndef _PTHREAD_H_
-#define	_PTHREAD_H_
+#ifndef _WPDK_PTHREAD_H_
+#define	_WPDK_PTHREAD_H_
 
 #include <sys/platform.h>
 #include <sched.h>
 #include <time.h>
 
-_CRT_BEGIN_C_HEADER
+_WPDK_BEGIN_C_HEADER
 
-#define PTHREAD_MUTEX_NORMAL        0
-#define PTHREAD_MUTEX_ERRORCHECK    1
-#define PTHREAD_MUTEX_RECURSIVE     2
-#define PTHREAD_MUTEX_DEFAULT       PTHREAD_MUTEX_NORMAL
+#define PTHREAD_MUTEX_NORMAL		0
+#define PTHREAD_MUTEX_ERRORCHECK	1
+#define PTHREAD_MUTEX_RECURSIVE		2
+#define PTHREAD_MUTEX_DEFAULT		PTHREAD_MUTEX_NORMAL
 
-#define PTHREAD_MUTEX_STALLED       0
-#define PTHREAD_MUTEX_ROBUST        1
+#define PTHREAD_MUTEX_STALLED		0
+#define PTHREAD_MUTEX_ROBUST		1
 
-#define PTHREAD_PROCESS_PRIVATE     0
-#define PTHREAD_PROCESS_SHARED      1
+#define PTHREAD_PROCESS_PRIVATE		0
+#define PTHREAD_PROCESS_SHARED		1
 
 typedef struct pthread_mutexattr_s {
-    int type;
-    int robust;
-    int pshared;
+	int type;
+	int robust;
+	int pshared;
 } pthread_mutexattr_t;
 
 int pthread_mutexattr_destroy(pthread_mutexattr_t *attr);
@@ -75,7 +75,7 @@ int pthread_cond_timedwait(pthread_cond_t *cond, pthread_mutex_t *mutex, const s
 
 
 typedef struct pthread_attr_s {
-    void *x;
+	void *x;
 } pthread_attr_t;
 
 int pthread_attr_init(pthread_attr_t *attr);
@@ -90,11 +90,11 @@ int pthread_detach(pthread_t);
 int pthread_cancel(pthread_t);
 void pthread_exit(void *value_ptr);
 
-#define PTHREAD_CANCEL_DISABLE  0
-#define PTHREAD_CANCEL_ENABLE   1
+#define PTHREAD_CANCEL_DISABLE	0
+#define PTHREAD_CANCEL_ENABLE	1
 
-#define PTHREAD_CANCEL_DEFERRED     0
-#define PTHREAD_CANCEL_ASYNCHRONOUS 1 
+#define PTHREAD_CANCEL_DEFERRED		0
+#define PTHREAD_CANCEL_ASYNCHRONOUS	1 
 
 int pthread_setcancelstate(int state, int *oldstate);
 int pthread_setcanceltype(int type, int *oldtype);
@@ -105,14 +105,14 @@ int __wrap_pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t 
 
 #ifndef _WPDK_BUILD_LIB_
 static inline int pthread_mutexattr_init(pthread_mutexattr_t *attr) {
-    return __wrap_pthread_mutexattr_init(attr);
+	return __wrap_pthread_mutexattr_init(attr);
 }
 
 static inline int pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *mutexattr) {
-    return __wrap_pthread_mutex_init(mutex, mutexattr);
+	return __wrap_pthread_mutex_init(mutex, mutexattr);
 }
 #endif
 
-_CRT_END_C_HEADER
+_WPDK_END_C_HEADER
 
-#endif /* _PTHREAD_H_ */
+#endif /* _WPDK_PTHREAD_H_ */

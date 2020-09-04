@@ -1,6 +1,9 @@
-#ifndef	_SYS_CDEFS_H_
-#define	_SYS_CDEFS_H_
+#ifndef	_WPDK_SYS_CDEFS_H_
+#define	_WPDK_SYS_CDEFS_H_
 
 #include <stddef.h>
 
-#endif /* !_SYS_CDEFS_H_ */
+#define _WPDK_BEGIN_C_HEADER	_CRT_BEGIN_C_HEADER
+#define _WPDK_END_C_HEADER		_CRT_END_C_HEADER
+
+#endif /* !_WPDK_SYS_CDEFS_H_ */

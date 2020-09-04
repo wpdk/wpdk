@@ -19,8 +19,7 @@ SetThreadDescription - https://docs.microsoft.com/en-us/windows/win32/api/proces
 
 Overload fopen to map pathnames
 
-Change header protection definitions
-Fix spaces / tabs
+Fix spaces / tabs in C files
 
 Rename _CRT_BEGIN / _CRT_END
 

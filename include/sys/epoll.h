@@ -1,9 +1,9 @@
-#ifndef _SYS_EPOLL_H_
-#define _SYS_EPOLL_H_
+#ifndef _WPDK_SYS_EPOLL_H_
+#define _WPDK_SYS_EPOLL_H_
 
 #include <sys/platform.h>
 
-_CRT_BEGIN_C_HEADER
+_WPDK_BEGIN_C_HEADER
 
 typedef union epoll_data {
 	void		*ptr;
@@ -27,6 +27,6 @@ int epoll_wait(int epfd, struct epoll_event *events, int maxevents, int timeout)
 #define EPOLLIN			1
 #define EPOLLERR		2
 
-_CRT_END_C_HEADER
+_WPDK_END_C_HEADER
 
-#endif /* !_SYS_EPOLL_H_ */
+#endif /* !_WPDK_SYS_EPOLL_H_ */

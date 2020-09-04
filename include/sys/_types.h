@@ -1,12 +1,12 @@
-#ifndef _SYS__TYPES_H_
-#define _SYS__TYPES_H_
+#ifndef _WPDK_SYS__TYPES_H_
+#define _WPDK_SYS__TYPES_H_
 
 #include <sys/platform.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <sys/types.h>
 
-_CRT_BEGIN_C_HEADER
+_WPDK_BEGIN_C_HEADER
 
 typedef uint32_t clockid_t;
 typedef uint16_t mode_t;
@@ -22,6 +22,6 @@ typedef short nlink_t;
 typedef short uid_t;
 typedef short gid_t;
 
-_CRT_END_C_HEADER
+_WPDK_END_C_HEADER
 
-#endif /* !_SYS__TYPES_H_ */
+#endif /* !_WPDK_SYS__TYPES_H_ */

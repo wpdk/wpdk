@@ -1,10 +1,10 @@
-#ifndef _SYS_SELECT_H_
-#define _SYS_SELECT_H_
+#ifndef _WPDK_SYS_SELECT_H_
+#define _WPDK_SYS_SELECT_H_
 
 #include <sys/platform.h>
 #include <sys/socket.h>
 
-_CRT_BEGIN_C_HEADER
+_WPDK_BEGIN_C_HEADER
 
 int wpdk_select(int nfds, fd_set *readfds, fd_set *writefds,
 		fd_set *exceptfds, struct timeval *timeout);
@@ -13,6 +13,6 @@ int wpdk_select(int nfds, fd_set *readfds, fd_set *writefds,
 #define select wpdk_select
 #endif
 
-_CRT_END_C_HEADER
+_WPDK_END_C_HEADER
 
-#endif /* !_SYS_SELECT_H_ */
+#endif /* !_WPDK_SYS_SELECT_H_ */

@@ -1,15 +1,15 @@
-#ifndef _SYS__IOVEC_H_
-#define _SYS__IOVEC_H_
+#ifndef _WPDK_SYS__IOVEC_H_
+#define _WPDK_SYS__IOVEC_H_
 
 #include <sys/platform.h>
 
-_CRT_BEGIN_C_HEADER
+_WPDK_BEGIN_C_HEADER
 
 struct iovec {
-    void *iov_base;     /* Address */
-    size_t iov_len;     /* Length */
+	void *iov_base;     /* Address */
+	size_t iov_len;     /* Length */
 };
 
-_CRT_END_C_HEADER
+_WPDK_END_C_HEADER
 
-#endif /* !_SYS__IOVEC_H_ */
+#endif /* !_WPDK_SYS__IOVEC_H_ */

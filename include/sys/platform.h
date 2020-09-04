@@ -1,5 +1,5 @@
-#ifndef _SYS_BASEDEFS_H_
-#define	_SYS_BASEDEFS_H_
+#ifndef _WPDK_SYS_PLATFORM_H_
+#define	_WPDK_SYS_PLATFORM_H_
 
 /*
  * Include the smallest set of Windows definitions possible to
@@ -53,7 +53,7 @@
 /*
  * Disable Winsock warnings
  */
-#define _WINSOCK_DEPRECATED_NO_WARNINGS
+//#define _WINSOCK_DEPRECATED_NO_WARNINGS
 
 /*
  * Avoid a collision between the clang headers and the Platform SDK
@@ -68,4 +68,4 @@
 #include <sys/cdefs.h>
 #include <sys/_types.h>
 
-#endif /* !_SYS_BASEDEFS_H_ */
+#endif /* !_WPDK_SYS_PLATFORM_H_ */
