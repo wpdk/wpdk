@@ -3,17 +3,18 @@
 #include <io.h>
 
 
+const char *wpdk_get_path(const char *);
+
+
 int shm_open(const char *name, int oflag, mode_t mode)
 {
-	if (name && *name == '/') name++;
-	return _open(name, oflag, mode);
+	return _open(wpdk_get_path(name), oflag, mode);
 }
 
 
 int shm_unlink(const char *name)
 {
 	// HACK - shm_unlink - check handling with open fds	
-	if (name && *name == '/') name++;
 	return _unlink(name);
 }
 

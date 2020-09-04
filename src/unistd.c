@@ -3,10 +3,13 @@
 #include <unistd.h>
 
 
+#define wpdk_unlink __real_unlink
+
 int wpdk_is_socket(int fd);
 int wpdk_close_socket(int socket);
 int wpdk_is_epoll(int fd);
 int wpdk_close_epoll(int fd);
+const char *wpdk_get_path(const char *);
 
 
 pid_t getpid()
@@ -65,8 +68,8 @@ char *ttyname(int fildes)
 
 int isatty(int fildes)
 {
-	// HACk - implementation
-	return true;
+	// HACK - implementation
+	return false;
 }
 
 
@@ -131,15 +134,15 @@ off_t lseek(int fildes, off_t offset, int whence)
 }
 
 
-int __real_unlink(const char *path)
+int wpdk_unlink(const char *path)
 {
-	return _unlink(path);
+	return _unlink(wpdk_get_path(path));
 }
 
 
 int access(const char *pathname, int mode)
 {
-	return _access(pathname, mode);
+	return _access(wpdk_get_path(pathname), mode);
 }
 
 

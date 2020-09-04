@@ -30,10 +30,12 @@ _WPDK_BEGIN_C_HEADER
 
 #define O_NONBLOCK	0x0004
 
-int fcntl(int fildes, int cmd, ...);
+int wpdk_fcntl(int fildes, int cmd, ...);
+int wpdk_open(const char *pathname, int flags, ...);
 
 #ifndef _WPDK_BUILD_LIB_
-#define open(path,oflag,...)	_open(path,oflag,__VA_ARGS__)
+#define open(path,oflag,...)	wpdk_open(path,oflag,__VA_ARGS__)
+#define fcntl(fildes,cmd,...)	wpdk_fcntl(fildes,cmd,__VA_ARGS__)
 #endif
 
 _WPDK_END_C_HEADER

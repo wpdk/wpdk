@@ -8,7 +8,29 @@ int wpdk_socket_error();
 SOCKET wpdk_get_socket(int fd);
 
 
-int fcntl(int fildes, int cmd, ...)
+const char *wpdk_get_path(const char *path)
+{
+	const char *cp = strrchr(path, '/');
+	return (!cp) ? path : cp + 1;
+}
+
+
+int wpdk_open(const char *pathname, int flags, ...)
+{
+	mode_t mode = 0;
+	va_list ap;
+
+	if (flags & O_CREAT) {
+		va_start(ap, flags);
+		mode = va_arg(ap, mode_t);
+		va_end(ap);
+	}
+
+	return _open(wpdk_get_path(pathname), flags, mode);
+}
+
+
+int wpdk_fcntl(int fildes, int cmd, ...)
 {
 	u_long mode;
 	int rc, arg;

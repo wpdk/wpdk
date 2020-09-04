@@ -8,6 +8,10 @@
 
 _WPDK_BEGIN_C_HEADER
 
+#ifndef _WPDK_BUILD_LIB_
+#define wpdk_unlink __wrap_unlink
+#endif
+
 #define F_OK	1
 #define X_OK	2
 #define W_OK	4
@@ -37,11 +41,11 @@ char *ttyname(int fildes);
 int usleep(useconds_t useconds);
 ssize_t write(int fildes, const void *buf, size_t nbyte);
 
-int __wrap_unlink(const char *path);
+int wpdk_unlink(const char *path);
 
 #ifndef _WPDK_BUILD_LIB_
 #define unlink _unlink
-#define _unlink(path) __wrap_unlink(path)
+#define _unlink(path) wpdk_unlink(path)
 #endif
 
 _WPDK_END_C_HEADER
