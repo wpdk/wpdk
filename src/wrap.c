@@ -1,4 +1,4 @@
-#include <sys/platform.h>
+#include <wpdklib.h>
 #include <sys/stat.h>
 #include <sys/socket.h>
 #include <sys/uio.h>
@@ -17,40 +17,41 @@ int __real_unlink(const char *path);
 
 void *__wrap_calloc(size_t nelem, size_t elsize)
 {
-    return __real_calloc(nelem, elsize);
+	return __real_calloc(nelem, elsize);
 }
 
 
 ssize_t __wrap_recvmsg(int socket, struct msghdr *message, int flags)
 {
-    return __real_recvmsg(socket, message, flags);
+	return __real_recvmsg(socket, message, flags);
 }
 
 
 ssize_t __wrap_sendmsg(int socket, const struct msghdr *message, int flags)
 {
-    return __real_sendmsg(socket, message, flags);
+	return __real_sendmsg(socket, message, flags);
 }
 
 
 ssize_t __wrap_writev(int fildes, const struct iovec *iov, int iovcnt)
 {
-    return __real_writev(fildes, iov, iovcnt);
+	return __real_writev(fildes, iov, iovcnt);
 }
 
 
 int __wrap_pthread_mutexattr_init(pthread_mutexattr_t *attr)
 {
-    return __real_pthread_mutexattr_init(attr);
+	return __real_pthread_mutexattr_init(attr);
 }
 
 
 int __wrap_pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *mutexattr)
 {
-    return __real_pthread_mutex_init(mutex, mutexattr);
+	return __real_pthread_mutex_init(mutex, mutexattr);
 }
 
 
-int __wrap_unlink(const char *path) {
-    return __real_unlink(path);
+int __wrap_unlink(const char *path)
+{
+	return __real_unlink(path);
 }

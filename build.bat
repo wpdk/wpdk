@@ -1,7 +1,7 @@
 mkdir lib
 
 cd src
-cl -c -Z7 -I..\include -D_WPDK_BUILD_LIB_ *.c
+cl -c -Z7 -I..\include *.c
 
 lib /out:empty.lib empty.obj
 copy empty.lib ..\lib\numa.lib

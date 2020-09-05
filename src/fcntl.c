@@ -1,11 +1,6 @@
-#include <sys/platform.h>
+#include <wpdklib.h>
 #include <sys/socket.h>
 #include <fcntl.h>
-
-
-int wpdk_is_socket(int fd);
-int wpdk_socket_error();
-SOCKET wpdk_get_socket(int fd);
 
 
 const char *wpdk_get_path(const char *path)

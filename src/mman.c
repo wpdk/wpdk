@@ -1,9 +1,6 @@
-#include <sys/platform.h>
+#include <wpdklib.h>
 #include <sys/mman.h>
 #include <io.h>
-
-
-const char *wpdk_get_path(const char *);
 
 
 int shm_open(const char *name, int oflag, mode_t mode)

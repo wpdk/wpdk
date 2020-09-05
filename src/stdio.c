@@ -1,9 +1,5 @@
-#include <sys/platform.h>
+#include <wpdklib.h>
 #include <stdio.h>
-
-
-const char *wpdk_get_path(const char *);
-
 
 
 ssize_t getline(char **lineptr, size_t *n, FILE *stream)

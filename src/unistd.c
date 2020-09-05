@@ -1,15 +1,9 @@
-#include <sys/platform.h>
+#include <wpdklib.h>
 #include <stdbool.h>
 #include <unistd.h>
 
 
 #define wpdk_unlink __real_unlink
-
-int wpdk_is_socket(int fd);
-int wpdk_close_socket(int socket);
-int wpdk_is_epoll(int fd);
-int wpdk_close_epoll(int fd);
-const char *wpdk_get_path(const char *);
 
 
 pid_t getpid()

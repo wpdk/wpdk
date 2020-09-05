@@ -38,3 +38,5 @@ internal/wpdk.h include file for common definitions and define_WPDK_BUILD_LIB_
 Common array for fd state and flags in fd.c
 
 Map paths to real temp dir
+
+Document - trap all posix calls into the library so that one heap / list of files etc.

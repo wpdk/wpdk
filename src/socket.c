@@ -1,16 +1,10 @@
-#include <sys/platform.h>
+#include <wpdklib.h>
 #include <sys/socket.h>
 #include <stdlib.h>
 
 
 #define wpdk_sendmsg __real_sendmsg
 #define wpdk_recvmsg __real_recvmsg
-
-
-int wpdk_socket_rc(int rc);
-int wpdk_socket_error();
-void wpdk_socket_seterrno();
-const char *wpdk_get_path(const char *path);
 
 long wpdk_socket_ready;
 SOCKET *wpdk_socket_fds;

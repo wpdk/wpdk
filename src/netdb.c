@@ -1,8 +1,5 @@
-#include <sys/platform.h>
+#include <wpdklib.h>
 #include <netdb.h>
-
-
-int wpdk_socket_startup();
 
 
 int wpdk_getaddrinfo(const char *node, const char *service,

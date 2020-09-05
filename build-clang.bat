@@ -1,7 +1,7 @@
 mkdir lib
 
 cd src
-clang -c -I..\include -D_WPDK_BUILD_LIB_ -g *.c
+clang -c -I..\include -g *.c
 
 lib /out:empty.lib empty.o
 copy empty.lib ..\lib\numa.lib

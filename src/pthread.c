@@ -1,4 +1,4 @@
-#include <sys/platform.h>
+#include <wpdklib.h>
 #include <pthread.h>
 
 

@@ -1,13 +1,9 @@
-#include <sys/platform.h>
+#include <wpdklib.h>
 #include <sys/socket.h>
 #include <sys/epoll.h>
 #include <sys/time.h>
 #include <stdlib.h>
 #include <poll.h>
-
-
-SOCKET wpdk_get_socket(int fd);
-int wpdk_socket_error();
 
 
 struct epoll {
