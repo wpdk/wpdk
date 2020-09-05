@@ -5,7 +5,8 @@
 
 int shm_open(const char *name, int oflag, mode_t mode)
 {
-	return _open(wpdk_get_path(name), oflag, mode);
+	char buf[MAX_PATH];
+	return _open(wpdk_get_path(name, buf, sizeof(buf)), oflag, mode);
 }
 
 

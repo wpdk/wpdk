@@ -11,5 +11,6 @@ ssize_t getline(char **lineptr, size_t *n, FILE *stream)
 
 FILE *wpdk_fopen(const char *filename, const char *mode)
 {
-	return fopen(wpdk_get_path(filename), mode);
+	char buf[MAX_PATH];
+	return fopen(wpdk_get_path(filename, buf, sizeof(buf)), mode);
 }

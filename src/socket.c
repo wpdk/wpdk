@@ -171,6 +171,7 @@ int wpdk_bind(int socket, const struct sockaddr *address, socklen_t address_len)
 	struct sockaddr_un un, *addr = (struct sockaddr_un *)address;
 	SOCKET s = wpdk_get_socket(socket);
 	socklen_t len = address_len;
+	char buf[MAX_PATH];
 	const char *cp;
 	int rc;
 
@@ -183,7 +184,8 @@ int wpdk_bind(int socket, const struct sockaddr *address, socklen_t address_len)
 			return -1;
 		}
 
-		cp = wpdk_get_path(addr->sun_path);
+		// HACK - wpdk_bind - stupid double copying going on here
+		cp = wpdk_get_path(addr->sun_path, buf, sizeof(buf));
 		un.sun_family = addr->sun_family;
 		strncpy(un.sun_path, cp, sizeof(un.sun_path));
 

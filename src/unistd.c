@@ -130,13 +130,15 @@ off_t lseek(int fildes, off_t offset, int whence)
 
 int wpdk_unlink(const char *path)
 {
-	return _unlink(wpdk_get_path(path));
+	char buf[MAX_PATH];
+	return _unlink(wpdk_get_path(path, buf, sizeof(buf)));
 }
 
 
 int access(const char *pathname, int mode)
 {
-	return _access(wpdk_get_path(pathname), mode);
+	char buf[MAX_PATH];
+	return _access(wpdk_get_path(pathname, buf, sizeof(buf)), mode);
 }
 
 

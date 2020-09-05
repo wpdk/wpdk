@@ -2,19 +2,27 @@
 #include <sys/socket.h>
 #include <fcntl.h>
 
+static char *msys = "c:\\tools\\msys64";
 
-const char *wpdk_get_path(const char *path)
+
+const char *wpdk_get_path(const char *path, char *buffer, size_t len)
 {
 	if (!path) return path;
 
-	if (!strncmp(path, "/tmp/", 5))
-		return path + 5;
+	// HACK - wpdk_get_path fix pathnames and handle length
 
-	if (!strncmp(path, "/var/tmp/", 9))
-		return path + 9;
+	if (!strncmp(path, "/tmp/", 5) || !strncmp(path, "/var/tmp/", 9)) {
+		strcpy(buffer, msys);
+		strcat(buffer, path);
+		return buffer;
+	}
 
-	if (strrchr(path, '/') == path)
-		return path + 1;
+	if (strrchr(path, '/') == path)	{
+		strcpy(buffer, msys);
+		strcat(buffer, "/tmp");
+		strcat(buffer, path);
+		return buffer;
+	}
 
 	return path;
 }
@@ -22,6 +30,7 @@ const char *wpdk_get_path(const char *path)
 
 int wpdk_open(const char *pathname, int flags, ...)
 {
+	char buf[MAX_PATH];
 	mode_t mode = 0;
 	va_list ap;
 
@@ -31,7 +40,7 @@ int wpdk_open(const char *pathname, int flags, ...)
 		va_end(ap);
 	}
 
-	return _open(wpdk_get_path(pathname), flags, mode);
+	return _open(wpdk_get_path(pathname, buf, sizeof(buf)), flags, mode);
 }
 
 
