@@ -81,7 +81,7 @@ typedef struct pthread_attr_s {
 int pthread_attr_init(pthread_attr_t *attr);
 int pthread_attr_destroy(pthread_attr_t *attr);
 
-typedef DWORD pthread_t;
+typedef HANDLE pthread_t;
 
 pthread_t pthread_self(void);
 int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_routine)(void*), void *arg);

@@ -32,3 +32,9 @@ Add dllimport/export to header files
 Add wpdk_ to all definitions in headers?
 
 Closing one end of AF_UNIX should generate SIGPIPE signal.
+
+internal/wpdk.h include file for common definitions and define_WPDK_BUILD_LIB_
+
+Common array for fd state and flags in fd.c
+
+Map paths to real temp dir
