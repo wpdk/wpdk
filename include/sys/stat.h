@@ -55,8 +55,9 @@ struct stat {
 int mknod(const char *path, mode_t mode, dev_t dev);
 int stat(const char *path, struct stat *buf);
 int fstat(int fildes, struct stat *buf);
+int wpdk_chmod(const char *filename, int pmode);
 
-#define chmod(path,mode)	_chmod(path,mode)
+#define chmod(path,mode)	wpdk_chmod(path,mode)
 
 _WPDK_END_C_HEADER
 

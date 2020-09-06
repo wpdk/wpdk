@@ -549,6 +549,9 @@ int wpdk_setsockopt(int socket, int level, int option_name, const void *option_v
 		if (wpdk_socket_domains[socket - socketbase] == AF_UNIX)
 			return 0;
 
+	if (option_name == SO_RCVLOWAT)
+		return 0;
+
 	rc = setsockopt(s, level, option_name, (const char *)option_value, option_len);
 
 	if (rc == SOCKET_ERROR)

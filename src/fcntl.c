@@ -87,6 +87,5 @@ int wpdk_fcntl(int fildes, int cmd, ...)
 			break;
 	}
 
-	// HACK - fcntl is used on sockets to set nonblock
 	return -1;
 }

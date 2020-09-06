@@ -35,12 +35,13 @@
 #else /* NEED_USUAL_GETOPT */
 
 /* avoid name collision */
-#define optarg usual_optarg
-#define opterr usual_opterr
-#define optind usual_optind
-#define optopt usual_optopt
-#define getopt(a, b, c) usual_getopt(a, b, c)
-#define getopt_long(a, b, c, d, e) usual_getopt_long(a, b, c, d, e)
+#define optarg _usual_optarg
+#define opterr _usual_opterr
+#define optind _usual_optind
+#define optopt _usual_optopt
+#define getopt(a, b, c) _usual_getopt(a, b, c)
+#define getopt_long(a, b, c, d, e) _usual_getopt_long(a, b, c, d, e)
+#define getopt_long_only(a, b, c, d, e) _usual_getopt_long_only(a, b, c, d, e)
 
 
 /** argument to current option, or NULL if it has none */
