@@ -10,7 +10,7 @@ int poll(struct pollfd fds[], nfds_t nfds, int timeout)
 	SOCKET socket;
 	int i, n, rc;
 
-	if (!fds) {
+	if (!fds || nfds >= FD_SETSIZE) {
 		_set_errno(EINVAL);
 		return -1;
 	}
@@ -22,7 +22,7 @@ int poll(struct pollfd fds[], nfds_t nfds, int timeout)
 	FD_ZERO(&writefds);
 	FD_ZERO(&exceptfds);
 
-	for (i = 0; i < nfds; i++) {
+	for (i = 0; i < nfds && i < FD_SETSIZE; i++) {
 		fds[i].revents = 0;
 		if (fds[i].fd < 0) continue;
 
@@ -49,12 +49,12 @@ int poll(struct pollfd fds[], nfds_t nfds, int timeout)
 		}
 	}
 
-	rc = (worktodo) ? select(nfds, &readfds, &writefds, &exceptfds, &delay) : 0;
+	rc = (worktodo) ? select(nfds, &readfds, &writefds, &exceptfds, (timeout != -1) ? &delay : NULL) : 0;
 
 	if (rc == SOCKET_ERROR)
 		return wpdk_socket_error();
 
-	for (n = i = 0; i < nfds; i++) {
+	for (n = i = 0; i < nfds && i < FD_SETSIZE; i++) {
 		if (fds[i].fd < 0) continue;
 
 		socket = wpdk_get_socket(fds[i].fd);
