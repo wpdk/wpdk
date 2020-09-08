@@ -611,7 +611,7 @@ int wpdk_socket_error ()
 
 
 // HACK - more extensive list
-void wpdk_socket_seterrno (int wsaerr)
+int wpdk_socket_seterrno (int wsaerr)
 {
 	int error = EINVAL;
 
@@ -718,4 +718,5 @@ void wpdk_socket_seterrno (int wsaerr)
 	}
 
 	_set_errno(error);
+	return error;
 }

@@ -152,3 +152,10 @@ int close(int fildes)
 
 	return _close(fildes);
 }
+
+
+int fsync(int fildes)
+{
+	// HACK - not implemented
+	return 0;
+}

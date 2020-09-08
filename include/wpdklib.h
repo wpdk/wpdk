@@ -12,7 +12,9 @@ int wpdk_is_socket(int fd);
 int wpdk_is_epoll(int fd);
 
 int wpdk_socket_error();
-void wpdk_socket_seterrno();
+int wpdk_socket_seterrno();
+int wpdk_windows_error();
+int wpdk_windows_seterrno();
 int wpdk_socket_rc(int rc);
 SOCKET wpdk_get_socket(int fd);
 

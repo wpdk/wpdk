@@ -29,6 +29,7 @@ _WPDK_BEGIN_C_HEADER
 #define LOCK_UN		8
 
 #define O_NONBLOCK	0x0004
+#define O_DIRECT	0x4000
 
 int wpdk_fcntl(int fildes, int cmd, ...);
 int wpdk_open(const char *pathname, int flags, ...);

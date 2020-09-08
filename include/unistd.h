@@ -29,6 +29,7 @@ int access(const char *path, int amode);
 int close(int fildes);
 int daemon(int nochdir, int noclose);
 pid_t fork(void);
+int fsync(int fildes);
 int ftruncate(int fd, off_t length);
 pid_t getpid(void);
 int isatty(int fildes);
