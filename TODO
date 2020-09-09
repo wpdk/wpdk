@@ -40,3 +40,5 @@ Common array for fd state and flags in fd.c
 Map paths to real temp dir
 
 Document - trap all posix calls into the library so that one heap / list of files etc.
+
+Check static for all file local functions.

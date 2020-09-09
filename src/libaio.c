@@ -1,186 +1,402 @@
 #include <wpdklib.h>
 #include <stdlib.h>
+#include <limits.h>
 #include <unistd.h>
 #include <libaio.h>
 
 /*
  *  There seems to be a lack of definitive documentation about libaio.
- *  The implementation has been based on details found at:
+ *  This implementation has been based on details found at:
  * 
  *  https://github.com/littledan/linux-aio
- *  https://blog.cloudflare.com/io_submit-the-epoll-alternative-youve-never-heard-about/
  *  https://www.fsl.cs.sunysb.edu/~vass/linux-aio.txt
+ *  https://blog.cloudflare.com/io_submit-the-epoll-alternative-youve-never-heard-about/
  */
+
+
+struct io_header;
+
+struct io_task {
+	union {
+		OVERLAPPED			io;
+		struct io_iov {
+			long	active;
+			long	iovcnt;
+		} iov;
+	};
+	union {
+		struct iocb			*iocb;
+		void				*type;
+	};
+	union {
+		struct io_header	*hdr;
+		struct io_task		*task;
+	};
+	union {
+		void				*data;
+		long long			result;
+	};
+};
+
+struct io_header {
+	struct io_context	context;
+	struct io_event		*events;
+	long				iocount;
+	uint32_t			next;
+};
 
 
 int io_setup(int maxevents, io_context_t *ctxp)
 {
-	io_context_t ctx_id;
+	struct io_header *hdr;
 
 	if (!ctxp || *ctxp || maxevents < 1) {
 		_set_errno(EINVAL);
-		return -1;
+		return -EINVAL;
 	}
 
-	size_t len = sizeof(io_context_t) + sizeof(struct io_event) * maxevents;
-	ctx_id = (io_context_t)malloc(len);
+	size_t len = sizeof(struct io_header) + sizeof(struct io_event) * maxevents;
+	hdr = (struct io_header *)malloc(len);
 
-	if (!ctx_id) {
+	if (!hdr) {
 		_set_errno(ENOMEM);
-		return -1;
+		return -ENOMEM;
 	}
 
-	memset(ctx_id, 0, len);
-	ctx_id->size = maxevents;
-	ctx_id->header_length = sizeof(io_context_t);
+	memset(hdr, 0, len);
+	hdr->events = (struct io_event *)(hdr + 1);
+	hdr->context.size = maxevents;
+	hdr->context.header_length = (uint32_t)((char *)hdr->events - (char *)&hdr->context);
 
-	*ctxp = ctx_id;
+	*ctxp = &hdr->context;
 	return 0;
 }
 
 
 int io_destroy(io_context_t ctx_id)
 {
+	struct io_header *hdr = (struct io_header *)ctx_id;
+
 	// HACK - io_destroy - cancel / wait for all operations
+	// HACK - wait for iocount to drop to zero
 
 	if (!ctx_id) {
 		_set_errno(EINVAL);
-		return -1;
+		return -EINVAL;
 	}
 
-	free(ctx_id);
+	free(hdr);
 	return 0;
 }
 
 
-int wpdk_aio_reserve(io_context_t ctx_id)
+static int wpdk_aio_increment_iocount (struct io_header *hdr)
 {
-	if ((ctx_id->tail + 1) % ctx_id->size == ctx_id->head)
-		return 0;
-	
-	// HACK - needs to reserve in some way?
-//	InterlockedIncrement(&ctx_id->iocount);
+	long count;
+
+	do {
+		count = hdr->iocount;
+		if (count >= hdr->context.size) {
+			_set_errno(EAGAIN);
+			return 0;
+		}
+	} while (InterlockedCompareExchange(&hdr->iocount, count + 1, count) != count);
+
 	return 1;
 }
 
 
-void wpdk_aio_release(io_context_t ctx_id)
+static void wpdk_aio_decrement_iocount (struct io_header *hdr)
 {
-	// HACK - no need to release until reserve done
-	// InterlockedDecrement(&ctx_id->iocount);
+	InterlockedDecrement(&hdr->iocount);
 }
 
 
-static void wpdk_aio_complete(io_context_t ctx_id, void *data, struct iocb *obj, long long res)
+static struct io_task *wpdk_aio_allocate(io_context_t ctx_id, struct iocb *iocb, int iovcnt)
 {
-	struct io_event *events = (struct io_event *)(ctx_id + 1);
-	struct io_event *next = &events[ctx_id->tail];
+	struct io_header *hdr = (struct io_header *)ctx_id;
+	struct io_task *task;
+	int i;
 
-	// HACK - need to serialise ?
-	next->data = data;
-	next->obj = obj;
+	task = (struct io_task *)calloc((iovcnt > 1) ? iovcnt + 1 : 1,
+				sizeof(struct io_task));
+
+	if (!task || !wpdk_aio_increment_iocount(hdr)) {
+		free(task);
+		_set_errno(EAGAIN);
+		return NULL;
+	}
+
+	task->hdr = hdr;
+	task->data = iocb->data;
+	task->iocb = iocb;
+
+	if (iovcnt > 1) {
+		task->iov.active = iovcnt + 1;
+		task->iov.iovcnt = iovcnt;
+
+		for (i = 1; i <= iovcnt; i++) {
+			task[i].task = task;
+			task[i].type = &task[i].iov;
+		}
+	}
+
+	return task;
+}
+
+
+static void wpdk_aio_free(struct io_task *task)
+{
+	if (task) {
+		wpdk_aio_decrement_iocount(task->hdr);
+		free(task);
+	}
+}
+
+
+static void wpdk_aio_task_done (struct io_task *task, long long res)
+{
+	struct io_header *hdr;
+	struct io_event *next;
+
+	// HACK - need locking and use barrier before updating tail
+	hdr = task->hdr;
+	next = &hdr->events[hdr->context.tail];
+	next->data = task->data;
+	next->obj = task->iocb;
 	next->res = res;
 	next->res2 = 0;
 
-	ctx_id->tail = (ctx_id->tail + 1) % ctx_id->size;
+	hdr->context.tail = (hdr->context.tail + 1) % hdr->context.size;
+	wpdk_aio_free(task);
+}
+
+
+static long wpdk_aio_iov_done (struct io_task *task, long count)
+{
+	long long result = 0;
+	int i;
+
+	if (InterlockedAdd(&task->iov.active, -count) == 0) {
+		for (i = 1; result >= 0 && i <= task->iov.iovcnt; i++) {
+			if (task[i].result < 0) result = task[i].result;
+			else result += task[i].result;
+
+			/*
+			 * Windows doesn't support scatter/gather I/O with arbitrary
+			 * alignment, so readv/writev are implemented with multiple I/Os.
+			 * If one of the transfers was shorter than requested, stop
+			 * calculating the length and disregard the subsequent I/Os.
+			 */
+			if (task[i].type == &task[i].result) break;
+		}
+
+		wpdk_aio_task_done(task, result);
+		return 0;
+	}
+
+	return task->iov.active;
+}
+
+
+static void wpdk_aio_done (struct io_task *io, long long res)
+{
+	if (io->type == &io->iov) {
+		// Record that the transfer was shorter than requested
+		if (res != io->result)
+			io->type = &io->result;
+
+		io->result = res;
+		wpdk_aio_iov_done(io->task, 1);
+		return;
+	}
+
+	wpdk_aio_task_done(io, res);
+}
+
+
+static int wpdk_aio_iov_abort (struct io_task *io)
+{
+	int rc = wpdk_windows_seterrno(GetLastError());
+	struct io_task *task = io->task;
+	int count, i = io - task;
+
+	io->result = (-rc);
+	count = wpdk_aio_iov_done(task, task->iov.iovcnt - i + 1);
+
+	if (count == 1) {
+		wpdk_aio_free(task);
+		return (_set_errno(rc), -rc);
+	}
+
+	wpdk_aio_iov_done(task, 1);
+	return EINTR;
+}
+
+
+static int wpdk_aio_abort (struct io_task *task)
+{
+	int rc = wpdk_windows_seterrno(GetLastError());
+
+	wpdk_aio_free(task);
+	return (_set_errno(rc), -rc);
 }
 
 
 static int wpdk_aio_read (HANDLE h, io_context_t ctx_id, struct iocb *iocb, void *buf, size_t len)
 {
+	struct io_task *task = wpdk_aio_allocate(ctx_id, iocb, 1);
 	LARGE_INTEGER offset;
-	OVERLAPPED io = {0};	
-	DWORD nbytes;
+	DWORD nbytes = 0;
+
+	if (!task) return -EAGAIN;
 
 	offset.QuadPart = iocb->aio_offset;
-	io.Offset = offset.LowPart;
-	io.OffsetHigh = offset.HighPart;
-	
-	if (ReadFile(h, buf, len, &nbytes, &io) == FALSE)
-		return -(wpdk_windows_seterrno(GetLastError()));
+	task->io.Offset = offset.LowPart;
+	task->io.OffsetHigh = offset.HighPart;
 
-	wpdk_aio_complete(ctx_id, iocb->data, iocb, nbytes);
+	if (!len || ReadFile(h, buf, len, &nbytes, &task->io) == TRUE)
+		wpdk_aio_done(task, nbytes);
+
+	else if (GetLastError() != ERROR_IO_PENDING)
+		return wpdk_aio_abort(task);
+
 	return 0;
 }
 
 
 static int wpdk_aio_write (HANDLE h, io_context_t ctx_id, struct iocb *iocb, void *buf, size_t len)
 {
+	struct io_task *task = wpdk_aio_allocate(ctx_id, iocb, 1);
 	LARGE_INTEGER offset;
-	OVERLAPPED io = {0};
-	DWORD nbytes;
+	DWORD nbytes = 0;
+
+	if (!task) return -EAGAIN;
 
 	offset.QuadPart = iocb->aio_offset;
-	io.Offset = offset.LowPart;
-	io.OffsetHigh = offset.HighPart;
-	
-	if (WriteFile(h, buf, len, &nbytes, &io) == FALSE)
-		return -(wpdk_windows_seterrno(GetLastError()));
+	task->io.Offset = offset.LowPart;
+	task->io.OffsetHigh = offset.HighPart;
+		
+	if (!len || WriteFile(h, buf, len, &nbytes, &task->io) == TRUE)
+		wpdk_aio_done(task, nbytes);
 
-	wpdk_aio_complete(ctx_id, iocb->data, iocb, nbytes);
+	else if (GetLastError() != ERROR_IO_PENDING)
+		return wpdk_aio_abort(task);
+
 	return 0;
 }
 
 
 static int wpdk_aio_readv (HANDLE h, io_context_t ctx_id, struct iocb *iocb, struct iovec *iov, int iovcnt)
 {
+	struct io_task *task = wpdk_aio_allocate(ctx_id, iocb, iovcnt);
 	LARGE_INTEGER offset;
-	OVERLAPPED io = {0};	
 	DWORD nbytes;
 	int i;
 
-	if (iovcnt == 1)
-		return wpdk_aio_read(h, ctx_id, iocb, iov->iov_base, iov->iov_len);
+	if (!task) return -EAGAIN;
 
 	offset.QuadPart = iocb->aio_offset;
 
 	for (i = 0; i < iovcnt; i++) {
-		io.Offset = offset.LowPart;
-		io.OffsetHigh = offset.HighPart;
+		task[i+1].io.Offset = offset.LowPart;
+		task[i+1].io.OffsetHigh = offset.HighPart;
+		task[i+1].result = iov[i].iov_len;
+		nbytes = 0;
 
-		if (ReadFile(h, iov[i].iov_base, (DWORD)iov[i].iov_len, &nbytes, &io) == FALSE)
-			return -(wpdk_windows_seterrno(GetLastError()));
+		if (!iov[i].iov_len || ReadFile(h, iov[i].iov_base,
+					(DWORD)iov[i].iov_len, &nbytes, &task[i+1].io) == TRUE) {
+			wpdk_aio_done(&task[i+1], nbytes);
 
-		offset.QuadPart += nbytes;
-		if (nbytes != iov[i].iov_len) break;
+			/*
+			 * If the transfer was shorter than requested,
+			 * don't start any more I/Os.
+			 */
+			if (nbytes != iov[i].iov_len) {
+				wpdk_aio_iov_done(task, iovcnt - i);
+				return 0;
+			}
+		}
+
+		else if (GetLastError() != ERROR_IO_PENDING)
+			return wpdk_aio_iov_abort(&task[i+1]);
+
+		offset.QuadPart += iov[i].iov_len;
 	}
 
-	wpdk_aio_complete(ctx_id, iocb->data, iocb, offset.QuadPart - iocb->aio_offset);
+	wpdk_aio_iov_done(task, 1);
 	return 0;
 }
 
 
 static int wpdk_aio_writev (HANDLE h, io_context_t ctx_id, struct iocb *iocb, struct iovec *iov, int iovcnt)
 {
+	struct io_task *task = wpdk_aio_allocate(ctx_id, iocb, iovcnt);
 	LARGE_INTEGER offset;
-	OVERLAPPED io = {0};	
 	DWORD nbytes;
 	int i;
 
-	if (iovcnt == 1)
-		return wpdk_aio_write(h, ctx_id, iocb, iov->iov_base, iov->iov_len);
-	
+	if (!task) return -EAGAIN;
+
 	offset.QuadPart = iocb->aio_offset;
 
 	for (i = 0; i < iovcnt; i++) {
-		io.Offset = offset.LowPart;
-		io.OffsetHigh = offset.HighPart;
+		task[i+1].io.Offset = offset.LowPart;
+		task[i+1].io.OffsetHigh = offset.HighPart;
+		task[i+1].result = iov[i].iov_len;
+		nbytes = 0;	
 
-		if (WriteFile(h, iov[i].iov_base, (DWORD)iov[i].iov_len, &nbytes, &io) == FALSE)
-			return -(wpdk_windows_seterrno(GetLastError()));
+		if (!iov[i].iov_len || WriteFile(h, iov[i].iov_base,
+					(DWORD)iov[i].iov_len, &nbytes, &task[i+1].io) == TRUE) {
+			wpdk_aio_done(&task[i+1], nbytes);
 
-		offset.QuadPart += nbytes;
-		if (nbytes != iov[i].iov_len) break;
+			/*
+			 * If the transfer was shorter than requested,
+			 * don't start any more I/Os.
+			 */
+			if (nbytes != iov[i].iov_len) {
+				wpdk_aio_iov_done(task, iovcnt - i);
+				return 0;
+			}
+		}
+
+		else if (GetLastError() != ERROR_IO_PENDING)
+			return wpdk_aio_iov_abort(&task[i+1]);
+
+		offset.QuadPart += iov[i].iov_len;
 	}
 
-	wpdk_aio_complete(ctx_id, iocb->data, iocb, offset.QuadPart - iocb->aio_offset);
+	wpdk_aio_iov_done(task, 1);
 	return 0;
+}
+
+
+static int wpdk_aio_validate_iovec (struct iovec *iov, int iovcnt)
+{
+	ssize_t length = 0;
+	int i;
+
+	if (iovcnt < 1) {
+		_set_errno(EINVAL);
+		return 0;
+	}
+
+	for (i = 0; i < iovcnt; i++) {
+		if (iov[i].iov_len > SSIZE_MAX - length) {
+			_set_errno(EINVAL);
+			return 0;
+		}
+		length += iov[i].iov_len;
+	}
+
+	return 1;
 }
 
 
 // HACK - io_submit is synchronous at the moment
 int io_submit(io_context_t ctx_id, long nr, struct iocb *ios[])
 {
+	struct iovec *iov;
 	struct iocb *iocb;
 	HANDLE h;
 	int rc;
@@ -193,16 +409,17 @@ int io_submit(io_context_t ctx_id, long nr, struct iocb *ios[])
 
 	for (i = 0; i < nr; i++) {
 		iocb = ios[i];
+
+		if (!iocb) {
+			_set_errno(EINVAL);
+			return (i) ? i : -EINVAL;
+		}
+
 		h = (HANDLE)_get_osfhandle(iocb->aio_fildes);
 
 		if (h == INVALID_HANDLE_VALUE) {
 			_set_errno(EINVAL);
 			return (i) ? i : -EINVAL;
-		}
-
-		if (!wpdk_aio_reserve(ctx_id)) {
-			_set_errno(EAGAIN);
-			return (i) ? i : -EAGAIN;
 		}
 
 		switch (iocb->aio_lio_opcode) {
@@ -215,11 +432,67 @@ int io_submit(io_context_t ctx_id, long nr, struct iocb *ios[])
 				break;
 
 			case IO_CMD_PREADV:
-				rc = wpdk_aio_readv(h, ctx_id, iocb, (struct iovec *)iocb->aio_buf, (int)iocb->aio_nbytes);
+				iov = (struct iovec *)iocb->aio_buf;
+
+				if (iocb->aio_nbytes == 1) {
+					// HACK - test out the iovec logic
+					struct iocb io = *iocb;
+					struct iocb *ios = &io;
+					struct iovec v[4];
+
+					v[0].iov_base = iov->iov_base;
+					v[0].iov_len = iov->iov_len / 4;
+					v[1].iov_base = (char *)v[0].iov_base + v[0].iov_len;
+					v[1].iov_len = iov->iov_len / 4;
+					v[2].iov_base = (char *)v[1].iov_base + v[1].iov_len;
+					v[2].iov_len = iov->iov_len / 4;
+					v[3].iov_base = (char *)v[2].iov_base + v[2].iov_len;
+					v[3].iov_len = iov->iov_len - (iov->iov_len / 4) * 3;
+
+					io.aio_buf = v;
+					io.aio_nbytes = 4;
+					rc = io_submit(ctx_id, 1, &ios);
+					break;
+				}
+
+				if (!wpdk_aio_validate_iovec(iov, iocb->aio_nbytes))
+					rc = -EINVAL;
+				else if (iocb->aio_nbytes == 1)
+					rc = wpdk_aio_read(h, ctx_id, iocb, iov->iov_base, iov->iov_len);
+				else
+					rc = wpdk_aio_readv(h, ctx_id, iocb, iov, (int)iocb->aio_nbytes);
 				break;
 
 			case IO_CMD_PWRITEV:
-				rc = wpdk_aio_writev(h, ctx_id, iocb, (struct iovec *)iocb->aio_buf, (int)iocb->aio_nbytes);
+				iov = (struct iovec *)iocb->aio_buf;
+
+				if (iocb->aio_nbytes == 1) {
+					// HACK - test out the iovec logic
+					struct iocb io = *iocb;
+					struct iocb *ios = &io;
+					struct iovec v[4];
+
+					v[0].iov_base = iov->iov_base;
+					v[0].iov_len = iov->iov_len / 4;
+					v[1].iov_base = (char *)v[0].iov_base + v[0].iov_len;
+					v[1].iov_len = iov->iov_len / 4;
+					v[2].iov_base = (char *)v[1].iov_base + v[1].iov_len;
+					v[2].iov_len = iov->iov_len / 4;
+					v[3].iov_base = (char *)v[2].iov_base + v[2].iov_len;
+					v[3].iov_len = iov->iov_len - (iov->iov_len / 4) * 3;
+
+					io.aio_buf = v;
+					io.aio_nbytes = 4;
+					rc = io_submit(ctx_id, 1, &ios);
+					break;
+				}
+
+				if (!wpdk_aio_validate_iovec(iov, iocb->aio_nbytes))
+					rc = -EINVAL;
+				else if (iocb->aio_nbytes == 1)
+					rc = wpdk_aio_write(h, ctx_id, iocb, iov->iov_base, iov->iov_len);
+				else
+					rc = wpdk_aio_writev(h, ctx_id, iocb, iov, (int)iocb->aio_nbytes);
 				break;
 
 			default:
@@ -228,32 +501,40 @@ int io_submit(io_context_t ctx_id, long nr, struct iocb *ios[])
 				break;
 		}
 
-		if (rc != 0) {
-			wpdk_aio_release(ctx_id);
+		/*
+		 * If a readv/writev has failed, but is still partially active, then
+		 * report it as started and stop processing the rest of the iocbs.
+		 */
+		if (rc == EINTR)
+			return i + 1;
+
+		if (rc != 0)
 			return (i) ? i : rc;
-		}
 	}
 
-	return 0;
+	return i;
 }
 
 
 int io_cancel(io_context_t ctx_id, struct iocb *iocb, struct io_event *evt)
 {
 	// HACK - not implemented
-	return -1;
+	return -EINVAL;
 }
 
 
 int io_getevents(io_context_t ctx_id, long min_nr, long nr, struct io_event *events, struct timespec *timeout)
 {
-	struct io_event *ctx_events = (struct io_event *)(ctx_id + 1);
+	struct io_header *hdr = (struct io_header *)ctx_id;
+	struct io_event *ctx_events;
 	int i;
 
 	if (!ctx_id) {
 		_set_errno(EINVAL);
 		return -EINVAL;
 	}
+
+	ctx_events = hdr->events;
 
 	for (i = 0; i < nr; i++) {
 		if (ctx_id->head == ctx_id->tail) break;
@@ -267,13 +548,6 @@ int io_getevents(io_context_t ctx_id, long min_nr, long nr, struct io_event *eve
 }
 
 
-int wpdk_windows_error ()
-{
-	wpdk_socket_seterrno(GetLastError());
-	return -1;
-}
-
-
 // HACK - more extensive list
 int wpdk_windows_seterrno (DWORD err)
 {
@@ -281,4 +555,11 @@ int wpdk_windows_seterrno (DWORD err)
 
 	_set_errno(error);
 	return error;
+}
+
+
+int wpdk_windows_error ()
+{
+	wpdk_windows_seterrno(GetLastError());
+	return -1;
 }
