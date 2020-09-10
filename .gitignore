@@ -15,5 +15,7 @@
 *.swp
 *.tmp
 *.exe
+*.pdb
 *.lib
-lib/
+build/
+build-tmp/
