@@ -16,7 +16,9 @@ git submodule update --init
 <a id="prerequisites"></a>
 ## Prerequisites
 
-A supported compiler is required, either Visual Studio 2019 or Clang 10.
+MSYS2 with the following packages:
+
+A supported compiler is required, either Visual Studio 2019 or Clang.
 
 <a id="build"></a>
 ## Build
