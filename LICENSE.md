@@ -1,6 +1,6 @@
 SPDX-License-Identifier: BSD-3-Clause
 
-Copyright (c) 2020, MayaData Inc. All rights reserved.
+Copyright (c) 2020, MayaData Inc. All rights reserved.<br>
 Copyright (c) 2020, DataCore Software Corporation. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
