@@ -31,8 +31,7 @@ void uuid_generate(uuid_t out)
 {
 	UUID id;
 
-	if (UuidCreate(&id) != RPC_S_OK)
-	{
+	if (UuidCreate(&id) != RPC_S_OK) {
 		// HACK - unclear what to do if this fails as well
 		UuidCreateSequential(&id);
 	}
@@ -45,8 +44,7 @@ int uuid_parse(const char *in, uuid_t uu)
 {
 	UUID id;
 
-	if (UuidFromString((unsigned char *)in, &id) == RPC_S_OK)
-	{
+	if (UuidFromString((unsigned char *)in, &id) == RPC_S_OK) {
 		memcpy(uu, &id, sizeof(uuid_t));
 		return 0;
 	}
@@ -80,8 +78,7 @@ void uuid_unparse(const uuid_t uu, char *out)
 	memcpy(&id, uu, sizeof(uuid_t));
 	rc = UuidToString(&id, &str);
 
-	if (rc != RPC_S_OK)
-	{
+	if (rc != RPC_S_OK) {
 		strcpy_s(out, sizeof(invalid), invalid);
 		return;
 	}
