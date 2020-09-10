@@ -1,5 +1,4 @@
 # SPDX-License-Identifier: BSD-3-Clause
-# Copyright(c) 2017-2019 Intel Corporation
 # Copyright (c) 2020, MayaData Inc. All rights reserved.
 # Copyright (c) 2020, DataCore Software Corporation. All rights reserved.
 
@@ -50,8 +49,7 @@ static_lib = static_library('wpdk',
 		install: true)
 
 # build libraries
-foreach l:libraries
-	name = l
+foreach name:libraries
 	sources = []
 	headers = []
 	cflags = []
