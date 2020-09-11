@@ -93,4 +93,4 @@ static inline void io_prep_pwritev(struct iocb *iocb, int fd, struct iovec *iov,
 
 _WPDK_END_C_HEADER
 
-#endif /* !_WPDK_LIBAIO_H_ */
+#endif /* _WPDK_LIBAIO_H_ */

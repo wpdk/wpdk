@@ -12,4 +12,4 @@ int poll(struct pollfd fds[], nfds_t nfds, int timeout);
 
 _WPDK_END_C_HEADER
 
-#endif /* !_WPDK_POLL_H_ */
+#endif /* _WPDK_POLL_H_ */

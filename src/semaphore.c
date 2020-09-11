@@ -5,6 +5,9 @@
 
 int sem_init(sem_t *sem, int pshared, unsigned int value)
 {
+	// HACK - sem_init pshared
+	UNREFERENCED_PARAMETER(pshared);
+
 	if (!sem) return EINVAL;
 
 	sem->h = CreateSemaphore(NULL, value, INT_MAX, NULL);
@@ -70,5 +73,6 @@ int sem_trywait(sem_t *sem)
 int sem_timedwait(sem_t *sem, const struct timespec *abs_timeout)
 {
 	// HACK - handle timed wait
+	UNREFERENCED_PARAMETER(abs_timeout);
 	return sem_wait(sem);
 }

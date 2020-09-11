@@ -17,4 +17,4 @@ int sem_timedwait(sem_t *sem, const struct timespec *abs_timeout);
 
 _WPDK_END_C_HEADER
 
-#endif /* !_WPDK_SEMAPHORE_H_ */
+#endif /* _WPDK_SEMAPHORE_H_ */

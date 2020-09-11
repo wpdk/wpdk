@@ -41,4 +41,4 @@ int wpdk_open(const char *pathname, int flags, ...);
 
 _WPDK_END_C_HEADER
 
-#endif /* !_WPDK_FCNTL_H_ */
+#endif /* _WPDK_FCNTL_H_ */

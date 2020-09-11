@@ -3,20 +3,19 @@
 # Copyright (c) 2020, DataCore Software Corporation. All rights reserved.
 
 project('WPDK', 'C',
-	# Get version number from file.
-	# Fallback to "more" for Windows compatibility.
-	version: run_command(find_program('cat', 'more'),
-		files('VERSION')).stdout().strip(),
+	version: '0.1.0',
 	license: 'BSD',
-	default_options: ['buildtype=release', 'default_library=static', 'b_vscrt=none'],
+	default_options: [
+		'buildtype=release',
+		'default_library=static',
+		'b_vscrt=none',
+		'warning_level=3'
+		],
 	meson_version: '>= 0.47.1'
 )
 
-# set up some global vars for compiler, platform, configuration, etc.
 cc = meson.get_compiler('c')
-
-global_inc = include_directories('.', 'include')
-
+global_includes = include_directories('.', 'include')
 
 subdir('include')
 subdir('src')

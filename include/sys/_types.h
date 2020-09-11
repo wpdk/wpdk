@@ -24,4 +24,4 @@ typedef short gid_t;
 
 _WPDK_END_C_HEADER
 
-#endif /* !_WPDK_SYS__TYPES_H_ */
+#endif /* _WPDK_SYS__TYPES_H_ */

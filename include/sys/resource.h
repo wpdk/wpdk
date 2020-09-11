@@ -28,4 +28,4 @@ int getrusage(int who, struct rusage *usage);
 
 _WPDK_END_C_HEADER
 
-#endif /* !_WPDK_SYS_RESOURCE_H_ */
+#endif /* _WPDK_SYS_RESOURCE_H_ */

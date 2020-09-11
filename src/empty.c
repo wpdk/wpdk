@@ -1,1 +1,1 @@
-static int x = 0;
+static void *x = &x;

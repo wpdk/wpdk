@@ -12,4 +12,4 @@ typedef struct sigset {
 
 _WPDK_END_C_HEADER
 
-#endif /* !_WPDK_SYS__SIGSET_H_ */
+#endif /* _WPDK_SYS__SIGSET_H_ */

@@ -23,4 +23,4 @@ char *strcasestr(const char *haystack, const char *needle);
 
 _WPDK_END_C_HEADER
 
-#endif /* !_WPDK_STRINGS_H_ */
+#endif /* _WPDK_STRINGS_H_ */

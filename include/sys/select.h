@@ -15,4 +15,4 @@ int wpdk_select(int nfds, fd_set *readfds, fd_set *writefds,
 
 _WPDK_END_C_HEADER
 
-#endif /* !_WPDK_SYS_SELECT_H_ */
+#endif /* _WPDK_SYS_SELECT_H_ */

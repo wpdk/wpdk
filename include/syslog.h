@@ -23,4 +23,4 @@ void closelog(void);
 
 _WPDK_END_C_HEADER
 
-#endif /* !_WPDK_SYSLOG_H_ */
+#endif /* _WPDK_SYSLOG_H_ */

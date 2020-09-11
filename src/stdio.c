@@ -5,6 +5,9 @@
 ssize_t getline(char **lineptr, size_t *n, FILE *stream)
 {
 	// HACK - unimplemented
+	UNREFERENCED_PARAMETER(lineptr);
+	UNREFERENCED_PARAMETER(n);
+	UNREFERENCED_PARAMETER(stream);
 	return 0;
 }
 

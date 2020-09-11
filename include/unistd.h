@@ -51,4 +51,4 @@ int wpdk_unlink(const char *path);
 
 _WPDK_END_C_HEADER
 
-#endif /* !_WPDK_UNISTD_H_ */
+#endif /* _WPDK_UNISTD_H_ */

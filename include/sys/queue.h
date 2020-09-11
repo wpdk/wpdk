@@ -868,4 +868,4 @@ struct {								\
 		(head2)->tqh_last = &(head2)->tqh_first;		\
 } while (0)
 
-#endif /* !_WPDK_SYS_QUEUE_H_ */
+#endif /* _WPDK_SYS_QUEUE_H_ */

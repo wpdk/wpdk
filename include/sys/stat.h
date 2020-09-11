@@ -61,5 +61,4 @@ int wpdk_chmod(const char *filename, int pmode);
 
 _WPDK_END_C_HEADER
 
-#endif /* !_WPDK_SYS_STAT_H_ */
-
+#endif /* _WPDK_SYS_STAT_H_ */

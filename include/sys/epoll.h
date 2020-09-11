@@ -29,4 +29,4 @@ int epoll_wait(int epfd, struct epoll_event *events, int maxevents, int timeout)
 
 _WPDK_END_C_HEADER
 
-#endif /* !_WPDK_SYS_EPOLL_H_ */
+#endif /* _WPDK_SYS_EPOLL_H_ */

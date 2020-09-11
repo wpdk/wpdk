@@ -12,4 +12,4 @@ _WPDK_BEGIN_C_HEADER
 
 _WPDK_END_C_HEADER
 
-#endif /* !_WPDK_LIMITS_H_ */
+#endif /* _WPDK_LIMITS_H_ */

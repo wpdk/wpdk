@@ -96,7 +96,7 @@ static int wpdk_aio_increment_iocount (struct io_header *hdr)
 
 	do {
 		count = hdr->iocount;
-		if (count >= hdr->context.size) {
+		if (count >= (long)hdr->context.size) {
 			_set_errno(EAGAIN);
 			return 0;
 		}
@@ -382,7 +382,7 @@ static int wpdk_aio_validate_iovec (struct iovec *iov, int iovcnt)
 	}
 
 	for (i = 0; i < iovcnt; i++) {
-		if (iov[i].iov_len > SSIZE_MAX - length) {
+		if (iov[i].iov_len > (size_t)(SSIZE_MAX - length)) {
 			_set_errno(EINVAL);
 			return 0;
 		}
@@ -437,7 +437,7 @@ int io_submit(io_context_t ctx_id, long nr, struct iocb *ios[])
 				if (iocb->aio_nbytes == 1) {
 					// HACK - test out the iovec logic
 					struct iocb io = *iocb;
-					struct iocb *ios = &io;
+					struct iocb *iovs = &io;
 					struct iovec v[4];
 
 					v[0].iov_base = iov->iov_base;
@@ -451,7 +451,7 @@ int io_submit(io_context_t ctx_id, long nr, struct iocb *ios[])
 
 					io.aio_buf = v;
 					io.aio_nbytes = 4;
-					rc = io_submit(ctx_id, 1, &ios);
+					rc = io_submit(ctx_id, 1, &iovs);
 					break;
 				}
 
@@ -469,7 +469,7 @@ int io_submit(io_context_t ctx_id, long nr, struct iocb *ios[])
 				if (iocb->aio_nbytes == 1) {
 					// HACK - test out the iovec logic
 					struct iocb io = *iocb;
-					struct iocb *ios = &io;
+					struct iocb *iovs = &io;
 					struct iovec v[4];
 
 					v[0].iov_base = iov->iov_base;
@@ -483,7 +483,7 @@ int io_submit(io_context_t ctx_id, long nr, struct iocb *ios[])
 
 					io.aio_buf = v;
 					io.aio_nbytes = 4;
-					rc = io_submit(ctx_id, 1, &ios);
+					rc = io_submit(ctx_id, 1, &iovs);
 					break;
 				}
 
@@ -519,6 +519,9 @@ int io_submit(io_context_t ctx_id, long nr, struct iocb *ios[])
 int io_cancel(io_context_t ctx_id, struct iocb *iocb, struct io_event *evt)
 {
 	// HACK - not implemented
+	UNREFERENCED_PARAMETER(ctx_id);
+	UNREFERENCED_PARAMETER(iocb);
+	UNREFERENCED_PARAMETER(evt);
 	return -EINVAL;
 }
 
@@ -528,6 +531,9 @@ int io_getevents(io_context_t ctx_id, long min_nr, long nr, struct io_event *eve
 	struct io_header *hdr = (struct io_header *)ctx_id;
 	struct io_event *ctx_events;
 	int i;
+
+	UNREFERENCED_PARAMETER(min_nr);
+	UNREFERENCED_PARAMETER(timeout);
 
 	if (!ctx_id) {
 		_set_errno(EINVAL);
@@ -552,6 +558,8 @@ int io_getevents(io_context_t ctx_id, long min_nr, long nr, struct io_event *eve
 int wpdk_windows_seterrno (DWORD err)
 {
 	int error = EINVAL;
+
+	UNREFERENCED_PARAMETER(err);
 
 	_set_errno(error);
 	return error;

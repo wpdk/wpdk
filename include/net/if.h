@@ -14,4 +14,4 @@ struct	ifreq {
 
 _WPDK_END_C_HEADER
 
-#endif /* !_WPDK_NET_IF_H_ */
+#endif /* _WPDK_NET_IF_H_ */

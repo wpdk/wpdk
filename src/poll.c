@@ -8,7 +8,8 @@ int poll(struct pollfd fds[], nfds_t nfds, int timeout)
 	struct timeval delay = { 0, 0 };
 	int worktodo = 0;
 	SOCKET socket;
-	int i, n, rc;
+	int n, rc;
+	nfds_t i;
 
 	if (!fds || nfds >= FD_SETSIZE) {
 		_set_errno(EINVAL);

@@ -31,4 +31,4 @@ int tcgetattr(int fildes, struct termios *termios_p);
 
 _WPDK_END_C_HEADER
 
-#endif /* !_WPDK_TERMIOS_H_ */
+#endif /* _WPDK_TERMIOS_H_ */

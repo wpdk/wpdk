@@ -5,6 +5,9 @@
 int mknod(const char *path, mode_t mode, dev_t dev)
 {
 	// HACK - implementation
+	UNREFERENCED_PARAMETER(path);
+	UNREFERENCED_PARAMETER(mode);
+	UNREFERENCED_PARAMETER(dev);
 	return EINVAL;
 }
 

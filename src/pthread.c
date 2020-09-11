@@ -142,6 +142,7 @@ int pthread_mutex_unlock(pthread_mutex_t *mutex)
 int pthread_mutex_consistent(pthread_mutex_t *mutex)
 {
 	//HACK - not implemented
+	UNREFERENCED_PARAMETER(mutex);
 	return 0;
 }
 
@@ -233,6 +234,8 @@ int pthread_condattr_setpshared(pthread_condattr_t *attr, int pshared)
 
 int pthread_cond_init(pthread_cond_t *cond, const pthread_condattr_t *attr)
 {
+	UNREFERENCED_PARAMETER(attr);
+
 	if (!cond) return EINVAL;
 
 	InitializeConditionVariable(&cond->cond);
@@ -242,6 +245,7 @@ int pthread_cond_init(pthread_cond_t *cond, const pthread_condattr_t *attr)
 
 int pthread_cond_destroy(pthread_cond_t *cond)
 {
+	UNREFERENCED_PARAMETER(cond);
 	return 0;
 }
 
@@ -270,6 +274,8 @@ int pthread_cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex)
 int pthread_cond_timedwait(pthread_cond_t *cond, pthread_mutex_t *mutex, const struct timespec *abstime)
 {
 	// HACK - implementation
+	UNREFERENCED_PARAMETER(abstime);
+	
 	return pthread_cond_wait(cond, mutex);
 }
 
@@ -299,6 +305,8 @@ int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_
 {
 	// HACK - pthread_create check implementation
 	// HACK - pthread_create should use beginthreadex if using CRT
+
+	UNREFERENCED_PARAMETER(attr);
 
 	HANDLE hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)start_routine, arg, 0, (LPDWORD)thread);
 
@@ -342,6 +350,7 @@ int pthread_detach(pthread_t thread)
 int pthread_cancel(pthread_t thread)
 {
 	// HACK - unimplemented
+	UNREFERENCED_PARAMETER(thread);
 	return EINVAL;
 }
 

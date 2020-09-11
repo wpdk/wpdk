@@ -45,7 +45,7 @@ install_headers(headers)
 static_lib = static_library('wpdk',
 		sources,
 		c_args: cflags,
-		include_directories: [ global_inc ],
+		include_directories: [ global_includes ],
 		install: true)
 
 # build libraries
@@ -62,7 +62,7 @@ foreach name:libraries
 		static_lib = static_library(name,
 				sources,
 				c_args: cflags,
-				include_directories: [ global_inc ],
+				include_directories: [ global_includes ],
 				install: true)
 	endif
 endforeach

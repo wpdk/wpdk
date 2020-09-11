@@ -16,4 +16,4 @@ FILE *wpdk_fopen(const char *filename, const char *mode);
 
 _WPDK_END_C_HEADER
 
-#endif /* !_WPDK_STDIO_H_ */
+#endif /* _WPDK_STDIO_H_ */

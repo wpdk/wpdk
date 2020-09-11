@@ -48,4 +48,4 @@ int kill(pid_t pid, int sig);
 
 _WPDK_END_C_HEADER
 
-#endif /* !_WPDK_SIGNAL_H_ */
+#endif /* _WPDK_SIGNAL_H_ */

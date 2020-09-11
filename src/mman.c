@@ -25,6 +25,9 @@ void *mmap(void *addr, size_t len, int prot, int flags, int fildes, off_t off)
 	HANDLE h, hMap;
 	void *pMap;
 
+	UNREFERENCED_PARAMETER(flags);
+	UNREFERENCED_PARAMETER(prot);
+	
 	// HACK - fixed address not implemented yet
 	if (addr) {
 		_set_errno(EINVAL);
@@ -75,6 +78,8 @@ int munmap(void *addr, size_t len)
 {
 	SYSTEM_INFO info;
 	DWORD granularity;
+
+	UNREFERENCED_PARAMETER(len);
 
 	GetSystemInfo(&info);
 	granularity = info.dwAllocationGranularity;

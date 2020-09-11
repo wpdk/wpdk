@@ -14,5 +14,6 @@ int getifaddrs(struct ifaddrs **ifap)
 
 void freeifaddrs(struct ifaddrs *ifa)
 {
+	UNREFERENCED_PARAMETER(ifa);
 	// HACK - not implemented
 }

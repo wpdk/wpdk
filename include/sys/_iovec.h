@@ -12,4 +12,4 @@ struct iovec {
 
 _WPDK_END_C_HEADER
 
-#endif /* !_WPDK_SYS__IOVEC_H_ */
+#endif /* _WPDK_SYS__IOVEC_H_ */

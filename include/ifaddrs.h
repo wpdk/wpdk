@@ -17,4 +17,4 @@ void freeifaddrs(struct ifaddrs *ifa);
 
 _WPDK_END_C_HEADER
 
-#endif /* !_WPDK_IFADDRS_H_ */
+#endif /* _WPDK_IFADDRS_H_ */

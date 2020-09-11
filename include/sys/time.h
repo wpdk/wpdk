@@ -14,4 +14,4 @@ int clock_gettime(clockid_t, struct timespec *);
 
 _WPDK_END_C_HEADER
 
-#endif /* !_WPDK_SYS_TIME_H_ */
+#endif /* _WPDK_SYS_TIME_H_ */

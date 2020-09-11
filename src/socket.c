@@ -114,7 +114,6 @@ SOCKET wpdk_get_socket(int fd)
 int wpdk_socket(int domain, int type, int protocol)
 {
 	SOCKET s;
-	int i;
 
 	if (!wpdk_socket_ready && !wpdk_socket_startup())
 		return wpdk_socket_error();
@@ -179,7 +178,7 @@ int wpdk_bind(int socket, const struct sockaddr *address, socklen_t address_len)
 		return -1;
 
 	if (address->sa_family == AF_UNIX) {
-		if (address_len > sizeof(un)) {
+		if (address_len > (socklen_t)sizeof(un)) {
 			_set_errno(EINVAL);
 			return -1;
 		}
@@ -215,7 +214,7 @@ int wpdk_connect(int socket, const struct sockaddr *address, socklen_t address_l
 		return -1;
 
 	if (address->sa_family == AF_UNIX) {
-		if (address_len > sizeof(un)) {
+		if (address_len > (socklen_t)sizeof(un)) {
 			_set_errno(EINVAL);
 			return -1;
 		}
@@ -344,7 +343,7 @@ ssize_t wpdk_recvfrom(int socket, void *buffer, size_t length,
 }
 
 
-WSABUF *wpdk_get_wsabuf(WSABUF *pBuffer, ULONG count, const struct iovec *iov, int iovlen)
+WSABUF *wpdk_get_wsabuf(WSABUF *pBuffer, int count, const struct iovec *iov, int iovlen)
 {
 	int i;
 
@@ -399,6 +398,9 @@ ssize_t wpdk_recvmsg(int socket, struct msghdr *message, int flags)
 	WSAMSG msg = { 0 };
 	DWORD nbytes;
 	int rc;
+
+	// HACK - wpdk_recvmsg flags ignored
+	UNREFERENCED_PARAMETER(flags);
 
 	if (s == INVALID_SOCKET)
 		return -1;
@@ -486,6 +488,8 @@ ssize_t wpdk_sendmsg(int socket, const struct msghdr *message, int flags)
 	WSAMSG msg = { 0 };
 	DWORD nbytes;
 	int rc;
+
+	UNREFERENCED_PARAMETER(flags);
 
 	if (s == INVALID_SOCKET)
 		return -1;
@@ -581,6 +585,7 @@ int wpdk_shutdown(int socket, int how)
 int wpdk_sockatmark(int s)
 {
 	// HACK - TODO
+	UNREFERENCED_PARAMETER(s);
 	return -1;
 	// return sockatmark(s);
 }
@@ -589,6 +594,10 @@ int wpdk_sockatmark(int s)
 int wpdk_socketpair(int domain, int type, int protocol, int socket_vector[2])
 {
 	// HACK - TODO
+	UNREFERENCED_PARAMETER(domain);
+	UNREFERENCED_PARAMETER(type);
+	UNREFERENCED_PARAMETER(protocol);
+	UNREFERENCED_PARAMETER(socket_vector);
 	return -1;
 	// return socketpair(domain, type, protocol, socket_vector[2]);
 }

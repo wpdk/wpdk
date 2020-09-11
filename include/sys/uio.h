@@ -18,4 +18,4 @@ static inline ssize_t writev(int fildes, const struct iovec *iov, int iovcnt) {
 
 _WPDK_END_C_HEADER
 
-#endif /* !_WPDK_SYS_UIO_H_ */
+#endif /* _WPDK_SYS_UIO_H_ */

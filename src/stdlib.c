@@ -17,6 +17,8 @@ int mkstemp(char *path)
 int posix_memalign(void **memptr, size_t alignment, size_t size)
 {
 	// HACK - not aligned - just basic malloc for now
+	UNREFERENCED_PARAMETER(alignment);
+
 	if (!memptr || !size)
 		return EINVAL;
 
@@ -44,6 +46,7 @@ long int random(void)
 int rand_r(unsigned int *seedp)
 {
 	// HACK - incomplete implementation
+	UNREFERENCED_PARAMETER(seedp);
 	return rand();
 }
 

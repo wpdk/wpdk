@@ -24,4 +24,4 @@ int shm_unlink(const char *name);
 
 _WPDK_END_C_HEADER
 
-#endif /* !_WPDK_SYS_MMAN_H_ */
+#endif /* _WPDK_SYS_MMAN_H_ */

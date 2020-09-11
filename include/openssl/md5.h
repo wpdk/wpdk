@@ -28,4 +28,4 @@ void MD5_Transform(MD5_CTX *c, const unsigned char *b);
 
 _WPDK_END_C_HEADER
 
-#endif /* !_WPDK_OPENSSL_MD5_H_ */
+#endif /* _WPDK_OPENSSL_MD5_H_ */

@@ -10,6 +10,7 @@ const char *wpdk_get_path(const char *path, char *buffer, size_t len)
 	if (!path) return path;
 
 	// HACK - wpdk_get_path fix pathnames and handle length
+	UNREFERENCED_PARAMETER(len);
 
 	if (!strncmp(path, "/tmp/", 5) || !strncmp(path, "/var/tmp/", 9)) {
 		strcpy(buffer, msys);

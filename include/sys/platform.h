@@ -51,21 +51,17 @@
 #define NOMCX
 
 /*
- * Disable Winsock warnings
- */
-//#define _WINSOCK_DEPRECATED_NO_WARNINGS
-
-/*
  * Avoid a collision between the clang headers and the Platform SDK
  */
 #ifdef __clang__
 #define _m_prefetchw __m_prefetchw
 #endif
 
+#include <corecrt.h>
 #include <windows.h>
 #undef _m_prefetchw
 
 #include <sys/cdefs.h>
 #include <sys/_types.h>
 
-#endif /* !_WPDK_SYS_PLATFORM_H_ */
+#endif /* _WPDK_SYS_PLATFORM_H_ */

@@ -6,4 +6,4 @@
 
 #include <../ucrt/corecrt.h>
 
-#endif /* !_WPDK_CORECRT_H_ */
+#endif /* _WPDK_CORECRT_H_ */

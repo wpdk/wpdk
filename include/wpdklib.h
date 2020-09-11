@@ -26,4 +26,4 @@ ssize_t wpdk_socket_writev(int fildes, const struct iovec *iov, int iovcnt);
 
 const char *wpdk_get_path(const char *path, char *buffer, size_t len);
 
-#endif /* !_WPDK_WPDKLIB_H_ */
+#endif /* _WPDK_WPDKLIB_H_ */

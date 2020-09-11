@@ -46,6 +46,10 @@ int sigdelset(sigset_t *set, int signo)
 
 int sigaction(int sig, const struct sigaction *act, struct sigaction *oact)
 {
+	UNREFERENCED_PARAMETER(sig);
+	UNREFERENCED_PARAMETER(act);
+	UNREFERENCED_PARAMETER(oact);
+
 	// HACK - not implemented
 	return 0;
 }
@@ -53,6 +57,10 @@ int sigaction(int sig, const struct sigaction *act, struct sigaction *oact)
 
 int pthread_sigmask(int how, const sigset_t *set, sigset_t *oset)
 {
+	UNREFERENCED_PARAMETER(how);
+	UNREFERENCED_PARAMETER(set);
+	UNREFERENCED_PARAMETER(oset);
+
 	// HACK - not implemented
 	return 0;
 }
@@ -60,6 +68,9 @@ int pthread_sigmask(int how, const sigset_t *set, sigset_t *oset)
 
 int kill(pid_t pid, int sig)
 {
+	UNREFERENCED_PARAMETER(pid);
+	UNREFERENCED_PARAMETER(sig);
+
 	// HACK - implementation
 	return -1;
 }

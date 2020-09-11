@@ -21,4 +21,4 @@ void *__wrap_calloc(size_t nelem, size_t elsize);
 
 _WPDK_END_C_HEADER
 
-#endif /* !_WPDK_STDLIB_H_ **/
+#endif /* _WPDK_STDLIB_H_ */

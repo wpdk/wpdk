@@ -9,4 +9,4 @@ int flock(int fd, int operation);
 
 _WPDK_END_C_HEADER
 
-#endif /* !_WPDK_SYS_FILE_H_ */
+#endif /* _WPDK_SYS_FILE_H_ */

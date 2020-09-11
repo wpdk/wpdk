@@ -15,6 +15,8 @@ pid_t getpid()
 int truncate(const char *path, off_t length)
 {
 	// HACK - truncate
+	UNREFERENCED_PARAMETER(path);
+	UNREFERENCED_PARAMETER(length);
 	return EINVAL;
 }
 
@@ -56,6 +58,7 @@ char *ttyname(int fildes)
 {
 	static char tty[] = "/dev/tty";
 	// HACK - implementation
+	UNREFERENCED_PARAMETER(fildes);
 	return tty;
 }
 
@@ -63,6 +66,7 @@ char *ttyname(int fildes)
 int isatty(int fildes)
 {
 	// HACK - implementation
+	UNREFERENCED_PARAMETER(fildes);
 	return false;
 }
 
@@ -103,6 +107,8 @@ pid_t fork()
 int daemon(int nochdir, int noclose)
 {
 	// HACK - implement
+	UNREFERENCED_PARAMETER(nochdir);
+	UNREFERENCED_PARAMETER(noclose);
 	return -1;
 }
 
@@ -157,5 +163,6 @@ int close(int fildes)
 int fsync(int fildes)
 {
 	// HACK - not implemented
+	UNREFERENCED_PARAMETER(fildes);
 	return 0;
 }
