@@ -20,7 +20,7 @@ for %%i in (%CONFIG% %*) do (
 )
 
 if not "%CLEAN%"=="clean" if not "%CONFIG%"=="%CC% %ARCH% %TYPE%" (
-	echo Config changed from '%CONFIG%' to '%CC% %ARCH% %TYPE%'
+	if not "%CONFIG%"=="" echo Config changed from '%CONFIG%' to '%CC% %ARCH% %TYPE%'
 	set CLEAN=y
 )
 
