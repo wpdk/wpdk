@@ -2,6 +2,9 @@
 #include <poll.h>
 
 
+// HACK struct pollfd is defined in terms of SOCKET
+// HACK by system header - need to revisit - posix is int
+
 int poll(struct pollfd fds[], nfds_t nfds, int timeout)
 {
 	fd_set readfds, writefds, exceptfds;
@@ -27,7 +30,7 @@ int poll(struct pollfd fds[], nfds_t nfds, int timeout)
 		fds[i].revents = 0;
 		if (fds[i].fd < 0) continue;
 
-		socket = wpdk_get_socket(fds[i].fd);
+		socket = wpdk_get_socket((int)fds[i].fd);
 
 		if (socket == INVALID_SOCKET) {
 			fds[i].revents |= POLLNVAL;
@@ -58,7 +61,7 @@ int poll(struct pollfd fds[], nfds_t nfds, int timeout)
 	for (n = i = 0; i < nfds && i < FD_SETSIZE; i++) {
 		if (fds[i].fd < 0) continue;
 
-		socket = wpdk_get_socket(fds[i].fd);
+		socket = wpdk_get_socket((int)fds[i].fd);
 
 		if (socket != INVALID_SOCKET) {
 			if (FD_ISSET(socket, &readfds))

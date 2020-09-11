@@ -21,7 +21,8 @@ ssize_t __real_writev(int fildes, const struct iovec *iov, int iovcnt)
 	for (i = 0; i < iovcnt; i++) {
 		len = iov[i].iov_len;
 
-		rc = _write(fildes, iov[i].iov_base, len);
+		// HACK - check that len is within range for _write
+		rc = _write(fildes, iov[i].iov_base, (unsigned int)len);
 		if (rc < 0) return -1;
 
 		nbytes += rc;
@@ -49,7 +50,8 @@ ssize_t readv(int fildes, const struct iovec *iov, int iovcnt)
 	for (i = 0; i < iovcnt; i++) {
 		len = iov[i].iov_len;
 
-		rc = _read(fildes, iov[i].iov_base, len);
+		// HACK - check that len is within range for _read
+		rc = _read(fildes, iov[i].iov_base, (unsigned int)len);
 		if (rc < 0) return -1;
 
 		nbytes += rc;

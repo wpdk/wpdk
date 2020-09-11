@@ -77,7 +77,7 @@ int wpdk_allocate_epoll()
 
 	for (i = 0; i < maxepolls; i++)
 		if (wpdk_epoll_fds[i] == NULL)
-			if (InterlockedCompareExchangePointer(&wpdk_epoll_fds[i], ep, NULL) == NULL)
+			if (InterlockedCompareExchangePointer((void **)&wpdk_epoll_fds[i], ep, NULL) == NULL)
 				return epollbase + i;
 
 	free(ep);
@@ -241,7 +241,7 @@ int wpdk_close_epoll(int fd)
 	if (id == -1)
 		return -1;
 
-	ep = (struct epoll *)InterlockedExchangePointer(&wpdk_epoll_fds[id], NULL);
+	ep = (struct epoll *)InterlockedExchangePointer((void **)&wpdk_epoll_fds[id], NULL);
 	
 	if (ep == NULL) {
 		_set_errno(EBADF);

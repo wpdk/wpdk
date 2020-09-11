@@ -49,10 +49,10 @@ int wpdk_socket_startup()
 	for (i = 0; i < maxsockets; i++)
 		fds[i] = INVALID_SOCKET;
 
-	if (InterlockedCompareExchangePointer(&wpdk_socket_domains, domains, NULL) != NULL)
+	if (InterlockedCompareExchangePointer((void **)&wpdk_socket_domains, domains, NULL) != NULL)
 		free(domains);
 
-	if (InterlockedCompareExchangePointer(&wpdk_socket_fds, fds, NULL) != NULL)
+	if (InterlockedCompareExchangePointer((void **)&wpdk_socket_fds, fds, NULL) != NULL)
 		free(fds);
 
 	if (InterlockedCompareExchange(&wpdk_socket_ready, 1, 0) != 0)
@@ -80,7 +80,8 @@ int wpdk_allocate_socket(SOCKET s, int domain)
 	// HACK - how to select exchange size?
 	for (i = 0; i < maxsockets; i++)
 		if (wpdk_socket_fds[i] == INVALID_SOCKET)
-			if (InterlockedCompareExchange64(&wpdk_socket_fds[i], s, INVALID_SOCKET) == INVALID_SOCKET) {
+			if ((SOCKET)InterlockedCompareExchangePointer((void **)&wpdk_socket_fds[i],
+					(void *)s, (void *)INVALID_SOCKET) == INVALID_SOCKET) {
 				wpdk_socket_domains[i] = domain;
 				return socketbase + i;
 			}
@@ -134,7 +135,8 @@ int wpdk_close_socket(int socket)
 	if (s == INVALID_SOCKET)
 		return -1;
 
-	if (InterlockedCompareExchange64(&wpdk_socket_fds[socket - socketbase], INVALID_SOCKET, s) != s) {
+	if ((SOCKET)InterlockedCompareExchangePointer((void **)&wpdk_socket_fds[socket - socketbase],
+				(void *)INVALID_SOCKET, (void *)s) != s) {
 		_set_errno(EBADF);
 		return -1;
 	}
@@ -316,7 +318,8 @@ ssize_t wpdk_recv(int socket, void *buffer, size_t length, int flags)
 	if (s == INVALID_SOCKET)
 		return -1;
 
-	rc = recv(s, buffer, length, flags);
+	// HACK - validate length is less that max int
+	rc = recv(s, buffer, (int)length, flags);
 
 	if (rc == SOCKET_ERROR)
 		return wpdk_socket_error();
@@ -334,7 +337,8 @@ ssize_t wpdk_recvfrom(int socket, void *buffer, size_t length,
 	if (s == INVALID_SOCKET)
 		return -1;
 
-	rc = recvfrom(s, buffer, length, flags, address, address_len);
+	// HACK - validate length is less that max int
+	rc = recvfrom(s, buffer, (int)length, flags, address, address_len);
 
 	if (rc == SOCKET_ERROR)
 		return wpdk_socket_error();
@@ -353,9 +357,11 @@ WSABUF *wpdk_get_wsabuf(WSABUF *pBuffer, int count, const struct iovec *iov, int
 	if (!pBuffer)
 		return 0;
 
+	// HACK - validate length is less than ULONG
+
 	for (i = 0; i < iovlen; i++) {
 		pBuffer[i].buf = iov[i].iov_base;
-		pBuffer[i].len = iov[i].iov_len;
+		pBuffer[i].len = (ULONG)iov[i].iov_len;
 	}
 
 	return pBuffer;
@@ -444,7 +450,8 @@ ssize_t wpdk_send(int socket, const void *buffer, size_t length, int flags)
 	if (s == INVALID_SOCKET)
 		return -1;
 
-	rc = send(s, buffer, length, flags);
+	// HACK - validate length is less that max int
+	rc = send(s, buffer, (int)length, flags);
 
 	if (rc == SOCKET_ERROR)
 		return wpdk_socket_error();
@@ -531,7 +538,8 @@ ssize_t wpdk_sendto(int socket, const void *message, size_t length,
 	if (s == INVALID_SOCKET)
 		return -1;
 
-	rc = sendto(s, message, length, flags, dest_addr, dest_len);
+	// HACK - validate length is less that max int
+	rc = sendto(s, message, (int)length, flags, dest_addr, dest_len);
 
 	if (rc == SOCKET_ERROR)
 		return wpdk_socket_error();

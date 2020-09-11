@@ -1,66 +1,45 @@
 @echo off
 @setlocal enableextensions
 
-if "%VCINSTALLDIR%"=="" (
-	echo "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+set CC=cl
+set TYPE=debug
+set CLEAN=
+
+if exist build-tmp\_clang set CC=clang
+if exist build-tmp\_release set TYPE=release
+
+if "%1"=="cl" set CC=cl&& shift /1
+if "%1"=="clang" set CC=clang&& shift /1
+if "%1"=="debug" set TYPE=debug&& shift /1
+if "%1"=="release" set TYPE=release&& shift /1
+if "%1"=="clean" set CLEAN=y&& shift /1
+
+if not exist build-tmp\_%CC% set CLEAN=y
+if not exist build-tmp\_%TYPE% set CLEAN=y
+
+set vswhere=%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe
+if "%CC%%VCINSTALLDIR%"=="cl" if exist "%vswhere%" for /f "tokens=*" %%i in ('"%vswhere%" -latest -find VC') do (
+	set vcvars=%%i\Auxiliary\Build\vcvarsall.bat
+)
+if not "%vcvars%"=="" call "%vcvars%" x64
+
+if "%CC%%VCINSTALLDIR%"=="cl" (
+	echo Needs to run from a Visual Studio Developer Command Prompt
 	goto :eof
 )
 
-rmdir /s /q build
-rmdir /s /q build-tmp
+if not "%CLEAN%"=="" (
+	echo Cleaning...
+	rmdir /s /q build >nul:
+	rmdir /s /q build-tmp >nul:
+)
 
-set CC=cl
+echo Building %TYPE% with %CC%...
+if not exist build-tmp meson --buildtype=%TYPE% build-tmp
+echo > build-tmp\_%CC%
+echo > build-tmp\_%TYPE%
+
 set DESTDIR=%CD%\build
-
-meson --buildtype=debug build-tmp
 ninja -C build-tmp install
 
-goto :eof
-
-rem **********************************
-rem old script for cl
-rem **********************************
-
-mkdir build\lib
-
-cd src
-cl /nologo -c -Z7 -I..\include *.c
-
-lib /nologo /out:empty.lib empty.obj
-copy empty.lib ..\build\lib\numa.lib >nul:
-copy empty.lib ..\build\lib\rt.lib >nul:
-copy empty.lib ..\build\lib\uuid.lib >nul:
-copy empty.lib ..\build\lib\pthread.lib >nul:
-move empty.lib ..\build\lib\crypto.lib >nul:
-del empty.obj
-
-lib /nologo /out:wpdk.lib *.obj
-move wpdk.lib ..\build\lib\wpdk.lib >nul:
-del *.obj
-cd ..
-
-robocopy include build\include /MIR /NDL /NP /R:5 /W:5 /NJH /NJS /NFL
-
-rem **********************************
-rem old script for clang
-rem **********************************
-
-mkdir build\lib
-
-cd src
-clang -c -I..\include -g *.c
-
-lib /nologo /out:empty.lib empty.o
-copy empty.lib ..\build\lib\numa.lib >nul:
-copy empty.lib ..\build\lib\rt.lib >nul:
-copy empty.lib ..\build\lib\uuid.lib >nul:
-copy empty.lib ..\build\lib\pthread.lib >nul:
-move empty.lib ..\build\lib\crypto.lib >nul:
-del empty.o
-
-llvm-ar crDs wpdk.lib *.o
-move wpdk.lib ..\build\lib\wpdk.lib >nul:
-del *.o
-cd ..
-
-robocopy include build\include /MIR /NDL /NP /R:5 /W:5 /NJH /NJS /NFL
+if not "%vcvars%"=="" echo Built using "%vcvars%" x64

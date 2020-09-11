@@ -17,7 +17,7 @@ int sigfillset(sigset_t *set)
 	// HACK - set errno
 	if (!set) return -1;
 
-	set->bits = ~0;
+	set->bits = (uint32_t)~0;
 	return 0;
 }
 

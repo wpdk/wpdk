@@ -8,13 +8,13 @@ headers = []
 cflags = []
 
 sources = [
+	'aio.c',
 	'epoll.c',
 	'fcntl.c',
 	'file.c',
 	'getopt.c',
 	'ifaddrs.c',
 	'ioctl.c',
-	'libaio.c',
 	'md5.c',
 	'mman.c',
 	'netdb.c',

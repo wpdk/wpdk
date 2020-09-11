@@ -188,6 +188,10 @@ static long wpdk_aio_iov_done (struct io_task *task, long count)
 			 * If one of the transfers was shorter than requested, stop
 			 * calculating the length and disregard the subsequent I/Os.
 			 */
+
+			// HACK - alternative is to issue I/Os serially which is slower
+			// and still not posix conformant which stipulates an atomic transfer
+
 			if (task[i].type == &task[i].result) break;
 		}
 
@@ -219,7 +223,7 @@ static int wpdk_aio_iov_abort (struct io_task *io)
 {
 	int rc = wpdk_windows_seterrno(GetLastError());
 	struct io_task *task = io->task;
-	int count, i = io - task;
+	int count, i = (int)(io - task);
 
 	io->result = (-rc);
 	count = wpdk_aio_iov_done(task, task->iov.iovcnt - i + 1);
@@ -255,7 +259,9 @@ static int wpdk_aio_read (HANDLE h, io_context_t ctx_id, struct iocb *iocb, void
 	task->io.Offset = offset.LowPart;
 	task->io.OffsetHigh = offset.HighPart;
 
-	if (!len || ReadFile(h, buf, len, &nbytes, &task->io) == TRUE)
+	// HACK - check that len < max DWORD size
+
+	if (!len || ReadFile(h, buf, (DWORD)len, &nbytes, &task->io) == TRUE)
 		wpdk_aio_done(task, nbytes);
 
 	else if (GetLastError() != ERROR_IO_PENDING)
@@ -276,8 +282,10 @@ static int wpdk_aio_write (HANDLE h, io_context_t ctx_id, struct iocb *iocb, voi
 	offset.QuadPart = iocb->aio_offset;
 	task->io.Offset = offset.LowPart;
 	task->io.OffsetHigh = offset.HighPart;
+
+	// HACK - check that len < max DWORD size
 		
-	if (!len || WriteFile(h, buf, len, &nbytes, &task->io) == TRUE)
+	if (!len || WriteFile(h, buf, (DWORD)len, &nbytes, &task->io) == TRUE)
 		wpdk_aio_done(task, nbytes);
 
 	else if (GetLastError() != ERROR_IO_PENDING)
@@ -371,17 +379,21 @@ static int wpdk_aio_writev (HANDLE h, io_context_t ctx_id, struct iocb *iocb, st
 }
 
 
-static int wpdk_aio_validate_iovec (struct iovec *iov, int iovcnt)
+static int wpdk_aio_validate_iovec (struct iovec *iov, size_t iovcnt)
 {
 	ssize_t length = 0;
 	int i;
 
+	// HACK - unsigned / signed issue
 	if (iovcnt < 1) {
 		_set_errno(EINVAL);
 		return 0;
 	}
 
-	for (i = 0; i < iovcnt; i++) {
+	// HACK - validate should check size_t is in range
+	// HACK - is there system imposed maximum size?
+
+	for (i = 0; i < (int)iovcnt; i++) {
 		if (iov[i].iov_len > (size_t)(SSIZE_MAX - length)) {
 			_set_errno(EINVAL);
 			return 0;

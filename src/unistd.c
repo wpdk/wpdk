@@ -100,7 +100,7 @@ long sysconf(int name)
 pid_t fork()
 {
 	// HACK - implement
-	return -1;
+	return (pid_t)-1;
 }
 
 
@@ -116,21 +116,24 @@ int daemon(int nochdir, int noclose)
 ssize_t read(int fildes, void *buf, size_t nbyte)
 {
 	// HACK - off_t is 32 bits
-	return _read(fildes, buf, nbyte);
+	// HACK - check nbyte is less than max uint
+	return _read(fildes, buf, (unsigned int)nbyte);
 }
 
 
 ssize_t write(int fildes, const void *buf, size_t nbyte)
 {
 	// HACK - off_t is 32 bits ???
-	return _write(fildes, buf, nbyte);
+	// HACK - check nbyte is less than max uint
+	return _write(fildes, buf, (unsigned int)nbyte);
 }
 
 
 off_t lseek(int fildes, off_t offset, int whence)
 {
 	// HACK - off_t is 32 bits
-	return _lseek(fildes, offset, whence);
+	// HACK - check size is less than max long
+	return _lseek(fildes, (long)offset, whence);
 }
 
 
