@@ -24,6 +24,14 @@ if not "%CLEAN%"=="clean" if not "%CONFIG%"=="%CC% %ARCH% %TYPE%" (
 	set CLEAN=y
 )
 
+if not "%CLEAN%"=="" (
+	echo Cleaning...
+	if exist build rmdir /s /q build >nul:
+	if exist build-tmp rmdir /s /q build-tmp >nul:
+)
+
+if "%CLEAN%"=="clean" goto :eof
+
 set vswhere=%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe
 if "%CC%%VCINSTALLDIR%"=="cl" if exist "%vswhere%" for /f "tokens=*" %%i in ('"%vswhere%" -latest -find VC') do (
 	set vcvars=%%i\Auxiliary\Build\vcvarsall.bat
@@ -34,14 +42,6 @@ if "%CC%%VCINSTALLDIR%"=="cl" (
 	echo Requires a Visual Studio Developer Command Prompt
 	goto :eof
 )
-
-if not "%CLEAN%"=="" (
-	echo Cleaning...
-	if exist build rmdir /s /q build >nul:
-	if exist build-tmp rmdir /s /q build-tmp >nul:
-)
-
-if "%CLEAN%"=="clean" goto :eof
 
 echo Building %TYPE% with %CC%...
 if not exist build-tmp meson --buildtype=%TYPE% build-tmp
