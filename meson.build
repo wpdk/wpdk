@@ -11,13 +11,17 @@ project('WPDK', 'C',
 		'b_vscrt=none',
 		'warning_level=3'
 		],
-	meson_version: '>= 0.47.1'
+	meson_version: '>= 0.55.0'
 )
 
 cc = meson.get_compiler('c')
 global_includes = include_directories('.', 'include')
 
+cunit = subproject('CUnit')
+cunit_dep = cunit.get_variable('cunit_dep')
+
 subdir('include')
 subdir('src')
+# subdir('test/unit')
 
 meson.add_install_script('scripts/copy_libs.bat')
