@@ -19,6 +19,7 @@ for %%i in (%CONFIG% %*) do (
 	if "%%i"=="rebuild" set CLEAN=y
 )
 
+if not "%CLEAN%"=="clean" if not exist build-tmp\build.ninja set CLEAN=y
 if not "%CLEAN%"=="clean" if not "%CONFIG%"=="%CC% %ARCH% %TYPE%" (
 	if not "%CONFIG%"=="" echo Config changed from '%CONFIG%' to '%CC% %ARCH% %TYPE%'
 	set CLEAN=y
