@@ -3,7 +3,6 @@
  *
  *  Copyright (c) 2020, MayaData Inc. All rights reserved.
  *  Copyright (c) 2020, DataCore Software Corporation. All rights reserved.
- *
  */
 
 /*

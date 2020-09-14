@@ -1,10 +1,17 @@
+/*-
+ *  SPDX-License-Identifier: BSD-3-Clause
+ *
+ *  Copyright (c) 2020, MayaData Inc. All rights reserved.
+ *  Copyright (c) 2020, DataCore Software Corporation. All rights reserved.
+ */
+
 #ifndef _WPDK_SYS__TYPES_H_
 #define _WPDK_SYS__TYPES_H_
 
 #include <sys/platform.h>
+#include <sys/types.h>
 #include <stddef.h>
 #include <stdint.h>
-#include <sys/types.h>
 
 _WPDK_BEGIN_C_HEADER
 
