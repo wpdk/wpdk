@@ -31,6 +31,8 @@ The build system uses Meson and Ninja and a batch file is provided as a covenien
 .\build.bat [release|debug] [cl|clang] [clean|rebuild]
 ~~~
 
+The batch file remembers the previous configuration and only changes need to be specified on the command line.
+
 ## Unit Tests
 
 ~~~{.sh}
