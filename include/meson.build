@@ -68,3 +68,8 @@ install_headers(
 	'openssl/md5.h',
 	subdir: 'openssl'
 )
+
+install_headers(
+	'uuid/uuid.h',
+	subdir: 'uuid'
+)
