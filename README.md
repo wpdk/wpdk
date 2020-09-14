@@ -20,11 +20,15 @@ MSYS2 with the following packages:
 
 A supported compiler is required, either Visual Studio 2019 or Clang.
 
+Meson
+
 <a id="build"></a>
 ## Build
 
+The build system uses Meson and Ninja and a batch file is provided as a covenience:
+
 ~~~{.sh}
-.\build.bat
+.\build.bat [release|debug] [cl|clang] [clean|rebuild]
 ~~~
 
 ## Unit Tests
