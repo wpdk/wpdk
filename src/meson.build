@@ -7,6 +7,7 @@ cflags = []
 sources = [
 	'aio.c',
 	'epoll.c',
+	'error.c',
 	'fcntl.c',
 	'file.c',
 	'getopt.c',

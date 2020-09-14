@@ -5,6 +5,7 @@
 install_headers(
 	'corecrt.h',
 	'dirent.h',
+	'errno.h',
 	'fcntl.h',
 	'getopt.h',
 	'ifaddrs.h',

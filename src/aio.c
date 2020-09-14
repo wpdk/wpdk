@@ -566,13 +566,9 @@ int io_getevents(io_context_t ctx_id, long min_nr, long nr, struct io_event *eve
 }
 
 
-// HACK - more extensive list
 int wpdk_windows_seterrno (DWORD err)
 {
-	int error = EINVAL;
-
-	UNREFERENCED_PARAMETER(err);
-
+	int error = wpdk_convert_to_errno(err);
 	_set_errno(error);
 	return error;
 }
