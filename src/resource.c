@@ -8,6 +8,7 @@ int getrlimit(int resource, struct rlimit *rlp)
 		return EINVAL;
 
 	// HACK - not implemented
+	WPDK_UNIMPLEMENTED();
 	memset(rlp, 0, sizeof(struct rlimit));
 	return 0;
 }
@@ -19,6 +20,7 @@ int setrlimit(int resource, const struct rlimit *rlp)
 		return EINVAL;
 
 	// HACK - not implemented
+	WPDK_UNIMPLEMENTED();
 	return 0;
 }
 
@@ -29,6 +31,7 @@ int getrusage(int who, struct rusage *usage)
 		return EINVAL;
 
 	// HACK - not implemented
+	WPDK_UNIMPLEMENTED();
 	memset(usage, 0, sizeof(struct rusage));
 	return 0;
 }

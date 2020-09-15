@@ -31,5 +31,6 @@ char *strerror_r_gnu(int errnum, char *buf, size_t buflen)
 char *strcasestr(const char *haystack, const char *needle)
 {
 	// HACK - not case insensitive
+	WPDK_UNIMPLEMENTED();
 	return (char *)strstr(haystack, needle);
 }

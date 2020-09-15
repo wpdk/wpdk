@@ -6,6 +6,7 @@ int MD5_Init(MD5_CTX *c)
 {
 	UNREFERENCED_PARAMETER(c);
 	// HACK - implementation
+	WPDK_UNIMPLEMENTED();
 	return -1;
 }
 
@@ -16,6 +17,7 @@ int MD5_Update(MD5_CTX *c, const void *data, size_t len)
 	UNREFERENCED_PARAMETER(data);
 	UNREFERENCED_PARAMETER(len);
 	// HACK - implementation
+	WPDK_UNIMPLEMENTED();
 	return -1;
 }
 
@@ -25,6 +27,7 @@ int MD5_Final(unsigned char *md, MD5_CTX *c)
 	UNREFERENCED_PARAMETER(md);
 	UNREFERENCED_PARAMETER(c);
 	// HACK - implementation
+	WPDK_UNIMPLEMENTED();
 	return -1;
 }
 
@@ -35,6 +38,7 @@ unsigned char *MD5(const unsigned char *d, size_t n, unsigned char *md)
 	UNREFERENCED_PARAMETER(n);
 	UNREFERENCED_PARAMETER(md);
 	// HACK - implementation
+	WPDK_UNIMPLEMENTED();
 	return NULL;
 }
 
@@ -43,5 +47,6 @@ void MD5_Transform(MD5_CTX *c, const unsigned char *b)
 {
 	UNREFERENCED_PARAMETER(c);
 	UNREFERENCED_PARAMETER(b);
+	WPDK_UNIMPLEMENTED();
 	// HACK - implementation
 }

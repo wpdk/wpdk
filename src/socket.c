@@ -593,6 +593,7 @@ int wpdk_shutdown(int socket, int how)
 int wpdk_sockatmark(int s)
 {
 	// HACK - TODO
+	WPDK_UNIMPLEMENTED();
 	UNREFERENCED_PARAMETER(s);
 	return -1;
 	// return sockatmark(s);
@@ -606,6 +607,7 @@ int wpdk_socketpair(int domain, int type, int protocol, int socket_vector[2])
 	UNREFERENCED_PARAMETER(type);
 	UNREFERENCED_PARAMETER(protocol);
 	UNREFERENCED_PARAMETER(socket_vector);
+	WPDK_UNIMPLEMENTED();
 	return -1;
 	// return socketpair(domain, type, protocol, socket_vector[2]);
 }

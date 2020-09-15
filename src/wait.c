@@ -6,6 +6,7 @@ pid_t wait(int *stat_loc)
 {
 	// HACK - implement
 	UNREFERENCED_PARAMETER(stat_loc);
+	WPDK_UNIMPLEMENTED();
 	return (pid_t)-1;
 }
 
@@ -16,5 +17,6 @@ pid_t waitpid(pid_t pid, int *stat_loc, int options)
 	UNREFERENCED_PARAMETER(pid);
 	UNREFERENCED_PARAMETER(stat_loc);
 	UNREFERENCED_PARAMETER(options);
+	WPDK_UNIMPLEMENTED();
 	return (pid_t)-1;
 }

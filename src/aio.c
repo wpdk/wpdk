@@ -531,6 +531,7 @@ int io_submit(io_context_t ctx_id, long nr, struct iocb *ios[])
 int io_cancel(io_context_t ctx_id, struct iocb *iocb, struct io_event *evt)
 {
 	// HACK - not implemented
+	WPDK_UNIMPLEMENTED();
 	UNREFERENCED_PARAMETER(ctx_id);
 	UNREFERENCED_PARAMETER(iocb);
 	UNREFERENCED_PARAMETER(evt);
@@ -561,6 +562,5 @@ int io_getevents(io_context_t ctx_id, long min_nr, long nr, struct io_event *eve
 	}
 
 	// HACK - no synchronisation - need barriers
-	// HACK - io_getevents not implemented
 	return i;
 }

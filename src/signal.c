@@ -50,6 +50,7 @@ int sigaction(int sig, const struct sigaction *act, struct sigaction *oact)
 	UNREFERENCED_PARAMETER(act);
 	UNREFERENCED_PARAMETER(oact);
 
+	WPDK_UNIMPLEMENTED();
 	// HACK - not implemented
 	return 0;
 }
@@ -61,6 +62,7 @@ int pthread_sigmask(int how, const sigset_t *set, sigset_t *oset)
 	UNREFERENCED_PARAMETER(set);
 	UNREFERENCED_PARAMETER(oset);
 
+	WPDK_UNIMPLEMENTED();
 	// HACK - not implemented
 	return 0;
 }
@@ -71,6 +73,7 @@ int kill(pid_t pid, int sig)
 	UNREFERENCED_PARAMETER(pid);
 	UNREFERENCED_PARAMETER(sig);
 
+	WPDK_UNIMPLEMENTED();
 	// HACK - implementation
 	return -1;
 }

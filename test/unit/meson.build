@@ -2,11 +2,14 @@
 # Copyright (c) 2020, MayaData Inc. All rights reserved.
 # Copyright (c) 2020, DataCore Software Corporation. All rights reserved.
 
-cflags = []
+cflags = [
+	'-DCHECK_UNIMPLEMENTED',
+]
 
 sources = [
 	'main.c',
 	'error_ut.c',
+	'fatal_ut.c',
 	'strings_ut.c',
 ]
 

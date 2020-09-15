@@ -17,6 +17,8 @@ int mkstemp(char *path)
 int posix_memalign(void **memptr, size_t alignment, size_t size)
 {
 	// HACK - not aligned - just basic malloc for now
+	WPDK_UNIMPLEMENTED();
+
 	UNREFERENCED_PARAMETER(alignment);
 
 	if (!memptr || !size)

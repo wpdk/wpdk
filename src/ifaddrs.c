@@ -8,6 +8,7 @@ int getifaddrs(struct ifaddrs **ifap)
 	// HACK https://www.google.co.uk/search?ei=wOdNX5CuEJLHxgOhkZv4Bg&q=windows+socket+getifaddrs&oq=windows+socket+getifaddrs&gs_lcp=CgZwc3ktYWIQAzoGCAAQBxAeOggIABAIEAcQHjoCCAA6BggAEAgQHlDYV1i4Z2CybWgAcAB4AIABRogBxAaSAQIxNJgBAKABAaoBB2d3cy13aXrAAQE&sclient=psy-ab&ved=0ahUKEwiQjvbrp8frAhWSo3EKHaHIBm8Q4dUDCA0&uact=5
 	if (ifap)
 		*ifap = NULL;
+	WPDK_UNIMPLEMENTED();
 	return EINVAL;
 }
 
@@ -15,5 +16,6 @@ int getifaddrs(struct ifaddrs **ifap)
 void freeifaddrs(struct ifaddrs *ifa)
 {
 	UNREFERENCED_PARAMETER(ifa);
+	WPDK_UNIMPLEMENTED();
 	// HACK - not implemented
 }

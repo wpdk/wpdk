@@ -143,6 +143,7 @@ int pthread_mutex_consistent(pthread_mutex_t *mutex)
 {
 	//HACK - not implemented
 	UNREFERENCED_PARAMETER(mutex);
+	WPDK_UNIMPLEMENTED();
 	return 0;
 }
 
@@ -351,6 +352,7 @@ int pthread_cancel(pthread_t thread)
 {
 	// HACK - unimplemented
 	UNREFERENCED_PARAMETER(thread);
+	WPDK_UNIMPLEMENTED();
 	return EINVAL;
 }
 
@@ -388,4 +390,5 @@ int pthread_setcanceltype(int type, int *oldtype)
 void pthread_testcancel(void)
 {
 	// HACK - unimplemented
+	WPDK_UNIMPLEMENTED();
 }

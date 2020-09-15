@@ -17,6 +17,7 @@ int truncate(const char *path, off_t length)
 	// HACK - truncate
 	UNREFERENCED_PARAMETER(path);
 	UNREFERENCED_PARAMETER(length);
+	WPDK_UNIMPLEMENTED();
 	return EINVAL;
 }
 
@@ -59,6 +60,7 @@ char *ttyname(int fildes)
 	static char tty[] = "/dev/tty";
 	// HACK - implementation
 	UNREFERENCED_PARAMETER(fildes);
+	WPDK_UNIMPLEMENTED();
 	return tty;
 }
 
@@ -67,6 +69,7 @@ int isatty(int fildes)
 {
 	// HACK - implementation
 	UNREFERENCED_PARAMETER(fildes);
+	WPDK_UNIMPLEMENTED();
 	return false;
 }
 
@@ -84,6 +87,8 @@ long sysconf(int name)
 {
 	// HACK - implement
 
+	WPDK_UNIMPLEMENTED();
+
 	if (name == _SC_NPROCESSORS_CONF)
 		return 4;
 
@@ -100,6 +105,7 @@ long sysconf(int name)
 pid_t fork()
 {
 	// HACK - implement
+	WPDK_UNIMPLEMENTED();
 	return (pid_t)-1;
 }
 
@@ -109,6 +115,7 @@ int daemon(int nochdir, int noclose)
 	// HACK - implement
 	UNREFERENCED_PARAMETER(nochdir);
 	UNREFERENCED_PARAMETER(noclose);
+	WPDK_UNIMPLEMENTED();
 	return -1;
 }
 
@@ -167,5 +174,6 @@ int fsync(int fildes)
 {
 	// HACK - not implemented
 	UNREFERENCED_PARAMETER(fildes);
+	WPDK_UNIMPLEMENTED();
 	return 0;
 }

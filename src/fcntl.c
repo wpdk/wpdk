@@ -88,5 +88,6 @@ int wpdk_fcntl(int fildes, int cmd, ...)
 			break;
 	}
 
+	WPDK_UNIMPLEMENTED();
 	return -1;
 }

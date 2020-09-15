@@ -37,6 +37,15 @@ int wpdk_posix_error(int error);
 int wpdk_windows_error(int error);
 int wpdk_convert_to_posix(int err);
 
+void wpdk_fatal(const char *file, int line, const char *function, const char *message);
+
+#ifdef CHECK_UNIMPLEMENTED
+#define WPDK_UNIMPLEMENTED() \
+	wpdk_fatal(__FILE__,__LINE__,__FUNCTION__,"Unimplemented functionality")
+#else
+#define WPDK_UNIMPLEMENTED()
+#endif
+
 _WPDK_END_C_HEADER
 
 #endif /* _WPDK_WPDKLIB_H_ */

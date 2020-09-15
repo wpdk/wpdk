@@ -175,6 +175,7 @@ int epoll_wait(int epfd, struct epoll_event *events, int maxevents, int timeout)
 
 	// HACK - timeout not supported
 	if (timeout || !events || maxevents < 1) {
+		WPDK_UNIMPLEMENTED();
 		_set_errno(EINVAL);
 		return -1;
 	}

@@ -30,6 +30,7 @@ void *mmap(void *addr, size_t len, int prot, int flags, int fildes, off_t off)
 	
 	// HACK - fixed address not implemented yet
 	if (addr) {
+		WPDK_UNIMPLEMENTED();
 		_set_errno(EINVAL);
 		return NULL;
 	}
