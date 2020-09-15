@@ -19,10 +19,15 @@
 
 _WPDK_BEGIN_C_HEADER
 
-int strcasecmp(const char *s1, const char *s2);
-int strncasecmp(const char *s1, const char *s2, size_t n);
+int wpdk_strcasecmp(const char *s1, const char *s2);
+int wpdk_strncasecmp(const char *s1, const char *s2, size_t n);
+char *wpdk_strcasestr(const char *haystack, const char *needle);
 
-char *strcasestr(const char *haystack, const char *needle);
+#ifndef _WPDK_BUILD_LIB_
+#define strcasecmp(s1,s2) wpdk_strcasecmp(s1,s2)
+#define strncasecmp(s1,s2) wpdk_strncasecmp(s1,s2)
+#define strcasestr(haystack,needle) wpdk_strcasecmp(haystack,needle)
+#endif
 
 _WPDK_END_C_HEADER
 

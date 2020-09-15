@@ -65,8 +65,8 @@ wpdk_fatal(const char *file, int line, const char *function, const char *message
 	if (!fatal_function || strcmp(function, fatal_function) != 0) {
 		fprintf(stderr, "%s:%d: %s(): %s\n", file, line, function,
 			(message ? message : "fatal error"));
-		
-		abort();
+
+		CU_ASSERT_FATAL(0);
 	}
 	
 	fatal_count++;

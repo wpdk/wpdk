@@ -13,6 +13,7 @@
  * by Dieter Baron and Thomas Klausner.
  */
 
+#include <wpdklib.h>
 #include <getopt.h>
 
 #ifdef NEED_USUAL_GETOPT

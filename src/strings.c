@@ -15,21 +15,31 @@
 #include <strings.h>
 
 
-int strcasecmp(const char *s1, const char *s2)
+int wpdk_strcasecmp(const char *s1, const char *s2)
 {
 	return _stricmp(s1, s2);
 }
 
 
-int strncasecmp(const char *s1, const char *s2, size_t n)
+int wpdk_strncasecmp(const char *s1, const char *s2, size_t n)
 {
 	return _strnicmp(s1, s2, n);
 }
 
 
-char *strcasestr(const char *haystack, const char *needle)
+char *wpdk_strcasestr(const char *haystack, const char *needle)
 {
-	// HACK - not case insensitive
-	WPDK_UNIMPLEMENTED();
-	return (char *)strstr(haystack, needle);
+	const char *cp;
+	size_t len;
+
+	if (!haystack || !needle)
+		return NULL;
+
+	len = strlen(needle);
+
+	for (cp = haystack; *cp; cp++)
+		if (_strnicmp(cp, needle, len) == 0)
+			return (char *)cp;
+
+	return NULL;
 }
