@@ -22,6 +22,6 @@ cunit_dep = cunit.get_variable('cunit_dep')
 
 subdir('include')
 subdir('src')
-# subdir('test/unit')
+subdir('test/unit')
 
 meson.add_install_script('scripts/copy_libs.bat')

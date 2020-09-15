@@ -75,7 +75,7 @@ int wpdk_fcntl(int fildes, int cmd, ...)
 				rc = ioctlsocket(s, FIONBIO, &mode);
 
 				if (rc == SOCKET_ERROR)
-					return wpdk_socket_error();
+					return wpdk_last_wsa_error();
 
 				return 0;
 			}

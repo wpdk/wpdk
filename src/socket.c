@@ -40,7 +40,7 @@ int wpdk_socket_startup()
 	wsaerr = WSAStartup(wVersionRequested, &wsaData);
 
 	if (wsaerr != 0) {
-		wpdk_socket_seterrno(wsaerr);
+		wpdk_windows_error(wsaerr);
 		free(domains);
 		free(fds);
 		return 0;
@@ -66,7 +66,7 @@ int wpdk_socket_startup()
 int wpdk_socket_cleanup()
 {
 	if (WSACleanup() == SOCKET_ERROR)
-		return wpdk_socket_error();
+		return wpdk_last_wsa_error();
 
 	// HACK - need to free fd and domain lists
 	return 0;
@@ -117,12 +117,12 @@ int wpdk_socket(int domain, int type, int protocol)
 	SOCKET s;
 
 	if (!wpdk_socket_ready && !wpdk_socket_startup())
-		return wpdk_socket_error();
+		return wpdk_last_wsa_error();
 
 	s = socket(domain, type, protocol);
 
 	if (s == INVALID_SOCKET)
-		return wpdk_socket_error();
+		return wpdk_last_wsa_error();
 
 	return wpdk_allocate_socket(s, domain);
 }
@@ -142,7 +142,7 @@ int wpdk_close_socket(int socket)
 	}
 
 	if (closesocket(s) == SOCKET_ERROR)
-		return wpdk_socket_error();
+		return wpdk_last_wsa_error();
 
 	return 0;
 }
@@ -161,7 +161,7 @@ int wpdk_accept(int socket, struct sockaddr *address, socklen_t *address_len)
 	s = accept(s, address, address_len);
 
 	if (s == INVALID_SOCKET)
-		return wpdk_socket_error();
+		return wpdk_last_wsa_error();
 
 	return wpdk_allocate_socket(s, domain);
 }
@@ -197,7 +197,7 @@ int wpdk_bind(int socket, const struct sockaddr *address, socklen_t address_len)
 	rc = bind(s, (struct sockaddr *)addr, len);
 
 	if (rc == SOCKET_ERROR)
-		return wpdk_socket_error();
+		return wpdk_last_wsa_error();
 
 	return 0;
 }
@@ -235,7 +235,7 @@ int wpdk_connect(int socket, const struct sockaddr *address, socklen_t address_l
 	if (rc == SOCKET_ERROR) {
 		// HACK - connect - if WSAEWOULDBLOCK on non-blocking socket - ignore / retry?
 		if (WSAGetLastError() != WSAEWOULDBLOCK)
-			return wpdk_socket_error();
+			return wpdk_last_wsa_error();
 	}
 
 	return 0;
@@ -253,7 +253,7 @@ int wpdk_getpeername(int socket, struct sockaddr *address, socklen_t *address_le
 	rc = getpeername(s, address, address_len);
 
 	if (rc == SOCKET_ERROR)
-		return wpdk_socket_error();
+		return wpdk_last_wsa_error();
 
 	return 0;
 }
@@ -270,7 +270,7 @@ int wpdk_getsockname(int socket, struct sockaddr *address, socklen_t *address_le
 	rc = getsockname(s, address, address_len);
 
 	if (rc == SOCKET_ERROR)
-		return wpdk_socket_error();
+		return wpdk_last_wsa_error();
 
 	return 0;
 }
@@ -287,7 +287,7 @@ int wpdk_getsockopt(int socket, int level, int option_name, void *option_value, 
 	rc = getsockopt(s, level, option_name, (char *)option_value, option_len);
 
 	if (rc == SOCKET_ERROR)
-		return wpdk_socket_error();
+		return wpdk_last_wsa_error();
 
 	return 0;	
 }
@@ -304,7 +304,7 @@ int wpdk_listen(int socket, int backlog)
 	rc = listen(s, backlog);
 
 	if (rc == SOCKET_ERROR)
-		return wpdk_socket_error();
+		return wpdk_last_wsa_error();
 
 	return 0;	
 }
@@ -322,7 +322,7 @@ ssize_t wpdk_recv(int socket, void *buffer, size_t length, int flags)
 	rc = recv(s, buffer, (int)length, flags);
 
 	if (rc == SOCKET_ERROR)
-		return wpdk_socket_error();
+		return wpdk_last_wsa_error();
 
 	return rc;
 }
@@ -341,7 +341,7 @@ ssize_t wpdk_recvfrom(int socket, void *buffer, size_t length,
 	rc = recvfrom(s, buffer, (int)length, flags, address, address_len);
 
 	if (rc == SOCKET_ERROR)
-		return wpdk_socket_error();
+		return wpdk_last_wsa_error();
 
 	return rc;
 }
@@ -391,7 +391,7 @@ ssize_t wpdk_socket_readv(int fildes, const struct iovec *iov, int iovcnt)
 	if (pBuffer != buf) free(pBuffer);
 
 	if (rc == SOCKET_ERROR)
-		return wpdk_socket_error();
+		return wpdk_last_wsa_error();
 
 	return nbytes;
 }
@@ -433,7 +433,7 @@ ssize_t wpdk_recvmsg(int socket, struct msghdr *message, int flags)
 	if (pBuffer != buf) free(pBuffer);
 
 	if (rc == SOCKET_ERROR)
-		return wpdk_socket_error();
+		return wpdk_last_wsa_error();
 
 	message->msg_flags = msg.dwFlags;
 	message->msg_control = msg.Control.buf;
@@ -454,7 +454,7 @@ ssize_t wpdk_send(int socket, const void *buffer, size_t length, int flags)
 	rc = send(s, buffer, (int)length, flags);
 
 	if (rc == SOCKET_ERROR)
-		return wpdk_socket_error();
+		return wpdk_last_wsa_error();
 
 	return rc;
 }
@@ -482,7 +482,7 @@ ssize_t wpdk_socket_writev(int fildes, const struct iovec *iov, int iovcnt)
 	if (pBuffer != buf) free(pBuffer);
 
 	if (rc == SOCKET_ERROR)
-		return wpdk_socket_error();
+		return wpdk_last_wsa_error();
 
 	return nbytes;
 }
@@ -523,7 +523,7 @@ ssize_t wpdk_sendmsg(int socket, const struct msghdr *message, int flags)
 	if (pBuffer != buf) free(pBuffer);
 
 	if (rc == SOCKET_ERROR)
-		return wpdk_socket_error();
+		return wpdk_last_wsa_error();
 
 	return nbytes;
 }
@@ -542,7 +542,7 @@ ssize_t wpdk_sendto(int socket, const void *message, size_t length,
 	rc = sendto(s, message, (int)length, flags, dest_addr, dest_len);
 
 	if (rc == SOCKET_ERROR)
-		return wpdk_socket_error();
+		return wpdk_last_wsa_error();
 
 	return rc;
 }
@@ -567,7 +567,7 @@ int wpdk_setsockopt(int socket, int level, int option_name, const void *option_v
 	rc = setsockopt(s, level, option_name, (const char *)option_value, option_len);
 
 	if (rc == SOCKET_ERROR)
-		return wpdk_socket_error();
+		return wpdk_last_wsa_error();
 
 	return 0;
 }
@@ -584,7 +584,7 @@ int wpdk_shutdown(int socket, int how)
 	rc = shutdown(socket, how);
 
 	if (rc == SOCKET_ERROR)
-		return wpdk_socket_error();
+		return wpdk_last_wsa_error();
 
 	return 0;
 }
@@ -614,22 +614,7 @@ int wpdk_socketpair(int domain, int type, int protocol, int socket_vector[2])
 int wpdk_socket_rc (int rc)
 {
 	if (rc == SOCKET_ERROR)
-		return wpdk_socket_error();
+		return wpdk_last_wsa_error();
 
 	return 0;
-}
-
-
-int wpdk_socket_error ()
-{
-	wpdk_socket_seterrno(WSAGetLastError());
-	return -1;
-}
-
-
-int wpdk_socket_seterrno (int wsaerr)
-{
-	int error = wpdk_convert_to_errno(wsaerr);
-	_set_errno(error);
-	return error;
 }

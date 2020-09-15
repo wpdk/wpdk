@@ -202,7 +202,7 @@ int epoll_wait(int epfd, struct epoll_event *events, int maxevents, int timeout)
 	rc = select(ep->maxcount, &readfds, NULL, &exceptfds, &delay);
 
 	if (rc == SOCKET_ERROR)
-		return wpdk_socket_error();
+		return wpdk_last_wsa_error();
 
 	for (i = ep->start, n = 0; i < ep->maxcount && n < maxevents && n < rc; i++) {
 		if (ep->socket[i] == INVALID_SOCKET) continue;

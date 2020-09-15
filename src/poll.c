@@ -56,7 +56,7 @@ int poll(struct pollfd fds[], nfds_t nfds, int timeout)
 	rc = (worktodo) ? select(nfds, &readfds, &writefds, &exceptfds, (timeout != -1) ? &delay : NULL) : 0;
 
 	if (rc == SOCKET_ERROR)
-		return wpdk_socket_error();
+		return wpdk_last_wsa_error();
 
 	for (n = i = 0; i < nfds && i < FD_SETSIZE; i++) {
 		if (fds[i].fd < 0) continue;

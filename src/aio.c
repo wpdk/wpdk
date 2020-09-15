@@ -221,7 +221,7 @@ static void wpdk_aio_done (struct io_task *io, long long res)
 
 static int wpdk_aio_iov_abort (struct io_task *io)
 {
-	int rc = wpdk_windows_seterrno(GetLastError());
+	int rc = wpdk_convert_to_posix(GetLastError());
 	struct io_task *task = io->task;
 	int count, i = (int)(io - task);
 
@@ -230,7 +230,7 @@ static int wpdk_aio_iov_abort (struct io_task *io)
 
 	if (count == 1) {
 		wpdk_aio_free(task);
-		return (_set_errno(rc), -rc);
+		return (wpdk_posix_error(rc), -rc);
 	}
 
 	wpdk_aio_iov_done(task, 1);
@@ -240,10 +240,10 @@ static int wpdk_aio_iov_abort (struct io_task *io)
 
 static int wpdk_aio_abort (struct io_task *task)
 {
-	int rc = wpdk_windows_seterrno(GetLastError());
+	int rc = wpdk_convert_to_posix(GetLastError());
 
 	wpdk_aio_free(task);
-	return (_set_errno(rc), -rc);
+	return (wpdk_posix_error(rc), -rc);
 }
 
 
@@ -563,19 +563,4 @@ int io_getevents(io_context_t ctx_id, long min_nr, long nr, struct io_event *eve
 	// HACK - no synchronisation - need barriers
 	// HACK - io_getevents not implemented
 	return i;
-}
-
-
-int wpdk_windows_seterrno (DWORD err)
-{
-	int error = wpdk_convert_to_errno(err);
-	_set_errno(error);
-	return error;
-}
-
-
-int wpdk_windows_error ()
-{
-	wpdk_windows_seterrno(GetLastError());
-	return -1;
 }

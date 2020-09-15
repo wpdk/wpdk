@@ -84,4 +84,8 @@ static inline ssize_t sendmsg(int socket, const struct msghdr *message, int flag
 
 _WPDK_END_C_HEADER
 
+#ifdef _MSC_VER
+#pragma comment(lib, "ws2_32")
+#endif
+
 #endif /* _WPDK_SYS_SOCKET_H_ */

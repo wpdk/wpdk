@@ -20,10 +20,6 @@ int wpdk_socket_startup();
 int wpdk_is_socket(int fd);
 int wpdk_is_epoll(int fd);
 
-int wpdk_socket_error();
-int wpdk_socket_seterrno();
-int wpdk_windows_error();
-int wpdk_windows_seterrno();
 int wpdk_socket_rc(int rc);
 SOCKET wpdk_get_socket(int fd);
 
@@ -35,7 +31,11 @@ ssize_t wpdk_socket_writev(int fildes, const struct iovec *iov, int iovcnt);
 
 const char *wpdk_get_path(const char *path, char *buffer, size_t len);
 
-int wpdk_convert_to_errno(int err);
+int wpdk_last_error();
+int wpdk_last_wsa_error();
+int wpdk_posix_error(int error);
+int wpdk_windows_error(int error);
+int wpdk_convert_to_posix(int err);
 
 _WPDK_END_C_HEADER
 

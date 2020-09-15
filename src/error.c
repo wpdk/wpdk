@@ -13,16 +13,51 @@
  */
 
 #include <wpdklib.h>
+#include <sys/socket.h>
 #include <errno.h>
+
+
+int
+wpdk_last_error()
+{
+	return wpdk_windows_error(GetLastError());
+}
+
+
+int
+wpdk_last_wsa_error()
+{
+	return wpdk_windows_error(WSAGetLastError());
+}
+
+
+int
+wpdk_windows_error(int error)
+{
+	_set_errno(wpdk_convert_to_posix(error));
+	return (-1);
+}
+
+
+int
+wpdk_posix_error(int error)
+{
+	_set_errno(error);
+	return (-1);
+}
 
 
 // HACK - add non WSA errors
 int
-wpdk_convert_to_errno(int err)
+wpdk_convert_to_posix(int err)
 {
 	switch (err) {
 		case ERROR_SUCCESS:
 			return 0;
+
+		case ERROR_FILE_NOT_FOUND:
+			/* The system cannot find the file specified */
+			return ENOENT;
 
 		case WSAEINTR:
 			/* A blocking operation was interrupted by a call to WSACancelBlockingCall */
