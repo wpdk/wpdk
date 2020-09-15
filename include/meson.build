@@ -20,6 +20,7 @@ install_headers(
 	'signal.h',
 	'stdio.h',
 	'stdlib.h',
+	'string.h',
 	'strings.h',
 	'syslog.h',
 	'termios.h',

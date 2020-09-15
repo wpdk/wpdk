@@ -7,9 +7,9 @@
 
 
 void add_error_tests();
+void add_string_tests();
 void add_strings_tests();
 void add_fatal_tests();
-
 
 
 static int fatal_count;
@@ -28,6 +28,7 @@ main(int argc, char **argv)
 	CU_initialize_registry();
 
 	add_error_tests();
+	add_string_tests();
 	add_strings_tests();
 	add_fatal_tests();
 

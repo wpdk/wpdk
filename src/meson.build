@@ -26,6 +26,7 @@ sources = [
 	'stat.c',
 	'stdio.c',
 	'stdlib.c',
+	'string.c',
 	'strings.c',
 	'syslog.c',
 	'termios.c',

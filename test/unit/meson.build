@@ -10,6 +10,7 @@ sources = [
 	'main.c',
 	'error_ut.c',
 	'fatal_ut.c',
+	'string_ut.c',
 	'strings_ut.c',
 ]
 

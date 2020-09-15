@@ -15,7 +15,7 @@
 
 _WPDK_BEGIN_C_HEADER
 
-int wpdk_socket_startup();
+int wpdk_socket_startup(void);
 
 int wpdk_is_socket(int fd);
 int wpdk_is_epoll(int fd);
@@ -31,8 +31,8 @@ ssize_t wpdk_socket_writev(int fildes, const struct iovec *iov, int iovcnt);
 
 const char *wpdk_get_path(const char *path, char *buffer, size_t len);
 
-int wpdk_last_error();
-int wpdk_last_wsa_error();
+int wpdk_last_error(void);
+int wpdk_last_wsa_error(void);
 int wpdk_posix_error(int error);
 int wpdk_windows_error(int error);
 int wpdk_convert_to_posix(int err);

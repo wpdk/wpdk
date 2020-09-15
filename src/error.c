@@ -3,48 +3,21 @@
  *
  *  Copyright (c) 2020, MayaData Inc. All rights reserved.
  *  Copyright (c) 2020, DataCore Software Corporation. All rights reserved.
- */
-
-/*
- *  Details about possible windows error codes are drawn from Microsoft
- *  documentation at:
  *
+ *  POSIX details are based on the Open Group Base Specification Issue 7,
+ *  2018 edition at https://pubs.opengroup.org/onlinepubs/9699919799/
+ * 
+ *  Details about Linux extensions are based on the Linux man-pages project
+ *  at https://www.kernel.org/doc/man-pages/
+ *
+ *  Details about possible windows error codes are drawn from Microsoft
+ *  documentation at
  *  https://docs.microsoft.com/en-us/windows/win32/debug/system-error-codes
  */
 
 #include <wpdklib.h>
 #include <sys/socket.h>
 #include <errno.h>
-
-
-int
-wpdk_last_error()
-{
-	return wpdk_windows_error(GetLastError());
-}
-
-
-int
-wpdk_last_wsa_error()
-{
-	return wpdk_windows_error(WSAGetLastError());
-}
-
-
-int
-wpdk_windows_error(int error)
-{
-	_set_errno(wpdk_convert_to_posix(error));
-	return (-1);
-}
-
-
-int
-wpdk_posix_error(int error)
-{
-	_set_errno(error);
-	return (-1);
-}
 
 
 // HACK - add non WSA errors
@@ -322,4 +295,34 @@ wpdk_convert_to_posix(int err)
 
 	// Default to EINVAL as a generic failure
 	return EINVAL;
+}
+
+
+int
+wpdk_last_error()
+{
+	return wpdk_windows_error(GetLastError());
+}
+
+
+int
+wpdk_last_wsa_error()
+{
+	return wpdk_windows_error(WSAGetLastError());
+}
+
+
+int
+wpdk_windows_error(int error)
+{
+	_set_errno(wpdk_convert_to_posix(error));
+	return (-1);
+}
+
+
+int
+wpdk_posix_error(int error)
+{
+	_set_errno(error);
+	return (-1);
 }
