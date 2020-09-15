@@ -48,7 +48,7 @@ static_lib = static_library('wpdk',
 
 # build empty libraries
 foreach name:['aio', 'crypto', 'numa', 'pthread', 'rt', 'uuid']
-	static_lib = static_library(name,
+	null_lib = static_library(name,
 			['empty.c'],
 			c_args: cflags,
 			include_directories: [ global_includes ],

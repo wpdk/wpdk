@@ -1,4 +1,3 @@
-#include <sys/platform.h>
 #include <wpdklib.h>
 #include <stdio.h>
 #include <errno.h>

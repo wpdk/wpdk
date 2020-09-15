@@ -16,8 +16,9 @@ sources = [
 
 unit_tests = executable('unit_tests',
 		sources,
-		c_args: cflags,
+		c_args: [ cflags, '-D_WPDK_UNIT_TESTS_' ],
 		include_directories: [ global_includes ],
+		link_with : static_lib,
 		dependencies : cunit_dep,
 		install: true
 )

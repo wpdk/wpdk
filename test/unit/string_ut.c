@@ -1,10 +1,9 @@
-#include <sys/platform.h>
+#include <wpdklib.h>
+#include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
 
 #include <CUnit/Basic.h>
-
-#include "src/string.c"
 
 
 static int
@@ -29,25 +28,25 @@ test_strerror_r(void)
 
 	/* Check valid error code */
 	strcpy(buf, "");
-	rc = wpdk_strerror_r(EINVAL, buf, sizeof(buf));
+	rc = strerror_r(EINVAL, buf, sizeof(buf));
 	CU_ASSERT(rc == 0);
 	CU_ASSERT(strlen(buf) != 0);
 
 	/* Check additional error codes */
 	strcpy(buf, "");
-	rc = wpdk_strerror_r(ESHUTDOWN, buf, sizeof(buf));
+	rc = strerror_r(ESHUTDOWN, buf, sizeof(buf));
 	CU_ASSERT(rc == 0);
 	CU_ASSERT(strstr(buf, "shut") != 0);
 
 	/* Check last additional error codes */
 	strcpy(buf, "");
-	rc = wpdk_strerror_r(EPROCLIM, buf, sizeof(buf));
+	rc = strerror_r(EPROCLIM, buf, sizeof(buf));
 	CU_ASSERT(rc == 0);
 	CU_ASSERT(strstr(buf, "proc") != 0);
 
 	/* Check buffer length is used */
 	strcpy(buf, "");
-	rc = wpdk_strerror_r(EINVAL, buf, 3);
+	rc = strerror_r(EINVAL, buf, 3);
 	CU_ASSERT(strcmp(buf, "In") == 0);
 }
 

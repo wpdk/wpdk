@@ -1,9 +1,8 @@
-#include <sys/platform.h>
+#include <wpdklib.h>
+#include <strings.h>
 #include <stdio.h>
 
 #include <CUnit/Basic.h>
-
-#include "src/strings.c"
 
 
 static int
@@ -30,19 +29,19 @@ test_strcasecmp(void)
 	int rc;
 
 	/* Check less than */
-	rc = wpdk_strcasecmp(s1, s2);
+	rc = strcasecmp(s1, s2);
 	CU_ASSERT(rc < 0);
 
 	/* Check greater than */
-	rc = wpdk_strcasecmp(s2, s1);
+	rc = strcasecmp(s2, s1);
 	CU_ASSERT(rc > 0);
 
 	/* Check equality */
-	rc = wpdk_strcasecmp(s1, s3);
+	rc = strcasecmp(s1, s3);
 	CU_ASSERT(rc == 0);
 
 	/* Check prefix */
-	rc = wpdk_strcasecmp(s1, s4);
+	rc = strcasecmp(s1, s4);
 	CU_ASSERT(rc < 0);
 }
 
@@ -57,19 +56,19 @@ test_strncasecmp(void)
 	int rc;
 
 	/* Check less than */
-	rc = wpdk_strncasecmp(s1, s2, 3);
+	rc = strncasecmp(s1, s2, 3);
 	CU_ASSERT(rc < 0);
 
 	/* Check equality */
-	rc = wpdk_strncasecmp(s1, s1, 4);
+	rc = strncasecmp(s1, s1, 4);
 	CU_ASSERT(rc == 0);
 
 	/* Check equality */
-	rc = wpdk_strncasecmp(s1, s3, 4);
+	rc = strncasecmp(s1, s3, 4);
 	CU_ASSERT(rc == 0);
 
 	/* Check prefix */
-	rc = wpdk_strncasecmp(s1, s4, 5);
+	rc = strncasecmp(s1, s4, 5);
 	CU_ASSERT(rc == 0);
 }
 
@@ -81,27 +80,27 @@ test_strcasestr(void)
 	char *cp;
 
 	/* Check exact match */
-	cp = wpdk_strcasestr(s, "lo-W");
+	cp = strcasestr(s, "lo-W");
 	CU_ASSERT(cp == s + 3);
 
 	/* Check case insensitive match */
-	cp = wpdk_strcasestr(s, "lo-w");
+	cp = strcasestr(s, "lo-w");
 	CU_ASSERT(cp == s + 3);
 
 	/* Check leading match */
-	cp = wpdk_strcasestr(s, "HELLO");
+	cp = strcasestr(s, "HELLO");
 	CU_ASSERT(cp == s);
 
 	/* Check trailing match */
-	cp = wpdk_strcasestr(s, "WORLD");
+	cp = strcasestr(s, "WORLD");
 	CU_ASSERT(cp == s + 6);
 
 	/* Check NULL argument */
-	cp = wpdk_strcasestr(s, NULL);
+	cp = strcasestr(s, NULL);
 	CU_ASSERT(cp == NULL);
 
 	/* Check empty search string */
-	cp = wpdk_strcasestr(s, "");
+	cp = strcasestr(s, "");
 	CU_ASSERT(cp == s);
 }
 

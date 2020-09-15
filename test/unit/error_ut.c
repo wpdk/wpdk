@@ -1,10 +1,9 @@
-#include <sys/platform.h>
+#include <wpdklib.h>
+#include <winsock2.h>
 #include <stdio.h>
 #include <errno.h>
 
 #include <CUnit/Basic.h>
-
-#include "src/error.c"
 
 
 static int
