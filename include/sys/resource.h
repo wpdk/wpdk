@@ -1,7 +1,20 @@
+/*-
+ *  SPDX-License-Identifier: BSD-3-Clause
+ *
+ *  Copyright (c) 2020, MayaData Inc. All rights reserved.
+ *  Copyright (c) 2020, DataCore Software Corporation. All rights reserved.
+ * 
+ *  POSIX details are based on the Open Group Base Specification Issue 7,
+ *  2018 edition at https://pubs.opengroup.org/onlinepubs/9699919799/
+ * 
+ *  Details about Linux extensions are based on the Linux man-pages project
+ *  at https://www.kernel.org/doc/man-pages/
+ */
+
 #ifndef _WPDK_SYS_RESOURCE_H_
 #define	_WPDK_SYS_RESOURCE_H_
 
-#include <sys/platform.h>
+#include <sys/cdefs.h>
 #include <sys/time.h>
 
 _WPDK_BEGIN_C_HEADER
@@ -22,9 +35,15 @@ struct rlimit {
 
 #define RLIMIT_CORE		1
 
-int getrlimit(int resource, struct rlimit *rlp);
-int setrlimit(int resource, const struct rlimit *rlp);
-int getrusage(int who, struct rusage *usage);
+int wpdk_getrlimit(int resource, struct rlimit *rlp);
+int wpdk_setrlimit(int resource, const struct rlimit *rlp);
+int wpdk_getrusage(int who, struct rusage *usage);
+
+#ifndef _WPDK_BUILD_LIB_
+#define getrlimit(res,rlp) wpdk_getrlimit(res,rlp)
+#define setrlimit(res,rlp) wpdk_setrlimit(res,rlp)
+#define getrusage(who,usage) wpdk_getrusage(who,usage)
+#endif
 
 _WPDK_END_C_HEADER
 

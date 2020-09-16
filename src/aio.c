@@ -1,10 +1,15 @@
-#include <wpdklib.h>
-#include <stdlib.h>
-#include <limits.h>
-#include <unistd.h>
-#include <libaio.h>
-
-/*
+/*-
+ *  SPDX-License-Identifier: BSD-3-Clause
+ *
+ *  Copyright (c) 2020, MayaData Inc. All rights reserved.
+ *  Copyright (c) 2020, DataCore Software Corporation. All rights reserved.
+ * 
+ *  POSIX details are based on the Open Group Base Specification Issue 7,
+ *  2018 edition at https://pubs.opengroup.org/onlinepubs/9699919799/
+ * 
+ *  Details about Linux extensions are based on the Linux man-pages project
+ *  at https://www.kernel.org/doc/man-pages/
+ *
  *  There seems to be a lack of definitive documentation about libaio.
  *  This implementation has been based on details found at:
  * 
@@ -13,6 +18,17 @@
  *  https://blog.cloudflare.com/io_submit-the-epoll-alternative-youve-never-heard-about/
  */
 
+#include <wpdklib.h>
+#include <sys/uio.h>
+#include <stdlib.h>
+#include <limits.h>
+#include <unistd.h>
+#include <libaio.h>
+
+#ifdef _MSC_VER
+// HACK - Silence warning about anonymous unions
+#pragma warning(disable:4201)
+#endif
 
 struct io_header;
 

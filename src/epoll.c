@@ -1,3 +1,16 @@
+/*-
+ *  SPDX-License-Identifier: BSD-3-Clause
+ *
+ *  Copyright (c) 2020, MayaData Inc. All rights reserved.
+ *  Copyright (c) 2020, DataCore Software Corporation. All rights reserved.
+ * 
+ *  POSIX details are based on the Open Group Base Specification Issue 7,
+ *  2018 edition at https://pubs.opengroup.org/onlinepubs/9699919799/
+ * 
+ *  Details about Linux extensions are based on the Linux man-pages project
+ *  at https://www.kernel.org/doc/man-pages/
+ */
+
 #include <wpdklib.h>
 #include <sys/socket.h>
 #include <sys/epoll.h>
@@ -86,7 +99,7 @@ int wpdk_allocate_epoll()
 }
 
 
-int epoll_create1(int flags)
+int wpdk_epoll_create1(int flags)
 {
 	int id = wpdk_allocate_epoll();
 
@@ -98,7 +111,7 @@ int epoll_create1(int flags)
 }
 
 
-int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event)
+int wpdk_epoll_ctl(int epfd, int op, int fd, struct epoll_event *event)
 {
 	SOCKET socket = wpdk_get_socket(fd); 
 	int i, id = wpdk_get_epoll(epfd);
@@ -161,7 +174,7 @@ int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event)
 }
 
 
-int epoll_wait(int epfd, struct epoll_event *events, int maxevents, int timeout)
+int wpdk_epoll_wait(int epfd, struct epoll_event *events, int maxevents, int timeout)
 {
 	struct timeval delay = { 0, 0 };
 	int id = wpdk_get_epoll(epfd);
@@ -244,10 +257,8 @@ int wpdk_close_epoll(int fd)
 
 	ep = (struct epoll *)InterlockedExchangePointer((void **)&wpdk_epoll_fds[id], NULL);
 	
-	if (ep == NULL) {
-		_set_errno(EBADF);
-		return -1;
-	}
+	if (ep == NULL)
+		return wpdk_posix_error(EBADF);
 
 	free(ep);
 	return 0;

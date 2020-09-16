@@ -1,18 +1,37 @@
+/*-
+ *  SPDX-License-Identifier: BSD-3-Clause
+ *
+ *  Copyright (c) 2020, MayaData Inc. All rights reserved.
+ *  Copyright (c) 2020, DataCore Software Corporation. All rights reserved.
+ * 
+ *  POSIX details are based on the Open Group Base Specification Issue 7,
+ *  2018 edition at https://pubs.opengroup.org/onlinepubs/9699919799/
+ * 
+ *  Details about Linux extensions are based on the Linux man-pages project
+ *  at https://www.kernel.org/doc/man-pages/
+ */
+
 #ifndef _WPDK_SYS_UIO_H_
 #define	_WPDK_SYS_UIO_H_
 
-#include <sys/platform.h>
+#include <sys/cdefs.h>
 #include <sys/_iovec.h>
 
 _WPDK_BEGIN_C_HEADER
 
-ssize_t readv(int fildes, const struct iovec *iov, int iovcnt);
+#ifndef _WPDK_BUILD_LIB_
+#define wpdk_writev __wrap_writev
+#endif
 
-ssize_t __wrap_writev(int fildes, const struct iovec *iov, int iovcnt);
+ssize_t wpdk_readv(int fildes, const struct iovec *iov, int iovcnt);
+ssize_t wpdk_writev(int fildes, const struct iovec *iov, int iovcnt);
 
 #ifndef _WPDK_BUILD_LIB_
+static inline ssize_t readv(int fildes, const struct iovec *iov, int iovcnt) {
+	return wpdk_readv(fildes, iov, iovcnt);
+}
 static inline ssize_t writev(int fildes, const struct iovec *iov, int iovcnt) {
-	return __wrap_writev(fildes, iov, iovcnt);
+	return wpdk_writev(fildes, iov, iovcnt);
 }
 #endif
 
