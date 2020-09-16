@@ -14,6 +14,7 @@
 #ifndef _WPDK_LIMITS_H_
 #define _WPDK_LIMITS_H_
 
+#include <sys/platform.h>
 #include <sys/cdefs.h>
 #include <../km/crt/limits.h>
 

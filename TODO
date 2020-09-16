@@ -46,3 +46,5 @@ Check static for all file local functions.
 ifaddrs https://www.google.co.uk/search?ei=wOdNX5CuEJLHxgOhkZv4Bg&q=windows+socket+getifaddrs&oq=windows+socket+getifaddrs&gs_lcp=CgZwc3ktYWIQAzoGCAAQBxAeOggIABAIEAcQHjoCCAA6BggAEAgQHlDYV1i4Z2CybWgAcAB4AIABRogBxAaSAQIxNJgBAKABAaoBB2d3cy13aXrAAQE&sclient=psy-ab&ved=0ahUKEwiQjvbrp8frAhWSo3EKHaHIBm8Q4dUDCA0&uact=5
 
 epoll needs to define OUT option as well.
+
+Investigate impact of thread local storage https://github.com/PlushBeaver/tlstest
