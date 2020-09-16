@@ -67,7 +67,7 @@ Unit tests are available for *libcunit* and the WPDK. These can be run with the 
 <a id="spdk"></a>
 ## Using with SPDK
 
-This is till at an early stage. A few minor changes are required to the SPDK to enable it to build on Windows. These will be available in [wpdk/spdk](https://github.com/wpdk/spdk) in due course.
+This is still at an early stage. A few minor changes are required to the SPDK to enable it to build on Windows. These will be available in [wpdk/spdk](https://github.com/wpdk/spdk) in due course.
 Instructions will be available here once the process is finalised.
 
 <a id="contrib"></a>
