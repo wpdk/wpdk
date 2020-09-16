@@ -1,8 +1,22 @@
+/*-
+ *  SPDX-License-Identifier: BSD-3-Clause
+ *
+ *  Copyright (c) 2020, MayaData Inc. All rights reserved.
+ *  Copyright (c) 2020, DataCore Software Corporation. All rights reserved.
+ * 
+ *  POSIX details are based on the Open Group Base Specification Issue 7,
+ *  2018 edition at https://pubs.opengroup.org/onlinepubs/9699919799/
+ * 
+ *  Details about Linux extensions are based on the Linux man-pages project
+ *  at https://www.kernel.org/doc/man-pages/
+ */
+
 #include <wpdklib.h>
 #include <sys/stat.h>
 
 
-int mknod(const char *path, mode_t mode, dev_t dev)
+int
+wpdk_mknod(const char *path, mode_t mode, dev_t dev)
 {
 	// HACK - implementation
 	WPDK_UNIMPLEMENTED();
@@ -14,7 +28,8 @@ int mknod(const char *path, mode_t mode, dev_t dev)
 
 
 // HACK - check implementation
-int stat(const char *path, struct stat *buf)
+int
+wpdk_stat(const char *path, struct stat *buf)
 {
 	struct _stat64 stat;
 	int rc = _stat64(path, &stat);
@@ -37,7 +52,8 @@ int stat(const char *path, struct stat *buf)
 
 
 // HACK - check implementation
-int fstat(int fildes, struct stat *buf)
+int
+wpdk_fstat(int fildes, struct stat *buf)
 {
 	struct _stat64 stat;
 	int rc = _fstat64(fildes, &stat);
@@ -58,7 +74,8 @@ int fstat(int fildes, struct stat *buf)
 }
 
 
-int wpdk_chmod(const char *filename, int pmode)
+int
+wpdk_chmod(const char *filename, int pmode)
 {
 	char buf[MAX_PATH];
 	int mode = 0;

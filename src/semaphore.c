@@ -1,9 +1,22 @@
+/*-
+ *  SPDX-License-Identifier: BSD-3-Clause
+ *
+ *  Copyright (c) 2020, MayaData Inc. All rights reserved.
+ *  Copyright (c) 2020, DataCore Software Corporation. All rights reserved.
+ * 
+ *  POSIX details are based on the Open Group Base Specification Issue 7,
+ *  2018 edition at https://pubs.opengroup.org/onlinepubs/9699919799/
+ * 
+ *  Details about Linux extensions are based on the Linux man-pages project
+ *  at https://www.kernel.org/doc/man-pages/
+ */
+
 #include <wpdklib.h>
 #include <limits.h>
 #include <semaphore.h>
 
 
-int sem_init(sem_t *sem, int pshared, unsigned int value)
+int wpdk_sem_init(sem_t *sem, int pshared, unsigned int value)
 {
 	// HACK - sem_init pshared
 	UNREFERENCED_PARAMETER(pshared);
@@ -20,7 +33,7 @@ int sem_init(sem_t *sem, int pshared, unsigned int value)
 	return 0;
 }
 
-int sem_destroy(sem_t *sem)
+int wpdk_sem_destroy(sem_t *sem)
 {
 	if (!sem || !sem->h)
 		return EINVAL;
@@ -31,7 +44,7 @@ int sem_destroy(sem_t *sem)
 	return 0;
 }
 
-int sem_post(sem_t *sem)
+int wpdk_sem_post(sem_t *sem)
 {
 	if (!sem || !sem->h)
 		return EINVAL;
@@ -44,7 +57,7 @@ int sem_post(sem_t *sem)
 	return 0;
 }
 
-int sem_wait(sem_t *sem)
+int wpdk_sem_wait(sem_t *sem)
 {
 	if (!sem || !sem->h)
 		return EINVAL;
@@ -57,7 +70,7 @@ int sem_wait(sem_t *sem)
 	return 0;
 }
 
-int sem_trywait(sem_t *sem)
+int wpdk_sem_trywait(sem_t *sem)
 {
 	if (!sem || !sem->h)
 		return EINVAL;
@@ -70,9 +83,9 @@ int sem_trywait(sem_t *sem)
 	return 0;
 }
 
-int sem_timedwait(sem_t *sem, const struct timespec *abs_timeout)
+int wpdk_sem_timedwait(sem_t *sem, const struct timespec *abs_timeout)
 {
 	// HACK - handle timed wait
 	UNREFERENCED_PARAMETER(abs_timeout);
-	return sem_wait(sem);
+	return wpdk_sem_wait(sem);
 }

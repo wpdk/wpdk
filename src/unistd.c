@@ -1,3 +1,16 @@
+/*-
+ *  SPDX-License-Identifier: BSD-3-Clause
+ *
+ *  Copyright (c) 2020, MayaData Inc. All rights reserved.
+ *  Copyright (c) 2020, DataCore Software Corporation. All rights reserved.
+ * 
+ *  POSIX details are based on the Open Group Base Specification Issue 7,
+ *  2018 edition at https://pubs.opengroup.org/onlinepubs/9699919799/
+ * 
+ *  Details about Linux extensions are based on the Linux man-pages project
+ *  at https://www.kernel.org/doc/man-pages/
+ */
+
 #include <wpdklib.h>
 #include <stdbool.h>
 #include <unistd.h>
@@ -6,29 +19,30 @@
 #define wpdk_unlink __real_unlink
 
 
-pid_t getpid()
+pid_t wpdk_getpid()
 {
 	return GetCurrentProcessId();
 }
 
 
-int truncate(const char *path, off_t length)
+int wpdk_truncate(const char *path, off_t length)
 {
 	// HACK - truncate
+	WPDK_UNIMPLEMENTED();
+
 	UNREFERENCED_PARAMETER(path);
 	UNREFERENCED_PARAMETER(length);
-	WPDK_UNIMPLEMENTED();
 	return EINVAL;
 }
 
 
-int ftruncate(int fd, off_t length)
+int wpdk_ftruncate(int fd, off_t length)
 {
 	return (_chsize_s(fd, length) == 0) ? 0 : -1;
 }
 
 
-int usleep(useconds_t useconds)
+int wpdk_usleep(useconds_t useconds)
 {
 	static LARGE_INTEGER freq;
 	LARGE_INTEGER now, end;
@@ -55,26 +69,29 @@ int usleep(useconds_t useconds)
 }
 
 
-char *ttyname(int fildes)
+char *wpdk_ttyname(int fildes)
 {
 	static char tty[] = "/dev/tty";
+
 	// HACK - implementation
-	UNREFERENCED_PARAMETER(fildes);
 	WPDK_UNIMPLEMENTED();
+
+	UNREFERENCED_PARAMETER(fildes);
 	return tty;
 }
 
 
-int isatty(int fildes)
+int wpdk_isatty(int fildes)
 {
 	// HACK - implementation
-	UNREFERENCED_PARAMETER(fildes);
 	WPDK_UNIMPLEMENTED();
+
+	UNREFERENCED_PARAMETER(fildes);
 	return false;
 }
 
 
-unsigned sleep(unsigned seconds)
+unsigned wpdk_sleep(unsigned seconds)
 {
 	// HACK - check
 	SleepEx((DWORD)(seconds * 1000), TRUE);
@@ -83,10 +100,9 @@ unsigned sleep(unsigned seconds)
 }
 
 
-long sysconf(int name)
+long wpdk_sysconf(int name)
 {
 	// HACK - implement
-
 	WPDK_UNIMPLEMENTED();
 
 	if (name == _SC_NPROCESSORS_CONF)
@@ -102,25 +118,27 @@ long sysconf(int name)
 }
 
 
-pid_t fork()
+pid_t wpdk_fork()
 {
 	// HACK - implement
 	WPDK_UNIMPLEMENTED();
+
 	return (pid_t)-1;
 }
 
 
-int daemon(int nochdir, int noclose)
+int wpdk_daemon(int nochdir, int noclose)
 {
 	// HACK - implement
+	WPDK_UNIMPLEMENTED();
+
 	UNREFERENCED_PARAMETER(nochdir);
 	UNREFERENCED_PARAMETER(noclose);
-	WPDK_UNIMPLEMENTED();
 	return -1;
 }
 
 
-ssize_t read(int fildes, void *buf, size_t nbyte)
+ssize_t wpdk_read(int fildes, void *buf, size_t nbyte)
 {
 	// HACK - off_t is 32 bits
 	// HACK - check nbyte is less than max uint
@@ -128,7 +146,7 @@ ssize_t read(int fildes, void *buf, size_t nbyte)
 }
 
 
-ssize_t write(int fildes, const void *buf, size_t nbyte)
+ssize_t wpdk_write(int fildes, const void *buf, size_t nbyte)
 {
 	// HACK - off_t is 32 bits ???
 	// HACK - check nbyte is less than max uint
@@ -136,7 +154,7 @@ ssize_t write(int fildes, const void *buf, size_t nbyte)
 }
 
 
-off_t lseek(int fildes, off_t offset, int whence)
+off_t wpdk_lseek(int fildes, off_t offset, int whence)
 {
 	// HACK - off_t is 32 bits
 	// HACK - check size is less than max long
@@ -151,14 +169,14 @@ int wpdk_unlink(const char *path)
 }
 
 
-int access(const char *pathname, int mode)
+int wpdk_access(const char *pathname, int mode)
 {
 	char buf[MAX_PATH];
 	return _access(wpdk_get_path(pathname, buf, sizeof(buf)), mode);
 }
 
 
-int close(int fildes)
+int wpdk_close(int fildes)
 {
 	if (wpdk_is_epoll(fildes))
 		return wpdk_close_epoll(fildes);
@@ -170,10 +188,11 @@ int close(int fildes)
 }
 
 
-int fsync(int fildes)
+int wpdk_fsync(int fildes)
 {
 	// HACK - not implemented
-	UNREFERENCED_PARAMETER(fildes);
 	WPDK_UNIMPLEMENTED();
+
+	UNREFERENCED_PARAMETER(fildes);
 	return 0;
 }

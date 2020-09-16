@@ -66,15 +66,15 @@ struct stat {
 	time_t	st_ctime;
 };
 
-int mknod(const char *path, mode_t mode, dev_t dev);
-int stat(const char *path, struct stat *buf);
-int fstat(int fildes, struct stat *buf);
+int wpdk_mknod(const char *path, mode_t mode, dev_t dev);
+int wpdk_stat(const char *path, struct stat *buf);
+int wpdk_fstat(int fildes, struct stat *buf);
 int wpdk_chmod(const char *filename, int pmode);
 
 #ifndef _WPDK_BUILD_LIB_
-int mknod(const char *path, mode_t mode, dev_t dev);
-int stat(const char *path, struct stat *buf);
-int fstat(int fildes, struct stat *buf);
+#define mknod(path,mode,dev) wpdk_mknod(path,mode,dev)
+#define stat(path,buf) wpdk_stat(path,buf)
+#define fstat(fildes,buf) wpdk_fstat(fildes,buf)
 #define chmod(path,mode) wpdk_chmod(path,mode)
 #endif
 

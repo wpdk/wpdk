@@ -24,7 +24,7 @@ int wpdk_strncasecmp(const char *s1, const char *s2, size_t n);
 char *wpdk_strcasestr(const char *haystack, const char *needle);
 
 #ifndef _WPDK_BUILD_LIB_
-// Match DPDK ret_os.h to avoid macro redefinition errors later
+/* Match DPDK ret_os.h to avoid macro redefinition errors later */
 #define strncasecmp(s1, s2, count)		_strnicmp(s1, s2, count)
 
 #define strcasecmp(s1,s2) wpdk_strcasecmp(s1,s2)

@@ -15,7 +15,7 @@ extern "C" {
 #endif
 
 #ifndef CPU_SETSIZE
-// HACK - rte_cpuset_t not defined by DDK
+// HACK - rte_cpuset_t not defined by DPDK
 #ifndef RTE_MAX_LCORE
 #define CPU_SETSIZE 128
 #else
@@ -34,7 +34,7 @@ typedef struct cpuset_s {
 	long long _bits[_NUM_SETS(CPU_SETSIZE)];
 } cpuset_t;
 
-// HACK - rte_cpuset_t not defined by DDK
+// HACK - rte_cpuset_t not defined by DPDK
 typedef cpuset_t rte_cpuset_t;
 
 #define CPU_SET(b, s) ((s)->_bits[_WHICH_SET(b)] |= (1LL << _WHICH_BIT(b)))

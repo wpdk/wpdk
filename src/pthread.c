@@ -1,3 +1,20 @@
+/*-
+ *  SPDX-License-Identifier: BSD-3-Clause
+ *
+ *  Copyright (c) 2020, MayaData Inc. All rights reserved.
+ *  Copyright (c) 2020, DataCore Software Corporation. All rights reserved.
+ * 
+ *  POSIX details are based on the Open Group Base Specification Issue 7,
+ *  2018 edition at https://pubs.opengroup.org/onlinepubs/9699919799/
+ * 
+ *  Details about Linux extensions are based on the Linux man-pages project
+ *  at https://www.kernel.org/doc/man-pages/
+ * 
+ *  The static initialization of critical sections and condition variables
+ *  depends upon undocumented Windows internals and is based upon ideas
+ *  found at https://locklessinc.com/articles/pthreads_on_windows/
+ */
+
 #include <wpdklib.h>
 #include <pthread.h>
 
@@ -98,7 +115,7 @@ int pthread_mutex_destroy(pthread_mutex_t *mutex)
 {
 	if (!mutex) return EINVAL;
 
-	// HACK - for now this needs to be a no-op
+	// HACK - for now this needs to be a no-op to get unit tests running
 	// HACK revisit with extensive pthreads checking code
 
 	// DeleteCriticalSection(&mutex->lock);
@@ -142,8 +159,9 @@ int pthread_mutex_unlock(pthread_mutex_t *mutex)
 int pthread_mutex_consistent(pthread_mutex_t *mutex)
 {
 	//HACK - not implemented
-	UNREFERENCED_PARAMETER(mutex);
 	WPDK_UNIMPLEMENTED();
+	
+	UNREFERENCED_PARAMETER(mutex);
 	return 0;
 }
 

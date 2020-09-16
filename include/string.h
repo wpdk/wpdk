@@ -24,7 +24,7 @@ char *wpdk_strerror_r_gnu(int errnum, char *buf, size_t buflen);
 char *wpdk_strdup(const char *s);
 
 #ifndef _WPDK_BUILD_LIB_
-// Match DPDK ret_os.h to avoid macro redefinition errors later
+/* Match DPDK ret_os.h to avoid macro redefinition errors later */
 #define strerror_r(a,b,c) strerror_s(b, c, a)
 #define strdup(str) _strdup(str)
 

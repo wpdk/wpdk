@@ -1,7 +1,20 @@
+/*-
+ *  SPDX-License-Identifier: BSD-3-Clause
+ *
+ *  Copyright (c) 2020, MayaData Inc. All rights reserved.
+ *  Copyright (c) 2020, DataCore Software Corporation. All rights reserved.
+ * 
+ *  POSIX details are based on the Open Group Base Specification Issue 7,
+ *  2018 edition at https://pubs.opengroup.org/onlinepubs/9699919799/
+ * 
+ *  Details about Linux extensions are based on the Linux man-pages project
+ *  at https://www.kernel.org/doc/man-pages/
+ */
+
 #ifndef _WPDK_TERMIOS_H_
 #define _WPDK_TERMIOS_H_
 
-#include <sys/platform.h>
+#include <sys/cdefs.h>
 
 _WPDK_BEGIN_C_HEADER
 
@@ -26,8 +39,13 @@ struct termios {
 #define TCSADRAIN	2
 #define TCSAFLUSH	4
 
-int tcsetattr(int fildes, int optional_actions, const struct termios *termios_p);
-int tcgetattr(int fildes, struct termios *termios_p);
+int wpdk_tcsetattr(int fildes, int optional_actions, const struct termios *termios_p);
+int wpdk_tcgetattr(int fildes, struct termios *termios_p);
+
+#ifndef _WPDK_BUILD_LIB_
+#define tcsetattr(fd,opt,term) wpdk_tcsetattr(fd,opt,term)
+#define tcgetattr(fd,term) wpdk_tcgetattr(fd,term)
+#endif
 
 _WPDK_END_C_HEADER
 
