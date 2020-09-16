@@ -1,12 +1,26 @@
+/*-
+ *  SPDX-License-Identifier: BSD-3-Clause
+ *
+ *  Copyright (c) 2020, MayaData Inc. All rights reserved.
+ *  Copyright (c) 2020, DataCore Software Corporation. All rights reserved.
+ * 
+ *  POSIX details are based on the Open Group Base Specification Issue 7,
+ *  2018 edition at https://pubs.opengroup.org/onlinepubs/9699919799/
+ * 
+ *  Details about Linux extensions are based on the Linux man-pages project
+ *  at https://www.kernel.org/doc/man-pages/
+ */
+
 #include <wpdklib.h>
 #include <sys/socket.h>
 #include <fcntl.h>
 
-static char *msys = "c:\\tools\\msys64";
-
 
 const char *wpdk_get_path(const char *path, char *buffer, size_t len)
 {
+	// HACK - hard-coded local path
+	static char *msys = "c:\\tools\\msys64";
+
 	if (!path) return path;
 
 	// HACK - wpdk_get_path fix pathnames and handle length

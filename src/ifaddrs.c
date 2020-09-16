@@ -1,21 +1,36 @@
+/*-
+ *  SPDX-License-Identifier: BSD-3-Clause
+ *
+ *  Copyright (c) 2020, MayaData Inc. All rights reserved.
+ *  Copyright (c) 2020, DataCore Software Corporation. All rights reserved.
+ * 
+ *  POSIX details are based on the Open Group Base Specification Issue 7,
+ *  2018 edition at https://pubs.opengroup.org/onlinepubs/9699919799/
+ * 
+ *  Details about Linux extensions are based on the Linux man-pages project
+ *  at https://www.kernel.org/doc/man-pages/
+ */
+
 #include <wpdklib.h>
 #include <ifaddrs.h>
 
 
-int getifaddrs(struct ifaddrs **ifap)
+int wpdk_getifaddrs(struct ifaddrs **ifap)
 {
 	// HACK - not implemented
-	// HACK https://www.google.co.uk/search?ei=wOdNX5CuEJLHxgOhkZv4Bg&q=windows+socket+getifaddrs&oq=windows+socket+getifaddrs&gs_lcp=CgZwc3ktYWIQAzoGCAAQBxAeOggIABAIEAcQHjoCCAA6BggAEAgQHlDYV1i4Z2CybWgAcAB4AIABRogBxAaSAQIxNJgBAKABAaoBB2d3cy13aXrAAQE&sclient=psy-ab&ved=0ahUKEwiQjvbrp8frAhWSo3EKHaHIBm8Q4dUDCA0&uact=5
+	WPDK_UNIMPLEMENTED();
+
 	if (ifap)
 		*ifap = NULL;
-	WPDK_UNIMPLEMENTED();
+
 	return EINVAL;
 }
 
 
-void freeifaddrs(struct ifaddrs *ifa)
+void wpdk_freeifaddrs(struct ifaddrs *ifa)
 {
-	UNREFERENCED_PARAMETER(ifa);
-	WPDK_UNIMPLEMENTED();
 	// HACK - not implemented
+	WPDK_UNIMPLEMENTED();
+
+	UNREFERENCED_PARAMETER(ifa);
 }

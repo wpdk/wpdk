@@ -1,3 +1,16 @@
+/*-
+ *  SPDX-License-Identifier: BSD-3-Clause
+ *
+ *  Copyright (c) 2020, MayaData Inc. All rights reserved.
+ *  Copyright (c) 2020, DataCore Software Corporation. All rights reserved.
+ * 
+ *  POSIX details are based on the Open Group Base Specification Issue 7,
+ *  2018 edition at https://pubs.opengroup.org/onlinepubs/9699919799/
+ * 
+ *  Details about Linux extensions are based on the Linux man-pages project
+ *  at https://www.kernel.org/doc/man-pages/
+ */
+
 #include <wpdklib.h>
 #include <poll.h>
 
@@ -5,7 +18,7 @@
 // HACK struct pollfd is defined in terms of SOCKET
 // HACK by system header - need to revisit - posix is int
 
-int poll(struct pollfd fds[], nfds_t nfds, int timeout)
+int wpdk_poll(struct pollfd fds[], nfds_t nfds, int timeout)
 {
 	fd_set readfds, writefds, exceptfds;
 	struct timeval delay = { 0, 0 };

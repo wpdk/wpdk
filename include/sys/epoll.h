@@ -15,7 +15,7 @@
 #define _WPDK_SYS_EPOLL_H_
 
 #include <sys/cdefs.h>
-#include <stdint.h>
+#include <sys/_types.h>
 
 _WPDK_BEGIN_C_HEADER
 

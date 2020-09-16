@@ -1,7 +1,28 @@
+/*-
+ *  SPDX-License-Identifier: BSD-3-Clause
+ *
+ *  Copyright (c) 2020, MayaData Inc. All rights reserved.
+ *  Copyright (c) 2020, DataCore Software Corporation. All rights reserved.
+ * 
+ *  POSIX details are based on the Open Group Base Specification Issue 7,
+ *  2018 edition at https://pubs.opengroup.org/onlinepubs/9699919799/
+ * 
+ *  Details about Linux extensions are based on the Linux man-pages project
+ *  at https://www.kernel.org/doc/man-pages/
+ *
+ *  There seems to be a lack of definitive documentation about libaio.
+ *  This implementation has been based on details found at:
+ * 
+ *  https://github.com/littledan/linux-aio
+ *  https://www.fsl.cs.sunysb.edu/~vass/linux-aio.txt
+ *  https://blog.cloudflare.com/io_submit-the-epoll-alternative-youve-never-heard-about/
+ */
+
 #ifndef _WPDK_LIBAIO_H_
 #define _WPDK_LIBAIO_H_
 
-#include <sys/platform.h>
+#include <sys/cdefs.h>
+#include <sys/_types.h>
 
 _WPDK_BEGIN_C_HEADER
 
