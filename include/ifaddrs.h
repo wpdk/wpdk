@@ -14,7 +14,7 @@
 #ifndef	_WPDK_IFADDRS_H_
 #define	_WPDK_IFADDRS_H_
 
-#include <sys/cdefs.h>
+#include <wpdk/header.h>
 #include <sys/socket.h>
 
 _WPDK_BEGIN_C_HEADER

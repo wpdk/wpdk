@@ -14,8 +14,8 @@
 #ifndef _WPDK_ARPA_INET_H_
 #define _WPDK_ARPA_INET_H_
 
-#include <sys/cdefs.h>
-#include <sys/_types.h>
+#include <wpdk/header.h>
+#include <wpdk/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 

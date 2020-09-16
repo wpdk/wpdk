@@ -14,6 +14,7 @@
 #ifndef _WPDK_ERRNO_H_
 #define _WPDK_ERRNO_H_
 
+#include <wpdk/header.h>
 #include <../ucrt/errno.h>
 
 #define _WPDK_BASE_ERRNO	200

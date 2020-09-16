@@ -14,8 +14,8 @@
 #ifndef _WPDK_NETINET_IN_H_
 #define _WPDK_NETINET_IN_H_
 
-#include <sys/cdefs.h>
-#include <sys/_types.h>
+#include <wpdk/header.h>
+#include <wpdk/types.h>
 
 typedef uint16_t in_port_t;
 typedef uint32_t in_addr_t;

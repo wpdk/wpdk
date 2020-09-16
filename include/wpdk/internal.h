@@ -11,14 +11,14 @@
  *  at https://www.kernel.org/doc/man-pages/
  */
 
-#ifndef _WPDK_WDPKLIB_H_
-#define _WPDK_WDPKLIB_H_
+#ifndef _WPDK_INTERNAL_H_
+#define _WPDK_INTERNAL_H_
 
 #ifndef _WPDK_UNIT_TESTS_
 #define _WPDK_BUILD_LIB_
 #endif
 
-#include <sys/platform.h>
+#include <wpdk/windows.h>
 
 _WPDK_BEGIN_C_HEADER
 
@@ -58,4 +58,4 @@ void wpdk_fatal(const char *file, int line, const char *function, const char *me
 
 _WPDK_END_C_HEADER
 
-#endif /* _WPDK_WPDKLIB_H_ */
+#endif /* _WPDK_INTERNAL_H_ */

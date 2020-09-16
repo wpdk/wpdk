@@ -14,4 +14,6 @@
 #ifndef _WPDK_DIRENT_H_
 #define _WPDK_DIRENT_H_
 
+#include <wpdk/header.h>
+
 #endif /* _WPDK_DIRENT_H_ */

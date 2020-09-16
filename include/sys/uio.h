@@ -14,14 +14,19 @@
 #ifndef _WPDK_SYS_UIO_H_
 #define	_WPDK_SYS_UIO_H_
 
-#include <sys/cdefs.h>
-#include <sys/_iovec.h>
+#include <wpdk/header.h>
+#include <wpdk/types.h>
 
 _WPDK_BEGIN_C_HEADER
 
 #ifndef _WPDK_BUILD_LIB_
 #define wpdk_writev __wrap_writev
 #endif
+
+struct iovec {
+	void *iov_base;     /* Address */
+	size_t iov_len;     /* Length */
+};
 
 ssize_t wpdk_readv(int fildes, const struct iovec *iov, int iovcnt);
 ssize_t wpdk_writev(int fildes, const struct iovec *iov, int iovcnt);

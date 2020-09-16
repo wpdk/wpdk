@@ -11,7 +11,7 @@
  *  at https://www.kernel.org/doc/man-pages/
  */
 
-#include <wpdklib.h>
+#include <wpdk/internal.h>
 #include <stdio.h>
 
 

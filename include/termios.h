@@ -14,7 +14,7 @@
 #ifndef _WPDK_TERMIOS_H_
 #define _WPDK_TERMIOS_H_
 
-#include <sys/cdefs.h>
+#include <wpdk/header.h>
 
 _WPDK_BEGIN_C_HEADER
 

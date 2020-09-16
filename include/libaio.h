@@ -21,8 +21,8 @@
 #ifndef _WPDK_LIBAIO_H_
 #define _WPDK_LIBAIO_H_
 
-#include <sys/cdefs.h>
-#include <sys/_types.h>
+#include <wpdk/header.h>
+#include <wpdk/types.h>
 
 _WPDK_BEGIN_C_HEADER
 

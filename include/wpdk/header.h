@@ -11,19 +11,9 @@
  *  at https://www.kernel.org/doc/man-pages/
  */
 
-#ifndef _WPDK_SYS__IOVEC_H_
-#define _WPDK_SYS__IOVEC_H_
+#ifndef _WPDK_HEADER_H_
+#define _WPDK_HEADER_H_
 
 #include <sys/cdefs.h>
-#include <sys/_types.h>
 
-_WPDK_BEGIN_C_HEADER
-
-struct iovec {
-	void *iov_base;     /* Address */
-	size_t iov_len;     /* Length */
-};
-
-_WPDK_END_C_HEADER
-
-#endif /* _WPDK_SYS__IOVEC_H_ */
+#endif /* _WPDK_HEADER_H_ */

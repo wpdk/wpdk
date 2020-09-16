@@ -11,8 +11,8 @@
  *  at https://www.kernel.org/doc/man-pages/
  */
 
-#ifndef _WPDK_SYS_PLATFORM_H_
-#define	_WPDK_SYS_PLATFORM_H_
+#ifndef _WPDK_WINDOWS_H_
+#define	_WPDK_WINDOWS_H_
 
 /*
  * Include the smallest set of Windows definitions possible to
@@ -73,7 +73,7 @@
 #include <windows.h>
 #undef _m_prefetchw
 
-#include <sys/cdefs.h>
-#include <sys/_types.h>
+#include <wpdk/header.h>
+#include <wpdk/types.h>
 
-#endif /* _WPDK_SYS_PLATFORM_H_ */
+#endif /* _WPDK_WINDOWS_H_ */

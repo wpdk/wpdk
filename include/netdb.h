@@ -14,7 +14,7 @@
 #ifndef _WPDK_NETDB_H_
 #define _WPDK_NETDB_H_
 
-#include <sys/cdefs.h>
+#include <wpdk/header.h>
 #include <sys/socket.h>
 
 _WPDK_BEGIN_C_HEADER

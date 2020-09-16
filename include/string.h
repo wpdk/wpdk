@@ -14,8 +14,8 @@
 #ifndef _WPDK_STRING_H_
 #define _WPDK_STRING_H_
 
+#include <wpdk/header.h>
 #include <../ucrt/string.h>
-#include <sys/cdefs.h>
 
 _WPDK_BEGIN_C_HEADER
 

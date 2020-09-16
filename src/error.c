@@ -15,7 +15,7 @@
  *  https://docs.microsoft.com/en-us/windows/win32/debug/system-error-codes
  */
 
-#include <wpdklib.h>
+#include <wpdk/internal.h>
 #include <sys/socket.h>
 #include <errno.h>
 

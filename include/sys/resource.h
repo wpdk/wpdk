@@ -14,7 +14,7 @@
 #ifndef _WPDK_SYS_RESOURCE_H_
 #define	_WPDK_SYS_RESOURCE_H_
 
-#include <sys/cdefs.h>
+#include <wpdk/header.h>
 #include <sys/time.h>
 
 _WPDK_BEGIN_C_HEADER

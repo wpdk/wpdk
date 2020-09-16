@@ -14,7 +14,8 @@
 #ifndef _WPDK_STDIO_H_
 #define _WPDK_STDIO_H_
 
-#include <sys/platform.h>
+#include <wpdk/header.h>
+#include <wpdk/windows.h>
 #include <../ucrt/stdio.h>
 
 _WPDK_BEGIN_C_HEADER

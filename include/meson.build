@@ -28,15 +28,11 @@ install_headers(
 )
 
 install_headers(
-	'sys/_iovec.h',
-	'sys/_sigset.h',
-	'sys/_types.h',
 	'sys/cdefs.h',
 	'sys/epoll.h',
 	'sys/file.h',
 	'sys/ioctl.h',
 	'sys/mman.h',
-	'sys/platform.h',
 	'sys/queue.h',
 	'sys/resource.h',
 	'sys/select.h',
@@ -48,6 +44,13 @@ install_headers(
 	'sys/user.h',
 	'sys/wait.h',
 	subdir: 'sys'
+)
+
+install_headers(
+	'wpdk/header.h',
+	'wpdk/types.h',
+	'wpdk/windows.h',
+	subdir: 'wpdk'
 )
 
 install_headers(

@@ -14,8 +14,9 @@
 #ifndef _WPDK_SYS_SOCKET_H_
 #define _WPDK_SYS_SOCKET_H_
 
-#include <sys/platform.h>
-#include <sys/_iovec.h>
+#include <wpdk/header.h>
+#include <wpdk/windows.h>
+#include <sys/uio.h>
 
 #ifndef _WPDK_BUILD_LIB_
 #define INCL_WINSOCK_API_PROTOTYPES 0

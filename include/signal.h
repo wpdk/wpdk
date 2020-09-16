@@ -14,10 +14,9 @@
 #ifndef _WPDK_SIGNAL_H_
 #define _WPDK_SIGNAL_H_
 
-#include <sys/cdefs.h>
-#include <sys/_types.h>
+#include <wpdk/header.h>
+#include <wpdk/types.h>
 #include <../ucrt/signal.h>
-#include <sys/_sigset.h>
 
 _WPDK_BEGIN_C_HEADER
 
@@ -36,6 +35,10 @@ _WPDK_BEGIN_C_HEADER
 #define SIG_SETMASK		3
 
 #define SA_SIGINFO		1
+
+typedef struct sigset {
+	uint32_t bits;
+} sigset_t;
 
 typedef struct siginfo {
 	int x;

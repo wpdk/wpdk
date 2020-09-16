@@ -14,7 +14,7 @@
 #ifndef _WPDK_SEMAPHORE_H_
 #define	_WPDK_SEMAPHORE_H_
 
-#include <sys/cdefs.h>
+#include <wpdk/header.h>
 #include <time.h>
 
 _WPDK_BEGIN_C_HEADER

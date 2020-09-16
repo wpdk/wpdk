@@ -1,4 +1,4 @@
-#include <wpdklib.h>
+#include <wpdk/internal.h>
 #include <stdlib.h>
 #include <stdio.h>
 

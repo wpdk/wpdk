@@ -18,7 +18,8 @@
 #ifndef _WPDK_PTHREAD_H_
 #define	_WPDK_PTHREAD_H_
 
-#include <sys/platform.h>
+#include <wpdk/header.h>
+#include <wpdk/windows.h>
 #include <sched.h>
 #include <time.h>
 

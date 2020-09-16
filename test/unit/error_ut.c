@@ -1,4 +1,4 @@
-#include <wpdklib.h>
+#include <wpdk/internal.h>
 #include <winsock2.h>
 #include <stdio.h>
 #include <errno.h>

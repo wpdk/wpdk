@@ -14,8 +14,8 @@
 #ifndef _WPDK_LIMITS_H_
 #define _WPDK_LIMITS_H_
 
-#include <sys/platform.h>
-#include <sys/cdefs.h>
+#include <wpdk/header.h>
+#include <wpdk/windows.h>
 #include <../km/crt/limits.h>
 
 #ifndef SSIZE_MAX

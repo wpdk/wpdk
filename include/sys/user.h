@@ -14,4 +14,6 @@
 #ifndef _WPDK_SYS_USER_H_
 #define _WPDK_SYS_USER_H_
 
+#include <wpdk/header.h>
+
 #endif /* _WPDK_SYS_USER_H_ */

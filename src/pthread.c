@@ -15,7 +15,7 @@
  *  found at https://locklessinc.com/articles/pthreads_on_windows/
  */
 
-#include <wpdklib.h>
+#include <wpdk/internal.h>
 #include <pthread.h>
 
 

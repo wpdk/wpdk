@@ -14,4 +14,6 @@
 #ifndef _WPDK_REGEX_H_
 #define _WPDK_REGEX_H_
 
+#include <wpdk/header.h>
+
 #endif /* _WPDK_REGEX_H_ */

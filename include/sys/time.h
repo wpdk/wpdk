@@ -14,8 +14,8 @@
 #ifndef _WPDK_SYS_TIME_H_
 #define	_WPDK_SYS_TIME_H_
 
-#include <sys/cdefs.h>
-#include <sys/_types.h>
+#include <wpdk/header.h>
+#include <wpdk/types.h>
 #include <sys/socket.h>
 #include <sys/select.h>
 #include <time.h>

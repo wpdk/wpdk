@@ -11,7 +11,7 @@
  *  at https://www.kernel.org/doc/man-pages/
  */
 
-#include <wpdklib.h>
+#include <wpdk/internal.h>
 #include <uuid/uuid.h>
 #include <guiddef.h>
 #include <cguid.h>

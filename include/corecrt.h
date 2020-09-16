@@ -14,6 +14,8 @@
 #ifndef _WPDK_CORECRT_H_
 #define _WPDK_CORECRT_H_
 
+#include <wpdk/header.h>
+
 #define _CRT_DECLARE_NONSTDC_NAMES	0
 #define _CRT_SECURE_NO_WARNINGS		1
 

@@ -18,7 +18,7 @@
  *  https://blog.cloudflare.com/io_submit-the-epoll-alternative-youve-never-heard-about/
  */
 
-#include <wpdklib.h>
+#include <wpdk/internal.h>
 #include <sys/uio.h>
 #include <stdlib.h>
 #include <limits.h>

@@ -14,7 +14,7 @@
 #ifndef _WPDK_FCNTL_H_
 #define	_WPDK_FCNTL_H_
 
-#include <sys/cdefs.h>
+#include <wpdk/header.h>
 #include <../ucrt/fcntl.h>
 #include <stdio.h>
 #include <io.h>
