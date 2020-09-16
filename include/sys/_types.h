@@ -14,6 +14,7 @@
 #ifndef _WPDK_SYS__TYPES_H_
 #define _WPDK_SYS__TYPES_H_
 
+#include <sys/cdefs.h>
 #include <sys/types.h>
 #include <stdint.h>
 
