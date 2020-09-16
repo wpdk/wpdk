@@ -12,6 +12,7 @@ The scope of the project is limited to supporting the Storage Performance Develo
 * Use *wpdk_* as a prefix for new functionality to avoid clashes with the standard library or private implementations.
 * A mechanism similar to GCC's --wrap is needed to enable SPDK unit tests to run correctly.
 * Supporting packages such as *libcunit* should be included to simplify the use of the WPDK.
+* Support tools to enable building SPDK should also be included.
 
 Overloading can be achieved through macros, but this risks changing variable names as well as functions. Static inline functions avoid the issue, but cause link issues if the symbol is defined as dllimport by the standard include files. A mixture of the two techniques has been used as appropriate.
 
@@ -25,16 +26,13 @@ The project is at prototype stage:
 * The initial implementation of sockets is sufficient to enable an iSCSI target to start and to serve storage.
 
 There are many areas that are currently unimplemented, or where quick hacks have been applied.
-These are indicated in the code with WPDK_UNIMPLEMENTED and WPDK_HACK.
-
-<a id="spdk"></a>
-## Use with SPDK
+These are indicated in the code with *WPDK_UNIMPLEMENTED* and *HACK*.
 
 <a id="source"></a>
 ## Source Code
 
 ~~~{.sh}
-git clone https://github.com/nconnolly1/wpdk
+git clone https://github.com/wpdk/wpdk
 cd wpdk
 git submodule update --init
 ~~~
@@ -42,11 +40,10 @@ git submodule update --init
 <a id="prerequisites"></a>
 ## Prerequisites
 
-MSYS2 with the following packages:
+* Visual Studio or Clang.
+* Meson 0.55.0 or later.
 
-A supported compiler is required, either Visual Studio 2019 or Clang.
-
-Meson
+In addition, MSYS2 is neeeded to build the SPDK tree.
 
 <a id="build"></a>
 ## Build
@@ -61,9 +58,15 @@ The batch file remembers the previous configuration and only changes need to be 
 
 ## Unit Tests
 
+Unit tests are available for *libcunit* and the WPDK. These can be run with the batch file:
+
 ~~~{.sh}
-.\test\unit\unittest.bat
+.\autotest.bat
 ~~~
+
+<a id="spdk"></a>
+## Using with SPDK
+
 
 <a id="contrib"></a>
 ## Contributing
