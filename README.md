@@ -4,6 +4,33 @@ The Windows Platform Development Kit (WPDK) enables applications based on the St
 
 The scope of the project is limited to supporting the Storage Performance Development Kit. It is not intended to be a generic Linux emulation library like Cygwin. Functionality is mapped as closely as possible to existing Windows semantics with the minimum of emulation.
 
+<a id="design"></a>
+## Design Priciples
+
+don't change the source code
+
+replace system headers
+
+wpdk_ header - allows wrapping, avoids conflict with library names
+
+existing functionality wrapped - as well.
+
+macros - can change variables etc
+
+uses macros / inline - inline clash with library name and no longer inline
+
+<a id="status"></a>
+## Current Status
+
+Most code compiles
+
+Unit tests mainly pass
+
+iSCSI stack will serve commands
+
+<a id="spdk"></a>
+## Use with SPDK
+
 <a id="source"></a>
 ## Source Code
 
