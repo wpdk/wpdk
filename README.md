@@ -11,17 +11,21 @@ The scope of the project is limited to supporting the Storage Performance Develo
 * Minimal changes to the SPDK source code, for example by overloading the standard include files to add missing functionality.
 * Use *wpdk_* as a prefix for new functionality to avoid clashes with the standard library or private implementations.
 * A mechanism similar to GCC's --wrap is needed to enable SPDK unit tests to run correctly.
+* Supporting packages such as *libcunit* should be included to simplify the use of the WPDK.
 
 Overloading can be achieved through macros, but this risks changing variable names as well as functions. Static inline functions avoid the issue, but cause link issues if the symbol is defined as dllimport by the standard include files. A mixture of the two techniques has been used as appropriate.
 
 <a id="status"></a>
 ## Current Status
 
-Most code compiles
+The project is at prototype stage:
 
-Unit tests mainly pass
+* Stubs have been provided to enable all of the SPDK source to compile, apart from spdk_top which requires *libcurses*.
+* Functionality has been provided to enable virtually all of the SPDK Unit Tests to pass.
+* The initial implementation of sockets is sufficient to enable an iSCSI target to start and to serve storage.
 
-iSCSI stack will serve commands
+There are many areas that are currently unimplemented, or where quick hacks have been applied.
+These are indicated in the code with WPDK_UNIMPLEMENTED and WPDK_HACK.
 
 <a id="spdk"></a>
 ## Use with SPDK
