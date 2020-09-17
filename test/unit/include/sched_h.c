@@ -11,19 +11,13 @@
  *  at https://www.kernel.org/doc/man-pages/
  */
 
-#ifndef _WPDK_LIMITS_H_
-#define _WPDK_LIMITS_H_
+#include <sched.h>
 
-#include <wpdk/header.h>
-#include <stdlib.h>
-#include <../km/crt/limits.h>
+#include <CUnit/Basic.h>
 
-#ifndef PATH_MAX
-#define PATH_MAX _MAX_PATH
-#endif
 
-#ifndef SSIZE_MAX
-#define SSIZE_MAX _I64_MAX
-#endif
-
-#endif /* _WPDK_LIMITS_H_ */
+void
+include_sched_h(void)
+{
+	CU_ASSERT(sizeof(cpuset_t) != 0);
+}

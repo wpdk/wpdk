@@ -16,7 +16,6 @@
 
 #include <wpdk/header.h>
 #include <wpdk/types.h>
-#include <sys/socket.h>
 #include <netinet/in.h>
 
 _WPDK_BEGIN_C_HEADER

@@ -5,6 +5,7 @@
 #include <CUnit/Basic.h>
 
 
+void add_include_tests();
 void add_error_tests();
 void add_string_tests();
 void add_strings_tests();
@@ -26,6 +27,7 @@ main(int argc, char **argv)
 	CU_set_error_action(CUEA_ABORT);
 	CU_initialize_registry();
 
+	add_include_tests();
 	add_error_tests();
 	add_string_tests();
 	add_strings_tests();

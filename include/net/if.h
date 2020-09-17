@@ -18,10 +18,11 @@
 
 _WPDK_BEGIN_C_HEADER
 
-#define IFNAMSIZ 16
+#define IF_NAMESIZE	16
+#define IFNAMSIZ	IF_NAMSIZE
 
-struct	ifreq {
-	char ifr_name[IFNAMSIZ];
+struct ifreq {
+	char ifr_name[IF_NAMESIZE];
 	short ifr_flags;
 };
 

@@ -11,19 +11,14 @@
  *  at https://www.kernel.org/doc/man-pages/
  */
 
-#ifndef _WPDK_LIMITS_H_
-#define _WPDK_LIMITS_H_
+#include <arpa/inet.h>
 
-#include <wpdk/header.h>
-#include <stdlib.h>
-#include <../km/crt/limits.h>
+#include <CUnit/Basic.h>
 
-#ifndef PATH_MAX
-#define PATH_MAX _MAX_PATH
-#endif
 
-#ifndef SSIZE_MAX
-#define SSIZE_MAX _I64_MAX
-#endif
-
-#endif /* _WPDK_LIMITS_H_ */
+void
+include_arpa_inet_h(void)
+{
+	CU_ASSERT(sizeof(in_port_t) != 0);
+	CU_ASSERT(sizeof(in_addr_t) != 0);
+}

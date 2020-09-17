@@ -15,6 +15,7 @@
 #define	_WPDK_FCNTL_H_
 
 #include <wpdk/header.h>
+#include <sys/types.h>
 #include <../ucrt/fcntl.h>
 #include <stdio.h>
 #include <io.h>
@@ -43,6 +44,14 @@ _WPDK_BEGIN_C_HEADER
 
 #define O_NONBLOCK	0x0004
 #define O_DIRECT	0x4000
+
+struct flock {
+	short l_type;
+	short l_whence;
+	off_t l_start;
+	off_t l_len;
+	pid_t l_pid;
+};
 
 int wpdk_fcntl(int fildes, int cmd, ...);
 int wpdk_open(const char *pathname, int flags, ...);

@@ -19,7 +19,7 @@
 
 _WPDK_BEGIN_C_HEADER
 
-typedef struct { HANDLE h; } sem_t;
+typedef struct { void *h; } sem_t;
 
 int wpdk_sem_init(sem_t *sem, int pshared, unsigned int value);
 int wpdk_sem_destroy(sem_t *sem);

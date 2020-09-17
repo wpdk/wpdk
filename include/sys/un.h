@@ -15,5 +15,6 @@
 #define _WPDK_SYS_UN_H_
 
 #include <wpdk/header.h>
+#include <sys/socket.h>
 
 #endif /* _WPDK_SYS_UN_H_ */

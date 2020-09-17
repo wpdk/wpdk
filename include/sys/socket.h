@@ -20,11 +20,11 @@
 
 #ifndef _WPDK_BUILD_LIB_
 #define INCL_WINSOCK_API_PROTOTYPES 0
-int wpdk_undefined_function(void);
-#define WSASetLastError(...) wpdk_undefined_function()
-#define WSAIoctl(...) wpdk_undefined_function()
-#define getsockopt(...) wpdk_undefined_function()
-#define setsockopt(...) wpdk_undefined_function()
+int wpdk_undefined_function(int,...);
+#define WSASetLastError(a) wpdk_undefined_function(0,a)
+#define WSAIoctl(a,b,c,d,e,f,g,h,i) wpdk_undefined_function(0,a,b,c,d,e,f,g,h,i)
+#define getsockopt(a,b,c,d,e) wpdk_undefined_function(0,a,b,c,d,e)
+#define setsockopt(a,b,c,d,e) wpdk_undefined_function(0,a,b,c,d,e)
 #endif
 
 #include <winsock2.h>

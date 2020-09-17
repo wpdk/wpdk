@@ -23,6 +23,9 @@
 
 #include <wpdk/header.h>
 #include <wpdk/types.h>
+#include <sys/uio.h>
+#include <stdlib.h>
+#include <time.h>
 
 _WPDK_BEGIN_C_HEADER
 
