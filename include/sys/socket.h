@@ -18,23 +18,23 @@
 #include <wpdk/windows.h>
 #include <sys/uio.h>
 
-/*
- * 	ws2tcpip.h contains inline definitions for several functions that are
- *  not required, but cannot be disabled. Redefine their dependencies to
- *  make sure that any use will result in a link error.
- */
 #ifndef _WPDK_BUILD_LIB_
 #define INCL_WINSOCK_API_PROTOTYPES 0
-int wpdk_undefined_function(int,...);
-#define WSASetLastError(a) wpdk_undefined_function(0,a)
-#define WSAIoctl(a,b,c,d,e,f,g,h,i) wpdk_undefined_function(0,a,b,c,d,e,f,g,h,i)
-#define getsockopt(a,b,c,d,e) wpdk_undefined_function(0,a,b,c,d,e)
-#define setsockopt(a,b,c,d,e) wpdk_undefined_function(0,a,b,c,d,e)
 #endif
 
 #include <winsock2.h>
+
+/*
+ * 	ws2tcpip.h contains inline definitions for several functions that are
+ *  not required, but cannot be disabled. Stub out the dependencies to
+ *  avoid compilation errors.
+ */
+#ifndef _WPDK_BUILD_LIB_
+#define WSASetLastError(a) ((a),0)
+#define WSAIoctl(a,b,c,d,e,f,g,h,i) ((a),(b),(c),(d),(e),(f),(g),(h),(i),0)
+#endif
+
 #include <ws2tcpip.h>
-#include <afunix.h>
 
 _WPDK_BEGIN_C_HEADER
 
@@ -47,6 +47,8 @@ struct msghdr {
 	socklen_t msg_controllen;
 	int msg_flags;
 };
+
+typedef unsigned short sa_family_t;
 
 #ifndef _WPDK_BUILD_LIB_
 #define wpdk_recvmsg __wrap_recvmsg
@@ -80,7 +82,6 @@ int wpdk_socketpair(int domain, int type, int protocol, int socket_vector[2]);
 #define connect wpdk_connect
 #define getpeername wpdk_getpeername
 #define getsockname wpdk_getsockname
-#undef getsockopt
 #define getsockopt wpdk_getsockopt
 #define listen wpdk_listen
 #define recv wpdk_recv
@@ -93,7 +94,6 @@ static inline ssize_t sendmsg(int socket, const struct msghdr *message, int flag
 	return wpdk_sendmsg(socket, message, flags);
 }
 #define sendto wpdk_sendto
-#undef setsockopt
 #define setsockopt wpdk_setsockopt
 #define shutdown wpdk_shutdown
 #define sockatmark wpdk_sockatmark

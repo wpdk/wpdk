@@ -17,4 +17,17 @@
 #include <wpdk/header.h>
 #include <sys/socket.h>
 
+#ifndef __MINGW64__
+#include <afunix.h>
+#else
+/*
+ *  Define sockaddr_un since afunix.h is not present in mingw64.
+ *  The structure must match the definition in the Platform SDK.
+ */
+struct sockaddr_un {
+	sa_family_t sun_family;
+	char sun_path[108];
+};
+#endif
+
 #endif /* _WPDK_SYS_UN_H_ */

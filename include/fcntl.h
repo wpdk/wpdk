@@ -16,9 +16,15 @@
 
 #include <wpdk/header.h>
 #include <sys/types.h>
-#include <../ucrt/fcntl.h>
 #include <stdio.h>
 #include <io.h>
+
+#ifdef _WPDK_INCLUDE_NEXT_
+__extension__
+#include_next <fcntl.h>
+#else
+#include <../ucrt/fcntl.h>
+#endif
 
 _WPDK_BEGIN_C_HEADER
 

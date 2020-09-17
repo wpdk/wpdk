@@ -16,7 +16,13 @@
 
 #include <wpdk/header.h>
 #include <wpdk/types.h>
+
+#ifdef _WPDK_INCLUDE_NEXT_
+__extension__
+#include_next <signal.h>
+#else
 #include <../ucrt/signal.h>
+#endif
 
 _WPDK_BEGIN_C_HEADER
 
@@ -59,6 +65,7 @@ int wpdk_sigaddset(sigset_t *set, int signo);
 int wpdk_sigdelset(sigset_t *set, int signo);
 int wpdk_kill(pid_t pid, int sig);
 
+#undef pthread_sigmask
 int pthread_sigmask(int how, const sigset_t *set, sigset_t *oset);
 
 #ifndef _WPDK_BUILD_LIB_

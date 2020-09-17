@@ -18,7 +18,9 @@
 #define _WPDK_BUILD_LIB_
 #endif
 
+#include <wpdk/header.h>
 #include <wpdk/windows.h>
+#include <wpdk/types.h>
 
 _WPDK_BEGIN_C_HEADER
 

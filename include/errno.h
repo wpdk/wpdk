@@ -15,7 +15,13 @@
 #define _WPDK_ERRNO_H_
 
 #include <wpdk/header.h>
+
+#ifdef _WPDK_INCLUDE_NEXT_
+__extension__
+#include_next <errno.h>
+#else
 #include <../ucrt/errno.h>
+#endif
 
 #define _WPDK_BASE_ERRNO	200
 #define ESHUTDOWN			200

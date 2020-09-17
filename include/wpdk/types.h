@@ -20,11 +20,11 @@
 
 _WPDK_BEGIN_C_HEADER
 
-typedef uint32_t clockid_t;
+typedef int clockid_t;
 typedef uint16_t mode_t;
-typedef uint32_t pid_t;
+typedef int64_t pid_t;
 typedef long long ssize_t;
-typedef uint64_t useconds_t;
+typedef uint32_t useconds_t;
 typedef int64_t rlim_t;
 typedef _dev_t dev_t;
 typedef _ino_t ino_t;

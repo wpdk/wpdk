@@ -21,7 +21,7 @@
 
 _WPDK_BEGIN_C_HEADER
 
-#define	CLOCK_REALTIME	1
+#define	CLOCK_REALTIME	0
 
 int wpdk_clock_gettime(clockid_t clock_id, struct timespec *tp);
 

@@ -41,7 +41,7 @@ int wpdk_poll(struct pollfd fds[], nfds_t nfds, int timeout)
 
 	for (i = 0; i < nfds && i < FD_SETSIZE; i++) {
 		fds[i].revents = 0;
-		if (fds[i].fd < 0) continue;
+		if ((int)fds[i].fd < 0) continue;
 
 		socket = wpdk_get_socket((int)fds[i].fd);
 
@@ -72,7 +72,7 @@ int wpdk_poll(struct pollfd fds[], nfds_t nfds, int timeout)
 		return wpdk_last_wsa_error();
 
 	for (n = i = 0; i < nfds && i < FD_SETSIZE; i++) {
-		if (fds[i].fd < 0) continue;
+		if ((int)fds[i].fd < 0) continue;
 
 		socket = wpdk_get_socket((int)fds[i].fd);
 

@@ -13,6 +13,7 @@
 
 #include <wpdk/internal.h>
 #include <sys/socket.h>
+#include <sys/un.h>
 #include <stdlib.h>
 
 
@@ -201,7 +202,7 @@ int wpdk_bind(int socket, const struct sockaddr *address, socklen_t address_len)
 		// HACK - wpdk_bind - stupid double copying going on here
 		cp = wpdk_get_path(addr->sun_path, buf, sizeof(buf));
 		un.sun_family = addr->sun_family;
-		strncpy(un.sun_path, cp, sizeof(un.sun_path));
+		strncpy_s(un.sun_path, sizeof(un.sun_path), cp, sizeof(un.sun_path)-1);
 
 		addr = &un;
 		len = sizeof(un);
@@ -237,7 +238,7 @@ int wpdk_connect(int socket, const struct sockaddr *address, socklen_t address_l
 		// HACK - wpdk_bind - stupid double copying going on here
 		cp = wpdk_get_path(addr->sun_path, buf, sizeof(buf));
 		un.sun_family = addr->sun_family;
-		strncpy(un.sun_path, cp, sizeof(un.sun_path));
+		strncpy_s(un.sun_path, sizeof(un.sun_path), cp, sizeof(un.sun_path)-1);
 
 		addr = &un;
 		len = sizeof(un);

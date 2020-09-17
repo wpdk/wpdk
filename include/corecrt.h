@@ -16,9 +16,11 @@
 
 #include <wpdk/header.h>
 
-#define _CRT_DECLARE_NONSTDC_NAMES	0
-#define _CRT_SECURE_NO_WARNINGS		1
-
+#ifdef _WPDK_INCLUDE_NEXT_
+__extension__
+#include_next <corecrt.h>
+#else
 #include <../ucrt/corecrt.h>
+#endif
 
 #endif /* _WPDK_CORECRT_H_ */

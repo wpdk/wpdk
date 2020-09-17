@@ -14,6 +14,8 @@
 #ifndef _WPDK_WINDOWS_H_
 #define	_WPDK_WINDOWS_H_
 
+#include <wpdk/header.h>
+
 /*
  * Include the smallest set of Windows definitions possible to
  * minimise the potential for conflicts.
@@ -69,11 +71,7 @@
 #define _m_prefetchw __m_prefetchw
 #endif
 
-#include <corecrt.h>
 #include <windows.h>
 #undef _m_prefetchw
-
-#include <wpdk/header.h>
-#include <wpdk/types.h>
 
 #endif /* _WPDK_WINDOWS_H_ */

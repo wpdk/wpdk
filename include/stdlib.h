@@ -16,7 +16,13 @@
 
 #include <wpdk/header.h>
 #include <wpdk/windows.h>
+
+#ifdef _WPDK_INCLUDE_NEXT_
+__extension__
+#include_next <stdlib.h>
+#else
 #include <../ucrt/stdlib.h>
+#endif
 
 _WPDK_BEGIN_C_HEADER
 

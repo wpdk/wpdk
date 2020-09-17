@@ -11,7 +11,11 @@
  *  at https://www.kernel.org/doc/man-pages/
  */
 
+#ifndef __MINGW64__
 #include <corecrt.h>
+#else
+#include <sys/types.h>
+#endif
 
 #include <CUnit/Basic.h>
 

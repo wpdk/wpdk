@@ -15,7 +15,13 @@
 #define _WPDK_STRING_H_
 
 #include <wpdk/header.h>
+
+#ifdef _WPDK_INCLUDE_NEXT_
+__extension__
+#include_next <string.h>
+#else
 #include <../ucrt/string.h>
+#endif
 
 _WPDK_BEGIN_C_HEADER
 

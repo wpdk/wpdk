@@ -26,10 +26,10 @@ _WPDK_BEGIN_C_HEADER
 #define wpdk_unlink __wrap_unlink
 #endif
 
-#define F_OK	1
-#define X_OK	2
-#define W_OK	4
-#define R_OK	8
+#define F_OK	0
+#define X_OK	1
+#define W_OK	2
+#define R_OK	4
 
 #define STDIN_FILENO	0
 #define STDOUT_FILENO	1

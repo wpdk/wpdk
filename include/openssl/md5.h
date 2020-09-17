@@ -15,6 +15,7 @@
 #define _WPDK_OPENSSL_MD5_H_
 
 #include <wpdk/header.h>
+#include <wpdk/types.h>
 
 _WPDK_BEGIN_C_HEADER
 

@@ -16,7 +16,13 @@
 
 #include <wpdk/header.h>
 #include <stdlib.h>
+
+#ifdef _WPDK_INCLUDE_NEXT_
+__extension__
+#include_next <limits.h>
+#else
 #include <../km/crt/limits.h>
+#endif
 
 #ifndef PATH_MAX
 #define PATH_MAX _MAX_PATH

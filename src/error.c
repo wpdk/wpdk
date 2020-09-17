@@ -20,6 +20,18 @@
 #include <errno.h>
 
 
+/*
+ *  Define errors missing from mingw64
+ */
+#ifndef WSA_SECURE_HOST_NOT_FOUND
+#define WSA_SECURE_HOST_NOT_FOUND		11032L
+#endif
+
+#ifndef WSA_IPSEC_NAME_POLICY_ERROR
+#define WSA_IPSEC_NAME_POLICY_ERROR		11033L
+#endif
+
+
 // HACK - add non WSA errors
 int
 wpdk_convert_to_posix(int err)
