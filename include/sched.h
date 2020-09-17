@@ -15,7 +15,7 @@ extern "C" {
 #endif
 
 #ifndef CPU_SETSIZE
-// HACK - rte_cpuset_t not defined by DPDK
+// HACK - RTE_MAX_LCORE creates a dependency on DPDK config
 #ifndef RTE_MAX_LCORE
 #define CPU_SETSIZE 128
 #else

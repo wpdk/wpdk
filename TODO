@@ -48,3 +48,5 @@ ifaddrs https://www.google.co.uk/search?ei=wOdNX5CuEJLHxgOhkZv4Bg&q=windows+sock
 epoll needs to define OUT option as well.
 
 Investigate impact of thread local storage https://github.com/PlushBeaver/tlstest
+
+pthreads - defer initialisation of mutex and condition variable until later (spinlock)

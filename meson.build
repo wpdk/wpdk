@@ -24,4 +24,9 @@ subdir('include')
 subdir('src')
 subdir('test/unit')
 
+wpdk_dep = declare_dependency(
+  include_directories : global_includes,
+  link_with : static_lib,
+)
+
 meson.add_install_script('scripts/copy_libs.bat')

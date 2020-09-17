@@ -18,6 +18,11 @@
 #include <wpdk/windows.h>
 #include <sys/uio.h>
 
+/*
+ * 	ws2tcpip.h contains inline definitions for several functions that are
+ *  not required, but cannot be disabled. Redefine their dependencies to
+ *  make sure that any use will result in a link error.
+ */
 #ifndef _WPDK_BUILD_LIB_
 #define INCL_WINSOCK_API_PROTOTYPES 0
 int wpdk_undefined_function(int,...);

@@ -21,7 +21,6 @@ _WPDK_BEGIN_C_HEADER
 #define MD5_CBLOCK			64
 #define MD5_DIGEST_LENGTH	16
 
-// HACK - not implemented
 typedef struct MD5_CTX_s { int x; } MD5_CTX;
 
 int MD5_Init(MD5_CTX *c);

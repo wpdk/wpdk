@@ -52,7 +52,6 @@ int pthread_mutexattr_setpshared(pthread_mutexattr_t *attr, int pshared);
 
 typedef struct { CRITICAL_SECTION lock; } pthread_mutex_t;
 
-// HACK - defer to later to init
 #define PTHREAD_MUTEX_INITIALIZER { {(void*)-1,-1,0,0,0,0} }
 
 int pthread_mutex_lock(pthread_mutex_t *mutex);
@@ -81,7 +80,6 @@ int pthread_condattr_setpshared(pthread_condattr_t *attr, int pshared);
 
 typedef struct { CONDITION_VARIABLE cond; } pthread_cond_t;
 
-// HACK - defer to later to init
 #define PTHREAD_COND_INITIALIZER {0}
 
 int pthread_cond_init(pthread_cond_t *cond, const pthread_condattr_t *attr);

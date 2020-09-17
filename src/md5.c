@@ -15,6 +15,8 @@
 #include <openssl/md5.h>
 
 
+// HACK - MD5_CTX not implemented
+
 int MD5_Init(MD5_CTX *c)
 {
 	// HACK - implementation

@@ -14,12 +14,6 @@
 #ifndef	_WPDK_SYS_CDEFS_H_
 #define	_WPDK_SYS_CDEFS_H_
 
-#ifdef __cplusplus
-#define _WPDK_BEGIN_C_HEADER	extern "C" {
-#define _WPDK_END_C_HEADER		}
-#else
-#define _WPDK_BEGIN_C_HEADER
-#define _WPDK_END_C_HEADER
-#endif
+#include <wpdk/header.h>
 
 #endif /* _WPDK_SYS_CDEFS_H_ */

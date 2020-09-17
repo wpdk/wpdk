@@ -14,6 +14,14 @@
 #ifndef _WPDK_HEADER_H_
 #define _WPDK_HEADER_H_
 
-#include <sys/cdefs.h>
+#define _WPDK_INCLUDED_
+
+#ifdef __cplusplus
+#define _WPDK_BEGIN_C_HEADER	extern "C" {
+#define _WPDK_END_C_HEADER		}
+#else
+#define _WPDK_BEGIN_C_HEADER
+#define _WPDK_END_C_HEADER
+#endif
 
 #endif /* _WPDK_HEADER_H_ */
