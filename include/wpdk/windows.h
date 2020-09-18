@@ -12,7 +12,7 @@
  */
 
 #ifndef _WPDK_WINDOWS_H_
-#define	_WPDK_WINDOWS_H_
+#define _WPDK_WINDOWS_H_
 
 #include <wpdk/header.h>
 

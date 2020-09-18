@@ -12,7 +12,7 @@
  */
 
 #ifndef _WPDK_UUID_UUID_H_
-#define	_WPDK_UUID_UUID_H_
+#define _WPDK_UUID_UUID_H_
 
 #include <wpdk/header.h>
 

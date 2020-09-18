@@ -12,7 +12,7 @@
  */
 
 #ifndef _WPDK_POLL_H_
-#define	_WPDK_POLL_H_
+#define _WPDK_POLL_H_
 
 #include <wpdk/header.h>
 #include <wpdk/windows.h>

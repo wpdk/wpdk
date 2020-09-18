@@ -12,7 +12,7 @@
  */
 
 #ifndef _WPDK_SEMAPHORE_H_
-#define	_WPDK_SEMAPHORE_H_
+#define _WPDK_SEMAPHORE_H_
 
 #include <wpdk/header.h>
 #include <time.h>

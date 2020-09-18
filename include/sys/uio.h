@@ -12,7 +12,7 @@
  */
 
 #ifndef _WPDK_SYS_UIO_H_
-#define	_WPDK_SYS_UIO_H_
+#define _WPDK_SYS_UIO_H_
 
 #include <wpdk/header.h>
 #include <wpdk/types.h>

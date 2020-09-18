@@ -12,7 +12,7 @@
  */
 
 #ifndef _WPDK_SYS_MMAN_H_
-#define	_WPDK_SYS_MMAN_H_
+#define _WPDK_SYS_MMAN_H_
 
 #include <wpdk/header.h>
 #include <wpdk/types.h>

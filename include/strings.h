@@ -12,7 +12,7 @@
  */
 
 #ifndef _WPDK_STRINGS_H_
-#define	_WPDK_STRINGS_H_
+#define _WPDK_STRINGS_H_
 
 #include <wpdk/header.h>
 #include <string.h>

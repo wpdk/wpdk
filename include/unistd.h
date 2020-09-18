@@ -12,7 +12,7 @@
  */
 
 #ifndef _WPDK_UNISTD_H_
-#define	_WPDK_UNISTD_H_
+#define _WPDK_UNISTD_H_
 
 #include <wpdk/header.h>
 #include <wpdk/windows.h>

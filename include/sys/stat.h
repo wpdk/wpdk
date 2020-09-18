@@ -21,7 +21,7 @@ __extension__
 #endif
 
 #ifndef _WPDK_SYS_STAT_H_
-#define	_WPDK_SYS_STAT_H_
+#define _WPDK_SYS_STAT_H_
 
 #include <wpdk/types.h>
 #include <io.h>
@@ -45,14 +45,14 @@ _WPDK_BEGIN_C_HEADER
 #define S_IEXEC     _S_IEXEC
 #define S_IFBLK		_S_IFBLK
 
-#define	S_ISDIR(m)	(((m) & S_IFMT) == S_IFDIR)
-#define	S_ISCHR(m)	(((m) & S_IFMT) == S_IFCHR)
-#define	S_ISREG(m)	(((m) & S_IFMT) == S_IFREG)
-#define	S_ISFIFO(m)	(((m) & S_IFMT) == S_IFIFO)
-#define	S_ISBLK(m)	(((m) & S_IFMT) == S_IFBLK)
+#define S_ISDIR(m)	(((m) & S_IFMT) == S_IFDIR)
+#define S_ISCHR(m)	(((m) & S_IFMT) == S_IFCHR)
+#define S_ISREG(m)	(((m) & S_IFMT) == S_IFREG)
+#define S_ISFIFO(m)	(((m) & S_IFMT) == S_IFIFO)
+#define S_ISBLK(m)	(((m) & S_IFMT) == S_IFBLK)
 
-#define	S_ISLNK(m)	(false)
-#define	S_ISSOCK(m)	(false)
+#define S_ISLNK(m)	(false)
+#define S_ISSOCK(m)	(false)
 
 #define _S_IRWXU    (_S_IREAD | _S_IWRITE | _S_IEXEC)
 #define _S_IRUSR	_S_IREAD

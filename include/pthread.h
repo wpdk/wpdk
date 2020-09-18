@@ -16,7 +16,7 @@
  */
 
 #ifndef _WPDK_PTHREAD_H_
-#define	_WPDK_PTHREAD_H_
+#define _WPDK_PTHREAD_H_
 
 #include <wpdk/header.h>
 #include <wpdk/windows.h>

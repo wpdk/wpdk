@@ -12,14 +12,14 @@
  */
 
 #ifndef	_WPDK_SYS_IOCTL_H_
-#define	_WPDK_SYS_IOCTL_H_
+#define _WPDK_SYS_IOCTL_H_
 
 #include <wpdk/header.h>
 
 _WPDK_BEGIN_C_HEADER
 
-#define	SIOCSIFFLAGS	1
-#define	SIOCGIFFLAGS	2
+#define SIOCSIFFLAGS	1
+#define SIOCGIFFLAGS	2
 
 int wpdk_ioctl(int fd, unsigned long request, ...);
 

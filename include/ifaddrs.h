@@ -12,7 +12,7 @@
  */
 
 #ifndef	_WPDK_IFADDRS_H_
-#define	_WPDK_IFADDRS_H_
+#define _WPDK_IFADDRS_H_
 
 #include <wpdk/header.h>
 #include <sys/socket.h>

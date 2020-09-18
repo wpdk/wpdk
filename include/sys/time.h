@@ -12,7 +12,7 @@
  */
 
 #ifndef _WPDK_SYS_TIME_H_
-#define	_WPDK_SYS_TIME_H_
+#define _WPDK_SYS_TIME_H_
 
 #include <wpdk/header.h>
 #include <wpdk/types.h>
@@ -21,7 +21,7 @@
 
 _WPDK_BEGIN_C_HEADER
 
-#define	CLOCK_REALTIME	0
+#define CLOCK_REALTIME	0
 
 int wpdk_clock_gettime(clockid_t clock_id, struct timespec *tp);
 
