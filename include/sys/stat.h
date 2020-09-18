@@ -11,12 +11,7 @@
  *  at https://www.kernel.org/doc/man-pages/
  */
 
-#ifndef _WPDK_SYS_STAT_H_
-#define	_WPDK_SYS_STAT_H_
-
 #include <wpdk/header.h>
-#include <wpdk/types.h>
-#include <io.h>
 
 #ifdef _WPDK_INCLUDE_NEXT_
 __extension__
@@ -25,7 +20,18 @@ __extension__
 #include <../ucrt/sys/stat.h>
 #endif
 
+#ifndef _WPDK_SYS_STAT_H_
+#define	_WPDK_SYS_STAT_H_
+
+#include <wpdk/types.h>
+#include <io.h>
+
 _WPDK_BEGIN_C_HEADER
+
+#ifndef __MINGW32__
+#define stat	_stat64
+#define fstat	_fstat64
+#endif
 
 /* Match with unused bit pattern in Platform SDK */
 #define _S_IFBLK	0x3000
@@ -68,28 +74,15 @@ _WPDK_BEGIN_C_HEADER
 #define S_IWOTH     (S_IWGRP >> 3)
 #define S_IXOTH     (S_IXGRP >> 3)
 
-struct stat {
-	dev_t	st_dev;
-	ino_t	st_ino;
-	mode_t	st_mode;
-	nlink_t	st_nlink;
-	uid_t	st_uid;
-	gid_t	st_gid;
-	off_t	st_size;
-	time_t	st_atime;
-	time_t	st_mtime;
-	time_t	st_ctime;
-};
-
 int wpdk_mknod(const char *path, mode_t mode, dev_t dev);
-int wpdk_stat(const char *path, struct stat *buf);
-int wpdk_fstat(int fildes, struct stat *buf);
+int wpdk_stat64(const char *path, struct _stat64 *buf);
+int wpdk_fstat64(int fildes, struct _stat64 *buf);
 int wpdk_chmod(const char *filename, int pmode);
 
 #ifndef _WPDK_BUILD_LIB_
 #define mknod(path,mode,dev) wpdk_mknod(path,mode,dev)
-#define stat(path,buf) wpdk_stat(path,buf)
-#define fstat(fildes,buf) wpdk_fstat(fildes,buf)
+#define _stat64(path,buf) wpdk_stat64(path,buf)
+#define _fstat64(fildes,buf) wpdk_fstat64(fildes,buf)
 #define chmod(path,mode) wpdk_chmod(path,mode)
 #endif
 

@@ -11,11 +11,7 @@
  *  at https://www.kernel.org/doc/man-pages/
  */
 
-#ifndef _WPDK_LIMITS_H_
-#define _WPDK_LIMITS_H_
-
 #include <wpdk/header.h>
-#include <stdlib.h>
 
 #ifdef _WPDK_INCLUDE_NEXT_
 __extension__
@@ -23,6 +19,11 @@ __extension__
 #else
 #include <../km/crt/limits.h>
 #endif
+
+#ifndef _WPDK_LIMITS_H_
+#define _WPDK_LIMITS_H_
+
+#include <stdlib.h>
 
 #ifndef PATH_MAX
 #define PATH_MAX _MAX_PATH

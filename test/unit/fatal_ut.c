@@ -26,10 +26,10 @@ null_clean(void)
 static void
 check_unimplemented(void)
 {
-	expect_fatal(__FUNCTION__);
+	expect_fatal(__func__);
 	CU_ASSERT(check_fatal() == 0);
 
-	expect_fatal(__FUNCTION__);
+	expect_fatal(__func__);
 	WPDK_UNIMPLEMENTED();
 	CU_ASSERT(check_fatal() == 1);
 	CU_ASSERT(check_fatal() == 0);

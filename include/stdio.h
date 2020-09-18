@@ -11,12 +11,7 @@
  *  at https://www.kernel.org/doc/man-pages/
  */
 
-#ifndef _WPDK_STDIO_H_
-#define _WPDK_STDIO_H_
-
 #include <wpdk/header.h>
-#include <wpdk/windows.h>
-#include <wpdk/types.h>
 
 #ifdef _WPDK_INCLUDE_NEXT_
 __extension__
@@ -24,6 +19,12 @@ __extension__
 #else
 #include <../ucrt/stdio.h>
 #endif
+
+#ifndef _WPDK_STDIO_H_
+#define _WPDK_STDIO_H_
+
+#include <wpdk/windows.h>
+#include <wpdk/types.h>
 
 _WPDK_BEGIN_C_HEADER
 

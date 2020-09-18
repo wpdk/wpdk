@@ -11,9 +11,6 @@
  *  at https://www.kernel.org/doc/man-pages/
  */
 
-#ifndef _WPDK_CORECRT_H_
-#define _WPDK_CORECRT_H_
-
 #include <wpdk/header.h>
 
 #ifdef _WPDK_INCLUDE_NEXT_
@@ -22,5 +19,8 @@ __extension__
 #else
 #include <../ucrt/corecrt.h>
 #endif
+
+#ifndef _WPDK_CORECRT_H_
+#define _WPDK_CORECRT_H_
 
 #endif /* _WPDK_CORECRT_H_ */

@@ -11,11 +11,7 @@
  *  at https://www.kernel.org/doc/man-pages/
  */
 
-#ifndef _WPDK_SIGNAL_H_
-#define _WPDK_SIGNAL_H_
-
 #include <wpdk/header.h>
-#include <wpdk/types.h>
 
 #ifdef _WPDK_INCLUDE_NEXT_
 __extension__
@@ -23,6 +19,11 @@ __extension__
 #else
 #include <../ucrt/signal.h>
 #endif
+
+#ifndef _WPDK_SIGNAL_H_
+#define _WPDK_SIGNAL_H_
+
+#include <wpdk/types.h>
 
 _WPDK_BEGIN_C_HEADER
 

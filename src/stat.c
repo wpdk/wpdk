@@ -29,47 +29,20 @@ wpdk_mknod(const char *path, mode_t mode, dev_t dev)
 
 // HACK - check implementation
 int
-wpdk_stat(const char *path, struct stat *buf)
+wpdk_stat64(const char *path, struct _stat64 *buf)
 {
-	struct _stat64 stat;
-	int rc = _stat64(path, &stat);
-
+	int rc = _stat64(path, buf);
 	if (rc < 0) return rc;
-
-	buf->st_dev = stat.st_dev;
-	buf->st_ino = stat.st_ino;
-	buf->st_mode = stat.st_mode;
-	buf->st_nlink = stat.st_nlink;
-	buf->st_uid = stat.st_uid;
-	buf->st_gid	= stat.st_gid;
-	buf->st_size = stat.st_size;
-	buf->st_atime = stat.st_atime;
-	buf->st_mtime = stat.st_mtime;
-	buf->st_ctime = stat.st_ctime;
-
 	return 0;
 }
 
 
 // HACK - check implementation
 int
-wpdk_fstat(int fildes, struct stat *buf)
+wpdk_fstat64(int fildes, struct _stat64 *buf)
 {
-	struct _stat64 stat;
-	int rc = _fstat64(fildes, &stat);
-
+	int rc = _fstat64(fildes, buf);
 	if (rc < 0) return rc;
-
-	buf->st_dev = stat.st_dev;
-	buf->st_ino = stat.st_ino;
-	buf->st_mode = stat.st_mode;
-	buf->st_nlink = stat.st_nlink;
-	buf->st_uid = stat.st_uid;
-	buf->st_gid	= stat.st_gid;
-	buf->st_size = stat.st_size;
-	buf->st_atime = stat.st_atime;
-	buf->st_mtime = stat.st_mtime;
-	buf->st_ctime = stat.st_ctime;
 	return 0;
 }
 

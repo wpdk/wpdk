@@ -11,7 +11,7 @@
  *  at https://www.kernel.org/doc/man-pages/
  */
 
-#ifndef __MINGW64__
+#ifndef __MINGW32__
 #include <corecrt.h>
 #else
 #include <sys/types.h>

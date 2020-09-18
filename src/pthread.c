@@ -322,12 +322,22 @@ pthread_t pthread_self()
 
 int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_routine)(void *), void *arg)
 {
+	HANDLE hThread;
+
 	// HACK - pthread_create check implementation
 	// HACK - pthread_create should use beginthreadex if using CRT
 
 	UNREFERENCED_PARAMETER(attr);
 
-	HANDLE hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)start_routine, arg, 0, (LPDWORD)thread);
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcast-function-type"
+#endif
+	// HACK - return code from start_routine is DWORD, not 'void *'
+	hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)start_routine, arg, 0, (LPDWORD)thread);
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif
 
 	if (hThread == NULL) {
 		// HACK - pthread_create error code

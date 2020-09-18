@@ -11,13 +11,7 @@
  *  at https://www.kernel.org/doc/man-pages/
  */
 
-#ifndef _WPDK_FCNTL_H_
-#define	_WPDK_FCNTL_H_
-
 #include <wpdk/header.h>
-#include <sys/types.h>
-#include <stdio.h>
-#include <io.h>
 
 #ifdef _WPDK_INCLUDE_NEXT_
 __extension__
@@ -25,6 +19,13 @@ __extension__
 #else
 #include <../ucrt/fcntl.h>
 #endif
+
+#ifndef _WPDK_FCNTL_H_
+#define	_WPDK_FCNTL_H_
+
+#include <sys/types.h>
+#include <stdio.h>
+#include <io.h>
 
 _WPDK_BEGIN_C_HEADER
 

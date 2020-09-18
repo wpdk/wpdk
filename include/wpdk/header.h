@@ -22,6 +22,10 @@
 #define _CRT_DECLARE_NONSTDC_NAMES	0
 #define _CRT_SECURE_NO_WARNINGS		1
 
+#ifdef __MINGW32__
+#define NO_OLDNAMES
+#endif
+
 #if defined(__GNUC__) || defined(__clang__)
 #define _WPDK_INCLUDE_NEXT_
 #ifdef __clang__

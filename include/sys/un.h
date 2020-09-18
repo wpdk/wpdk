@@ -17,7 +17,7 @@
 #include <wpdk/header.h>
 #include <sys/socket.h>
 
-#ifndef __MINGW64__
+#ifndef __MINGW32__
 #include <afunix.h>
 #else
 /*

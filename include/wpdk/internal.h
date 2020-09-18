@@ -53,7 +53,7 @@ void wpdk_fatal(const char *file, int line, const char *function, const char *me
 
 #ifdef CHECK_UNIMPLEMENTED
 #define WPDK_UNIMPLEMENTED() \
-	wpdk_fatal(__FILE__,__LINE__,__FUNCTION__,"Unimplemented functionality")
+	wpdk_fatal(__FILE__,__LINE__,__func__,"Unimplemented functionality")
 #else
 #define WPDK_UNIMPLEMENTED()
 #endif

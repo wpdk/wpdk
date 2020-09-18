@@ -11,11 +11,7 @@
  *  at https://www.kernel.org/doc/man-pages/
  */
 
-#ifndef _WPDK_STDLIB_H_
-#define _WPDK_STDLIB_H_
-
 #include <wpdk/header.h>
-#include <wpdk/windows.h>
 
 #ifdef _WPDK_INCLUDE_NEXT_
 __extension__
@@ -23,6 +19,11 @@ __extension__
 #else
 #include <../ucrt/stdlib.h>
 #endif
+
+#ifndef _WPDK_STDLIB_H_
+#define _WPDK_STDLIB_H_
+
+#include <wpdk/windows.h>
 
 _WPDK_BEGIN_C_HEADER
 

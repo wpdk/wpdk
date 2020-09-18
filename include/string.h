@@ -11,9 +11,6 @@
  *  at https://www.kernel.org/doc/man-pages/
  */
 
-#ifndef _WPDK_STRING_H_
-#define _WPDK_STRING_H_
-
 #include <wpdk/header.h>
 
 #ifdef _WPDK_INCLUDE_NEXT_
@@ -22,6 +19,9 @@ __extension__
 #else
 #include <../ucrt/string.h>
 #endif
+
+#ifndef _WPDK_STRING_H_
+#define _WPDK_STRING_H_
 
 _WPDK_BEGIN_C_HEADER
 
