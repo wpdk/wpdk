@@ -74,8 +74,8 @@ Instructions will be available here once the process is finalised.
 ## Contributing
 
 Contributions are welcome. It is expected that the process will be modelled on the contributor guidelines for the SPDK (available [here](https://spdk.io/development/)) and the Data Plane Development Kit (DPDK) (available [here](https://doc.dpdk.org/guides/contributing/index.html)).
-<a id="core"></a>
 
+<a id="core"></a>
 ## Core Maintainers
 
 The core maintainers primary responsibility is to provide technical oversight for the WPDK Project. The current list of WPDK core maintainers includes:
