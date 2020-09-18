@@ -24,6 +24,8 @@
 #define _CRT_DECLARE_NONSTDC_NAMES	0
 #define _CRT_SECURE_NO_WARNINGS		1
 
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
+
 #ifdef __MINGW32__
 #define NO_OLDNAMES
 #endif
