@@ -30,7 +30,7 @@ The project is at prototype stage:
 There are many areas that are currently unimplemented, or where quick hacks have been applied.
 These are indicated in the code with *WPDK_UNIMPLEMENTED* and *HACK*.
 
-Currently only x64 builds are supported and MinGW is still work in progress.
+Currently only x64 builds are supported.
 
 
 <a id="source"></a>
