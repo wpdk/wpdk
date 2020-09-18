@@ -16,6 +16,8 @@ The scope of the project is limited to supporting the Storage Performance Develo
 
 Overloading can be achieved through macros, but this risks changing variable names as well as functions. Static inline functions avoid the issue, but cause link issues if the symbol is defined as dllimport by the standard include files. A mixture of the two techniques has been used as appropriate.
 
+Wrapping library calls adds a small performance overhead, but this is minor compared with the cost of a system call.
+
 <a id="status"></a>
 ## Current Status
 
@@ -27,6 +29,9 @@ The project is at prototype stage:
 
 There are many areas that are currently unimplemented, or where quick hacks have been applied.
 These are indicated in the code with *WPDK_UNIMPLEMENTED* and *HACK*.
+
+Currently only x64 builds are supported and MinGW is still work in progress.
+
 
 <a id="source"></a>
 ## Source Code
@@ -40,7 +45,7 @@ git submodule update --init
 <a id="prerequisites"></a>
 ## Prerequisites
 
-* Visual Studio or Clang.
+* Visual Studio, Clang or MinGW.
 * Meson 0.55.0 or later.
 
 In addition, MSYS2 is neeeded to build the SPDK tree.
