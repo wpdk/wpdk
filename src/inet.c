@@ -11,25 +11,48 @@
  *  at https://www.kernel.org/doc/man-pages/
  */
 
-#ifndef _WPDK_NETDB_H_
-#define _WPDK_NETDB_H_
-
-#include <wpdk/header.h>
+#include <wpdk/internal.h>
 #include <sys/socket.h>
+#include <arpa/inet.h>
 
-_WPDK_BEGIN_C_HEADER
 
-int wpdk_getaddrinfo(const char *node, const char *service,
-	const struct addrinfo *hints, struct addrinfo **res);
+uint32_t
+wpdk_htonl(uint32_t hostlong)
+{
+	return htonl(hostlong);
+}
 
-const char *wpdk_gai_strerror(int ecode);
 
-#ifndef _WPDK_BUILD_LIB_
-#define getaddrinfo wpdk_getaddrinfo
-#undef gai_strerror
-#define gai_strerror wpdk_gai_strerror
-#endif
+uint16_t
+wpdk_htons(uint16_t hostshort)
+{
+	return htons(hostshort);
+}
 
-_WPDK_END_C_HEADER
 
-#endif /* _WPDK_NETDB_H_ */
+uint32_t
+wpdk_ntohl(uint32_t netlong)
+{
+	return ntohl(netlong);
+}
+
+
+uint16_t
+wpdk_ntohs(uint16_t netshort)
+{
+	return ntohs(netshort);
+}
+
+
+in_addr_t
+wpdk_inet_addr(const char *cp)
+{
+	return inet_addr(cp);
+}
+
+
+char *
+wpdk_inet_ntoa(struct in_addr in)
+{
+	return inet_ntoa(in);
+}

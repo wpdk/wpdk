@@ -16,6 +16,7 @@ sources = [
 ]
 
 include_sources = [
+	'include/_mingw_h.c',
 	'include/arpa_inet_h.c',
 	'include/net_if_h.c',
 	'include/netinet_in_h.c',
@@ -67,5 +68,6 @@ unit_tests = executable('unit_tests',
 		include_directories: [ global_includes ],
 		link_with : static_lib,
 		dependencies : cunit_dep,
+		link_args : [ '-lws2_32' ],
 		install: true
 )

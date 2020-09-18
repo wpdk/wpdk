@@ -34,11 +34,14 @@ char *wpdk_strdup(const char *s);
 #define strerror_r(a,b,c) strerror_s(b, c, a)
 #define strdup(str) _strdup(str)
 
+#if !defined(__MINGW32__) || !defined(_INC_STRING_S)
 #if defined(__USE_GNU)
 #define strerror_s(buf,len,err) wpdk_strerror_r_gnu(err,buf,len)
 #else
 #define strerror_s(buf,len,err) wpdk_strerror_r(err,buf,len)
 #endif
+#endif
+
 #define _strdup(s) wpdk_strdup(s)
 #endif
 

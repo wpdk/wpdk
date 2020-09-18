@@ -20,13 +20,21 @@
 
 _WPDK_BEGIN_C_HEADER
 
-uint32_t htonl(uint32_t hostlong);
-uint16_t htons(uint16_t hostshort);
-uint32_t ntohl(uint32_t netlong);
-uint16_t ntohs(uint16_t netshort);
+uint32_t wpdk_htonl(uint32_t hostlong);
+uint16_t wpdk_htons(uint16_t hostshort);
+uint32_t wpdk_ntohl(uint32_t netlong);
+uint16_t wpdk_ntohs(uint16_t netshort);
+in_addr_t wpdk_inet_addr(const char *cp);
+char *wpdk_inet_ntoa(struct in_addr in);
 
-in_addr_t inet_addr(const char *cp);
-char *inet_ntoa(struct in_addr in);
+#ifndef _WPDK_BUILD_LIB_
+#define htonl(hostlong) wpdk_htonl(hostlong)
+#define htons(hostshort) wpdk_htons(hostshort)
+#define ntohl(netlong) wpdk_ntohl(netlong)
+#define ntohs(netshort) wpdk_ntohs(netshort)
+#define inet_addr(cp) wpdk_inet_addr(cp)
+#define inet_ntoa(in) wpdk_inet_ntoa(in)
+#endif
 
 _WPDK_END_C_HEADER
 

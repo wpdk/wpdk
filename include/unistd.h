@@ -72,6 +72,7 @@ int wpdk_unlink(const char *path);
 #define ftruncate(fd,len) wpdk_ftruncate(fd,len)
 #define getpid() wpdk_getpid()
 #define isatty(fd) wpdk_isatty(fd)
+#undef lseek
 #define lseek(fd,offset,whence) wpdk_lseek(fd,offset,whence)
 static inline ssize_t read(int fildes, void *buf, size_t nbyte) {
 	return wpdk_read(fildes, buf, nbyte);

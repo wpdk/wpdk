@@ -52,3 +52,5 @@ Investigate impact of thread local storage https://github.com/PlushBeaver/tlstes
 pthreads - defer initialisation of mutex and condition variable until later (spinlock)
 
 Fix for 32-bit builds
+
+shared library support

@@ -3,6 +3,7 @@
 # Copyright (c) 2020, DataCore Software Corporation. All rights reserved.
 
 install_headers(
+	'_mingw.h',
 	'corecrt.h',
 	'dirent.h',
 	'errno.h',
@@ -72,6 +73,11 @@ install_headers(
 install_headers(
 	'openssl/md5.h',
 	subdir: 'openssl'
+)
+
+install_headers(
+	'sec_api/string_s.h',
+	subdir : 'sec_api'
 )
 
 install_headers(

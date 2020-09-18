@@ -3,7 +3,7 @@
 
 #include <CUnit/Basic.h>
 
-
+void include__mingw_h(void);
 void include_arpa_inet_h(void);
 void include_net_if_h(void);
 void include_netinet_in_h(void);
@@ -70,6 +70,7 @@ add_include_tests()
 
 	suite = CU_add_suite("include", null_init, null_clean);
 
+	CU_ADD_TEST(suite, include__mingw_h);
 	CU_ADD_TEST(suite, include_arpa_inet_h);
 	CU_ADD_TEST(suite, include_net_if_h);
 	CU_ADD_TEST(suite, include_netinet_in_h);

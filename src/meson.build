@@ -12,6 +12,7 @@ sources = [
 	'file.c',
 	'getopt.c',
 	'ifaddrs.c',
+	'inet.c',
 	'ioctl.c',
 	'md5.c',
 	'mman.c',

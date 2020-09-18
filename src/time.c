@@ -22,8 +22,12 @@ int wpdk_clock_gettime(clockid_t clk_id, struct timespec *tp)
 		return wpdk_posix_error(EINVAL);
 	}
 
+#ifndef __MINGW32__
 	if (timespec_get(tp, TIME_UTC) != TIME_UTC)
 		return wpdk_posix_error(EINVAL);
+#else
+	memset(tp, 0, sizeof(*tp));
+#endif
 
 	// HACK - clock is msec granularity
 	WPDK_UNIMPLEMENTED();

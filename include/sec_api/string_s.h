@@ -3,7 +3,7 @@
  *
  *  Copyright (c) 2020, MayaData Inc. All rights reserved.
  *  Copyright (c) 2020, DataCore Software Corporation. All rights reserved.
- * 
+ *
  *  POSIX details are based on the Open Group Base Specification Issue 7,
  *  2018 edition at https://pubs.opengroup.org/onlinepubs/9699919799/
  * 
@@ -11,25 +11,15 @@
  *  at https://www.kernel.org/doc/man-pages/
  */
 
-#ifndef _WPDK_NETDB_H_
-#define _WPDK_NETDB_H_
-
 #include <wpdk/header.h>
-#include <sys/socket.h>
 
-_WPDK_BEGIN_C_HEADER
-
-int wpdk_getaddrinfo(const char *node, const char *service,
-	const struct addrinfo *hints, struct addrinfo **res);
-
-const char *wpdk_gai_strerror(int ecode);
+__extension__
+#include_next <sec_api/string_s.h>
 
 #ifndef _WPDK_BUILD_LIB_
-#define getaddrinfo wpdk_getaddrinfo
-#undef gai_strerror
-#define gai_strerror wpdk_gai_strerror
+#if defined(__USE_GNU)
+#define strerror_s(buf,len,err) wpdk_strerror_r_gnu(err,buf,len)
+#else
+#define strerror_s(buf,len,err) wpdk_strerror_r(err,buf,len)
 #endif
-
-_WPDK_END_C_HEADER
-
-#endif /* _WPDK_NETDB_H_ */
+#endif

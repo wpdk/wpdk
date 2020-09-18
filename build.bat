@@ -1,5 +1,5 @@
 @echo off
-@setlocal enableextensions
+@setlocal enableextensions enabledelayedexpansion
 
 set CC=cl
 set TYPE=debug
@@ -12,6 +12,7 @@ if exist build-tmp\_config set /p CONFIG=<build-tmp\_config
 for %%i in (%CONFIG% %*) do (
 	if "%%i"=="cl" set CC=cl
 	if "%%i"=="clang" set CC=clang
+	if "%%i"=="mingw" set CC=gcc
 	if "%%i"=="debug" set TYPE=debug
 	if "%%i"=="release" set TYPE=release
 	if "%%i"=="x64" set ARCH=x64
@@ -42,6 +43,16 @@ if not "%vcvars%"=="" call "%vcvars%" %ARCH%
 if "%CC%%VCINSTALLDIR%"=="cl" (
 	echo Requires a Visual Studio Developer Command Prompt
 	goto :eof
+)
+
+if "%CC%"=="gcc" (
+	where /q gcc
+	if errorlevel 1 if exist %SystemDrive%\MinGW\mingw64\bin set PATH=%SystemDrive%\MinGW\mingw64\bin;!PATH!
+	where /q gcc
+	if errorlevel 1 (
+		echo echo Requires the MinGW GCC compiler be present in PATH
+		goto :eof
+	)
 )
 
 echo Building %TYPE% with %CC%...

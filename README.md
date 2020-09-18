@@ -56,7 +56,7 @@ In addition, MSYS2 is neeeded to build the SPDK tree.
 The build system uses Meson and Ninja and a batch file is provided as a covenience:
 
 ~~~{.sh}
-.\build.bat [release|debug] [cl|clang] [clean|rebuild]
+.\build.bat [release|debug] [cl|clang|mingw] [clean|rebuild]
 ~~~
 
 The batch file remembers the previous configuration and only changes need to be specified on the command line.
