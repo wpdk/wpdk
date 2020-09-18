@@ -16,6 +16,8 @@ The scope of the project is limited to supporting the Storage Performance Develo
 
 Overloading can be achieved through macros, but this risks changing variable names as well as functions. Static inline functions avoid the issue, but cause link issues if the symbol is defined as dllimport by the standard include files. A mixture of the two techniques has been used as appropriate.
 
+Wrapping library calls adds a small performance overhead, but this is minor compared with the cost of a system call.
+
 <a id="status"></a>
 ## Current Status
 
@@ -27,6 +29,9 @@ The project is at prototype stage:
 
 There are many areas that are currently unimplemented, or where quick hacks have been applied.
 These are indicated in the code with *WPDK_UNIMPLEMENTED* and *HACK*.
+
+Currently only x64 builds are supported and MinGW is still work in progress.
+
 
 <a id="source"></a>
 ## Source Code
@@ -40,7 +45,7 @@ git submodule update --init
 <a id="prerequisites"></a>
 ## Prerequisites
 
-* Visual Studio or Clang.
+* Visual Studio, Clang or MinGW.
 * Meson 0.55.0 or later.
 
 In addition, MSYS2 is neeeded to build the SPDK tree.
@@ -74,8 +79,10 @@ Instructions will be available here once the process is finalised.
 ## Contributing
 
 Contributions are welcome. It is expected that the process will be modelled on the contributor guidelines for the SPDK (available [here](https://spdk.io/development/)) and the Data Plane Development Kit (DPDK) (available [here](https://doc.dpdk.org/guides/contributing/index.html)).
-<a id="core"></a>
 
+In the initial stages of the project, please email the [maintainers](https://github.com/wpdk/wpdk/blob/master/MAINTAINERS.md) directly.
+
+<a id="core"></a>
 ## Core Maintainers
 
 The core maintainers primary responsibility is to provide technical oversight for the WPDK Project. The current list of WPDK core maintainers includes:
