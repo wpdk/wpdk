@@ -32,13 +32,15 @@ char *_wpdk_errlist[] = {
 int _wpdk_nerr = sizeof(_wpdk_errlist) / sizeof(_wpdk_errlist[0]);
 
 
-char *wpdk_strerror_r_gnu(int errnum, char *buf, size_t buflen)
+char *
+wpdk_strerror_r_gnu(int errnum, char *buf, size_t buflen)
 {
 	return wpdk_strerror_r(errnum, buf, buflen) ? NULL : buf;
 }
 
 
-int wpdk_strerror_r(int errnum, char *buf, size_t buflen)
+int
+wpdk_strerror_r(int errnum, char *buf, size_t buflen)
 {
 	/*
 	*  POSIX: ERANGE should be returned if the buffer is too small
@@ -54,7 +56,8 @@ int wpdk_strerror_r(int errnum, char *buf, size_t buflen)
 }
 
 
-char *wpdk_strdup(const char *s)
+char *
+wpdk_strdup(const char *s)
 {
 	return _strdup(s);
 }

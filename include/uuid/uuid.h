@@ -32,4 +32,8 @@ void uuid_unparse_lower(const uuid_t uu, char *out);
 
 _WPDK_END_C_HEADER
 
+#ifdef _MSC_VER
+#pragma comment(lib, "rpcrt4")
+#endif
+
 #endif /* _WPDK_UUID_UUID_H_ */

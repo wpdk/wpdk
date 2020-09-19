@@ -1,3 +1,16 @@
+/*-
+ *  SPDX-License-Identifier: BSD-3-Clause
+ *
+ *  Copyright (c) 2020, MayaData Inc. All rights reserved.
+ *  Copyright (c) 2020, DataCore Software Corporation. All rights reserved.
+ * 
+ *  POSIX details are based on the Open Group Base Specification Issue 7,
+ *  2018 edition at https://pubs.opengroup.org/onlinepubs/9699919799/
+ * 
+ *  Details about Linux extensions are based on the Linux man-pages project
+ *  at https://www.kernel.org/doc/man-pages/
+ */
+
 #include <wpdk/internal.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -5,11 +18,12 @@
 #include <CUnit/Basic.h>
 
 
-void add_include_tests();
-void add_error_tests();
-void add_string_tests();
-void add_strings_tests();
-void add_fatal_tests();
+void add_error_tests(void);
+void add_fatal_tests(void);
+void add_include_tests(void);
+void add_string_tests(void);
+void add_strings_tests(void);
+void add_uuid_tests(void);
 
 
 static int fatal_count;
@@ -27,11 +41,12 @@ main(int argc, char **argv)
 	CU_set_error_action(CUEA_ABORT);
 	CU_initialize_registry();
 
-	add_include_tests();
 	add_error_tests();
+	add_fatal_tests();
+	add_include_tests();
 	add_string_tests();
 	add_strings_tests();
-	add_fatal_tests();
+	add_uuid_tests();
 
 	CU_basic_set_mode(CU_BRM_VERBOSE);
 	CU_basic_run_tests();

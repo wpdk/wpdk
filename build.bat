@@ -13,9 +13,10 @@ for %%i in (%CONFIG% %*) do (
 	if "%%i"=="cl" set CC=cl
 	if "%%i"=="clang" set CC=clang
 	if "%%i"=="mingw" set CC=gcc
+	if "%%i"=="gcc" set CC=gcc
 	if "%%i"=="debug" set TYPE=debug
 	if "%%i"=="release" set TYPE=release
-	if "%%i"=="x64" set ARCH=x64
+	if "%%i"=="x64s" set ARCH=x64
 	if "%%i"=="clean" set CLEAN=clean
 	if "%%i"=="rebuild" set CLEAN=y
 )

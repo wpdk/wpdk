@@ -13,6 +13,7 @@ sources = [
 	'include_ut.c',
 	'string_ut.c',
 	'strings_ut.c',
+	'uuid_ut.c',
 ]
 
 include_sources = [
@@ -66,8 +67,8 @@ unit_tests = executable('unit_tests',
 		[ sources, include_sources ],
 		c_args: [ cflags, '-D_WPDK_UNIT_TESTS_' ],
 		include_directories: [ global_includes ],
-		link_with : static_lib,
+		link_with : [ static_lib, uuid_static ],
 		dependencies : cunit_dep,
-		link_args : [ '-lws2_32' ],
+		link_args : [ '-lws2_32', '-lrpcrt4' ],
 		install: true
 )

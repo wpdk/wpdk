@@ -58,6 +58,8 @@ void wpdk_fatal(const char *file, int line, const char *function, const char *me
 #define WPDK_UNIMPLEMENTED()
 #endif
 
+#define WPDK_FATAL_ERROR(msg)	wpdk_fatal(__FILE__,__LINE__,__func__,msg)
+
 _WPDK_END_C_HEADER
 
 #endif /* _WPDK_INTERNAL_H_ */

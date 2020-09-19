@@ -18,19 +18,22 @@
 #undef _strnicmp
 
 
-int wpdk_strcasecmp(const char *s1, const char *s2)
+int
+wpdk_strcasecmp(const char *s1, const char *s2)
 {
 	return _stricmp(s1, s2);
 }
 
 
-int wpdk_strncasecmp(const char *s1, const char *s2, size_t n)
+int
+wpdk_strncasecmp(const char *s1, const char *s2, size_t n)
 {
 	return _strnicmp(s1, s2, n);
 }
 
 
-char *wpdk_strcasestr(const char *haystack, const char *needle)
+char *
+wpdk_strcasestr(const char *haystack, const char *needle)
 {
 	const char *cp;
 	size_t len;
