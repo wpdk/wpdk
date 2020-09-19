@@ -8,6 +8,7 @@ sources = [
 	'aio.c',
 	'epoll.c',
 	'error.c',
+	'fatal.c',
 	'fcntl.c',
 	'file.c',
 	'getopt.c',
@@ -34,12 +35,9 @@ sources = [
 	'time.c',
 	'uio.c',
 	'unistd.c',
+	'uuid.c',
 	'wait.c',
 	'wrap.c',
-]
-
-uuid_sources = [
-	'uuid.c',
 ]
 
 # build static lib
@@ -49,17 +47,8 @@ static_lib = static_library('wpdk',
 		include_directories: [ global_includes ],
 		install: true)
 
-
-# build static uuid
-uuid_static = static_library('uuid',
-		uuid_sources,
-		c_args: cflags,
-		include_directories: [ global_includes ],
-		install: true)
-
-
 # build empty libraries
-foreach name:[ 'aio', 'crypto', 'numa', 'pthread', 'rt' ]
+foreach name:[ 'aio', 'crypto', 'numa', 'pthread', 'rt', 'uuid' ]
 	null_lib = static_library(name,
 			['empty.c'],
 			c_args: cflags,

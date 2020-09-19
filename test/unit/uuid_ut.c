@@ -50,12 +50,12 @@ test_uuid_clear(void)
 {
 	uuid_t u1;
 
-	memset(u1, 0xff, sizeof(u1));
+	memset(u1, 0xff, sizeof(uuid_t));
 
 	uuid_clear(u1);
 
 	/* Check u1 is zero */
-	CU_ASSERT(memcmp(u1, zero, sizeof(u1)) == 0);
+	CU_ASSERT(memcmp(u1, zero, sizeof(uuid_t)) == 0);
 }
 
 
@@ -64,13 +64,13 @@ test_uuid_copy(void)
 {
 	uuid_t u1, u2;
 
-	memset(u1, 0xff, sizeof(u1));
-	memset(u2, 0, sizeof(u2));
+	memset(u1, 0xff, sizeof(uuid_t));
+	memset(u2, 0, sizeof(uuid_t));
 
 	uuid_copy(u2, u1);
 
 	/* Check u1 and u2 are the same */
-	CU_ASSERT(memcmp(u1, u2, sizeof(u1)) == 0);
+	CU_ASSERT(memcmp(u1, u2, sizeof(uuid_t)) == 0);
 
 	uuid_copy(u2, fill);
 
@@ -84,7 +84,7 @@ test_uuid_is_null(void)
 {
 	uuid_t u1;
 
-	memset(u1, 0xff, sizeof(u1));
+	memset(u1, 0xff, sizeof(uuid_t));
 
 	/* Check u1 is non null */
 	CU_ASSERT(uuid_is_null(u1) == 0);
@@ -102,8 +102,8 @@ test_uuid_generate(void)
 {
 	uuid_t u1, u2;
 
-	memset(u1, 0xff, sizeof(u1));
-	memset(u2, 0, sizeof(u2));
+	memset(u1, 0xff, sizeof(uuid_t));
+	memset(u2, 0, sizeof(uuid_t));
 
 	uuid_generate(u2);
 
@@ -111,10 +111,10 @@ test_uuid_generate(void)
 	CU_ASSERT(uuid_is_null(u2) == 0);
 
 	/* Check u2 is not the same as u1 */
-	CU_ASSERT(memcmp(u1, u2, sizeof(u1)) != 0);
+	CU_ASSERT(memcmp(u1, u2, sizeof(uuid_t)) != 0);
 
 	/* Check u2 is not the same as fill */
-	CU_ASSERT(memcmp(fill, u2, sizeof(u1)) != 0);
+	CU_ASSERT(memcmp(fill, u2, sizeof(uuid_t)) != 0);
 
 	/* Check u2 is variant 1 */
 	CU_ASSERT((u2[8] & 0xc0) == 0x80);
@@ -126,8 +126,8 @@ test_uuid_compare(void)
 {
 	uuid_t u1, u2;
 
-	memset(u1, 0xff, sizeof(u1));
-	memset(u2, 0, sizeof(u2));
+	memset(u1, 0xff, sizeof(uuid_t));
+	memset(u2, 0, sizeof(uuid_t));
 
 	/* Check u1 is non null */
 	CU_ASSERT(uuid_compare(u1, zero) != 0);

@@ -67,7 +67,7 @@ unit_tests = executable('unit_tests',
 		[ sources, include_sources ],
 		c_args: [ cflags, '-D_WPDK_UNIT_TESTS_' ],
 		include_directories: [ global_includes ],
-		link_with : [ static_lib, uuid_static ],
+		link_with : [ static_lib ],
 		dependencies : cunit_dep,
 		link_args : [ '-lws2_32', '-lrpcrt4' ],
 		install: true

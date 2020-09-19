@@ -18,7 +18,6 @@
 #include <uuid/uuid.h>
 #include <stdio.h>
 #include <guiddef.h>
-#include <cguid.h>
 #include <rpc.h>
 
 
@@ -114,7 +113,7 @@ bytes_to_uuid(const uuid_t src, UUID *dest)
 void
 uuid_clear(uuid_t uu)
 {
-	uuid_to_bytes(&GUID_NULL, uu);
+	memset(uu, 0, sizeof(uuid_t));
 }
 
 
@@ -128,9 +127,12 @@ uuid_copy(uuid_t dst, const uuid_t src)
 int
 uuid_is_null(const uuid_t uu)
 {
-	GUID id;
-	bytes_to_uuid(uu, &id);
-	return IsEqualGUID(&id, &GUID_NULL);
+	size_t i;
+
+	for (i = 0; i < sizeof(uuid_t); i++)
+		if (uu[i]) return 0;
+
+	return 1;
 }
 
 
