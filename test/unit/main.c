@@ -23,6 +23,7 @@ void add_fatal_tests(void);
 void add_include_tests(void);
 void add_string_tests(void);
 void add_strings_tests(void);
+void add_uio_tests(void);
 void add_uuid_tests(void);
 void add_unistd_tests(void);
 
@@ -47,6 +48,7 @@ main(int argc, char **argv)
 	add_include_tests();
 	add_string_tests();
 	add_strings_tests();
+	add_uio_tests();
 	add_uuid_tests();
 	add_unistd_tests();
 

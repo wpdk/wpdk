@@ -33,4 +33,8 @@ __extension__
 #define SSIZE_MAX _I64_MAX
 #endif
 
+#ifndef IOV_MAX
+#define IOV_MAX 1024
+#endif
+
 #endif /* _WPDK_LIMITS_H_ */

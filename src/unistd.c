@@ -233,7 +233,7 @@ wpdk_sysconf(int name)
 			return info.dwPageSize;
 
 		case _SC_IOV_MAX:
-			return LONG_MAX;
+			return IOV_MAX;
 	}
 
 	WPDK_UNIMPLEMENTED();
@@ -263,7 +263,7 @@ ssize_t
 wpdk_read(int fildes, void *buf, size_t nbyte)
 {
 	wpdk_set_invalid_handler();
-	
+
 	if (nbyte > INT_MAX)
 		return wpdk_posix_error(EINVAL);
 
@@ -281,7 +281,7 @@ ssize_t
 wpdk_write(int fildes, const void *buf, size_t nbyte)
 {
 	wpdk_set_invalid_handler();
-	
+
 	if (nbyte > INT_MAX)
 		return wpdk_posix_error(EINVAL);
 

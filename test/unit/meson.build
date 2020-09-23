@@ -13,6 +13,7 @@ sources = [
 	'include_ut.c',
 	'string_ut.c',
 	'strings_ut.c',
+	'uio_ut.c',
 	'uuid_ut.c',
 	'unistd_ut.c',
 ]

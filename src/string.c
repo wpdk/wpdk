@@ -48,10 +48,9 @@ wpdk_strerror_r(int errnum, char *buf, size_t buflen)
 	}
 
 	/*
-	*  POSIX: ERANGE should be returned if the buffer is too small
-	*  to contain the message. The message will be truncated instead.
-	*/
-
+	 *  POSIX: ERANGE should be returned if the buffer is too small
+	 *  to contain the message. The message will be truncated instead.
+	 */
 	if (_WPDK_BASE_ERRNO <= errnum && errnum < _WPDK_BASE_ERRNO + _wpdk_nerr) {
 		strncpy(buf, _wpdk_errlist[errnum-_WPDK_BASE_ERRNO], buflen);
 		return 0;

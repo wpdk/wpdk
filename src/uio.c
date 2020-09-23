@@ -14,18 +14,47 @@
 #include <wpdk/internal.h>
 #include <sys/socket.h>
 #include <sys/uio.h>
+#include <limits.h>
 #include <io.h>
 
 
 #define wpdk_writev __real_writev
 
 
-ssize_t wpdk_writev(int fildes, const struct iovec *iov, int iovcnt)
+static int
+wpdk_uio_check_iovec(const struct iovec *iov, int iovcnt)
+{
+	ssize_t length = 0;
+	int i;
+
+	if (!iov || iovcnt < 0 || iovcnt > IOV_MAX)
+		return 0;
+
+	for (i = 0; i < iovcnt; i++) {
+		/* Too long for a single read/write */
+		if (iov[i].iov_len > UINT_MAX)
+			return 0;
+
+		/* Total length would overflow */
+		if (iov[i].iov_len > (size_t)(SSIZE_MAX - length))
+			return 0;
+
+		length += iov[i].iov_len;
+	}
+
+	return 1;
+}
+
+
+ssize_t
+wpdk_writev(int fildes, const struct iovec *iov, int iovcnt)
 {
 	ssize_t rc, len, nbytes = 0;
 	int i;
 
-	if (!iov || iovcnt < 0)
+	wpdk_set_invalid_handler();
+
+	if (!wpdk_uio_check_iovec(iov, iovcnt))
 		return wpdk_posix_error(EINVAL);
 
 	if (wpdk_is_socket(fildes))
@@ -33,12 +62,16 @@ ssize_t wpdk_writev(int fildes, const struct iovec *iov, int iovcnt)
 
 	if (!wpdk_is_fd(fildes))
 		return wpdk_posix_error(EBADF);
-
-	// HACK - non-atomic - does I/O individually
+	
+	/*
+	 *  POSIX: The transfer is expected to be atomic which Windows doesn't
+	 *  support unless the buffers are 4k aligned, so perform the I/O in
+	 *  multiple segments. The alternative would be to copy the data through
+	 *  a temporary buffer which is probably an overkill.
+	 */
 	for (i = 0; i < iovcnt; i++) {
 		len = iov[i].iov_len;
 
-		// HACK - check that len is within range for _write
 		rc = _write(fildes, iov[i].iov_base, (unsigned int)len);
 		if (rc < 0) return -1;
 
@@ -50,12 +83,15 @@ ssize_t wpdk_writev(int fildes, const struct iovec *iov, int iovcnt)
 }
 
 
-ssize_t wpdk_readv(int fildes, const struct iovec *iov, int iovcnt)
+ssize_t
+wpdk_readv(int fildes, const struct iovec *iov, int iovcnt)
 {
 	ssize_t rc, len, nbytes = 0;
 	int i;
 
-	if (!iov || iovcnt < 0)
+	wpdk_set_invalid_handler();
+
+	if (!wpdk_uio_check_iovec(iov, iovcnt))
 		return wpdk_posix_error(EINVAL);
 
 	if (wpdk_is_socket(fildes))
@@ -64,11 +100,15 @@ ssize_t wpdk_readv(int fildes, const struct iovec *iov, int iovcnt)
 	if (!wpdk_is_fd(fildes))
 		return wpdk_posix_error(EBADF);
 
-	// HACK - non-atomic and does I/O individually
+	/*
+	 *  POSIX: The transfer is expected to be atomic which Windows doesn't
+	 *  support unless the buffers are 4k aligned, so perform the I/O in
+	 *  multiple segments. The alternative would be to copy the data through
+	 *  a temporary buffer which is probably an overkill.
+	 */
 	for (i = 0; i < iovcnt; i++) {
 		len = iov[i].iov_len;
 
-		// HACK - check that len is within range for _read
 		rc = _read(fildes, iov[i].iov_base, (unsigned int)len);
 		if (rc < 0) return -1;
 
