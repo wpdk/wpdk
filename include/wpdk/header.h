@@ -17,8 +17,8 @@
 #define _WPDK_INCLUDED_
 
 #if !defined(_WIN32_WINNT)
-#define WINVER			0x0600
-#define _WIN32_WINNT	0x0600
+#define WINVER			0x0602
+#define _WIN32_WINNT	0x0602
 #endif
 
 #define _CRT_DECLARE_NONSTDC_NAMES	0

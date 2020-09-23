@@ -13,6 +13,7 @@
 
 #include <wpdk/internal.h>
 #include <sys/socket.h>
+#include <sys/stat.h>
 #include <fcntl.h>
 
 
@@ -46,14 +47,23 @@ const char *wpdk_get_path(const char *path, char *buffer, size_t len)
 int wpdk_open(const char *pathname, int flags, ...)
 {
 	char buf[MAX_PATH];
-	mode_t mode = 0;
+	mode_t m, mode = 0;
 	va_list ap;
+
+	wpdk_set_invalid_handler();
 
 	if (flags & O_CREAT) {
 		va_start(ap, flags);
-		mode = (mode_t)va_arg(ap, int);
+		m = (mode_t)va_arg(ap, int);
+		if (m & (S_IRUSR | S_IRGRP | S_IROTH))
+			mode |= S_IREAD;
+		if (m & (S_IWUSR | S_IWGRP | S_IWOTH))
+			mode |= S_IWRITE;
 		va_end(ap);
 	}
+
+	flags &= (O_RDONLY|O_WRONLY|O_RDWR|O_APPEND|O_CREAT|O_TRUNC|O_EXCL);
+	flags |= _O_BINARY;
 
 	return _open(wpdk_get_path(pathname, buf, sizeof(buf)), flags, mode);
 }

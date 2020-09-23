@@ -44,3 +44,6 @@ Fix for 32-bit builds
 
 libiscsi - include it
 libiscsi includes md5 code
+
+Add log message handling - also add way for unit tests to tell if called.
+

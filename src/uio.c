@@ -31,6 +31,9 @@ ssize_t wpdk_writev(int fildes, const struct iovec *iov, int iovcnt)
 	if (wpdk_is_socket(fildes))
 		return wpdk_socket_writev(fildes, iov, iovcnt);
 
+	if (!wpdk_is_fd(fildes))
+		return wpdk_posix_error(EBADF);
+
 	// HACK - non-atomic - does I/O individually
 	for (i = 0; i < iovcnt; i++) {
 		len = iov[i].iov_len;
@@ -57,6 +60,9 @@ ssize_t wpdk_readv(int fildes, const struct iovec *iov, int iovcnt)
 
 	if (wpdk_is_socket(fildes))
 		return wpdk_socket_readv(fildes, iov, iovcnt);
+
+	if (!wpdk_is_fd(fildes))
+		return wpdk_posix_error(EBADF);
 
 	// HACK - non-atomic and does I/O individually
 	for (i = 0; i < iovcnt; i++) {

@@ -24,8 +24,14 @@
 
 _WPDK_BEGIN_C_HEADER
 
+void _wpdk_set_invalid_handler();
+long _wpdk_invalid_handler_done;
+#define wpdk_set_invalid_handler() \
+	(_wpdk_invalid_handler_done || (_wpdk_set_invalid_handler(), 0))
+
 int wpdk_socket_startup(void);
 
+int wpdk_is_fd(int fd);
 int wpdk_is_socket(int fd);
 int wpdk_is_epoll(int fd);
 
@@ -38,6 +44,8 @@ int wpdk_close_epoll(int fd);
 int wpdk_close_socket(int socket);
 
 struct iovec;
+ssize_t wpdk_socket_read(int fildes, void *buf, size_t nbyte);
+ssize_t wpdk_socket_write(int fildes, const void *buf, size_t nbyte);
 ssize_t wpdk_socket_readv(int fildes, const struct iovec *iov, int iovcnt);
 ssize_t wpdk_socket_writev(int fildes, const struct iovec *iov, int iovcnt);
 
@@ -49,7 +57,11 @@ int wpdk_posix_error(int error);
 int wpdk_windows_error(int error);
 int wpdk_convert_to_posix(int err);
 
+void wpdk_warning(const char *file, int line, const char *function, const char *fmt, ...);
 void wpdk_fatal(const char *file, int line, const char *function, const char *message);
+
+#define WPDK_WARNING(...) \
+	wpdk_warning(__FILE__, __LINE__, __func__, __VA_ARGS__)
 
 #ifdef CHECK_UNIMPLEMENTED
 #define WPDK_UNIMPLEMENTED() \

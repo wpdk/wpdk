@@ -38,6 +38,8 @@ _WPDK_BEGIN_C_HEADER
 #define _SC_NPROCESSORS_CONF	1
 #define _SC_NPROCESSORS_ONLN	2
 #define _SC_PAGESIZE			3
+#define _SC_PAGE_SIZE			_SC_PAGESIZE
+#define _SC_IOV_MAX				4
 
 int wpdk_access(const char *path, int amode);
 int wpdk_close(int fildes);
@@ -49,7 +51,7 @@ pid_t wpdk_getpid(void);
 int wpdk_isatty(int fildes);
 off_t wpdk_lseek(int fildes, off_t offset, int whence);
 ssize_t wpdk_read(int fildes, void *buf, size_t nbyte);
-unsigned wpdk_sleep(unsigned seconds);
+unsigned wpdk_sleep(unsigned int seconds);
 long wpdk_sysconf(int name);
 int wpdk_truncate(const char *path, off_t length);
 char *wpdk_ttyname(int fildes);

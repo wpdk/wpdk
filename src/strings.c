@@ -21,6 +21,9 @@
 int
 wpdk_strcasecmp(const char *s1, const char *s2)
 {
+	if (!s1 || !s2)
+		return wpdk_posix_error(EINVAL);
+
 	return _stricmp(s1, s2);
 }
 
@@ -28,6 +31,9 @@ wpdk_strcasecmp(const char *s1, const char *s2)
 int
 wpdk_strncasecmp(const char *s1, const char *s2, size_t n)
 {
+	if (!s1 || !s2)
+		return wpdk_posix_error(EINVAL);
+		
 	return _strnicmp(s1, s2, n);
 }
 

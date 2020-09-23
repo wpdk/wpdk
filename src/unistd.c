@@ -12,41 +12,72 @@
  */
 
 #include <wpdk/internal.h>
+#include <wpdk/windows.h>
+#include <sys/stat.h>
 #include <stdbool.h>
+#include <limits.h>
 #include <unistd.h>
+#include <fcntl.h>
 
 
 #define wpdk_unlink __real_unlink
 
 
-pid_t wpdk_getpid()
+pid_t
+wpdk_getpid()
 {
 	return GetCurrentProcessId();
 }
 
 
-int wpdk_truncate(const char *path, off_t length)
+int
+wpdk_truncate(const char *path, off_t length)
 {
-	// HACK - truncate
-	WPDK_UNIMPLEMENTED();
+	char buf[MAX_PATH];
+	int fd, rc;
 
-	UNREFERENCED_PARAMETER(path);
-	UNREFERENCED_PARAMETER(length);
-	return EINVAL;
+	wpdk_set_invalid_handler();
+	
+	if ((fd = _open(wpdk_get_path(path, buf, sizeof(buf)), O_RDWR)) == -1)
+		return -1;
+
+	if (_chsize_s(fd, length) != 0) {
+		rc = errno;
+		_close(fd);
+		return wpdk_posix_error(rc);		
+	}
+
+	_close(fd);
+	return 0;
 }
 
 
-int wpdk_ftruncate(int fd, off_t length)
+int
+wpdk_ftruncate(int fd, off_t length)
 {
-	return (_chsize_s(fd, length) == 0) ? 0 : -1;
+	int rc;
+	
+	wpdk_set_invalid_handler();
+	
+	rc = _chsize_s(fd, length);
+	
+	if (rc != 0 && errno == EACCES)
+		return wpdk_posix_error(EBADF);
+	
+	return (rc == 0) ? 0 : -1;
 }
 
 
-int wpdk_usleep(useconds_t useconds)
+int
+wpdk_usleep(useconds_t useconds)
 {
 	static LARGE_INTEGER freq;
 	LARGE_INTEGER now, end;
-
+	
+	/*
+	 *  If the sleep is 10 msec or over then the resolution is
+	 *  close to the system clock, so call SleepEx.
+	 */
 	if (useconds >= 10000) {
 		SleepEx((DWORD)(useconds / 1000), TRUE);
 		return 0;
@@ -55,6 +86,12 @@ int wpdk_usleep(useconds_t useconds)
 	if (freq.QuadPart == 0)
 		QueryPerformanceFrequency(&freq);
 	
+	/*
+	 *  For short sleep intervals, loop yielding the CPU until the
+	 *  high-resolution timer indicates enough time has elapsed. This
+	 *  avoids short sleeps being extended to match the system clock
+	 *  interval.
+	 */
 	QueryPerformanceCounter(&now);
 	end.QuadPart = now.QuadPart + (useconds * freq.QuadPart) / 1000000;
 
@@ -69,115 +106,246 @@ int wpdk_usleep(useconds_t useconds)
 }
 
 
-char *wpdk_ttyname(int fildes)
+char *
+wpdk_ttyname(int fildes)
 {
 	static char tty[] = "/dev/tty";
 
-	// HACK - implementation
-	WPDK_UNIMPLEMENTED();
+	if (wpdk_isatty(fildes) == 0)
+		return NULL;
 
-	UNREFERENCED_PARAMETER(fildes);
 	return tty;
 }
 
 
-int wpdk_isatty(int fildes)
+int
+wpdk_isatty(int fildes)
 {
-	// HACK - implementation
-	WPDK_UNIMPLEMENTED();
+	wpdk_set_invalid_handler();
+	
+	if (!wpdk_is_fd(fildes)) {
+		wpdk_posix_error(ENOTTY);
+		return 0;
+	}
 
-	UNREFERENCED_PARAMETER(fildes);
-	return false;
+	_set_errno(0);
+
+	if (_isatty(fildes) == 0) {
+		if (errno == 0 || errno != EBADF)
+			wpdk_posix_error(ENOTTY);
+
+		return 0;
+	}
+
+	return 1;
 }
 
 
-unsigned wpdk_sleep(unsigned seconds)
+unsigned int
+wpdk_sleep(unsigned int seconds)
 {
-	// HACK - check
-	SleepEx((DWORD)(seconds * 1000), TRUE);
-	// HACK - return value is unslept time
-	return 0;
+	ULONGLONG start, elapsed;
+	
+	if (seconds == 0) return 0;
+
+	/* Reduce the sleep time to avoid overflow */
+	if (seconds > LONG_MAX / 1000)
+		seconds = LONG_MAX / 1000;
+
+	start = GetTickCount64();
+	SleepEx(seconds * 1000, TRUE);
+
+	elapsed = (GetTickCount64() - start + 500) / 1000;
+	return (elapsed < seconds) ? (unsigned int)(seconds - elapsed) : 0;
 }
 
 
-long wpdk_sysconf(int name)
+static int
+wpdk_get_processor_count(DWORD *pConfig, DWORD *pOnline)
 {
-	// HACK - implement
-	WPDK_UNIMPLEMENTED();
+	PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX pBuffer = NULL;
+	PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX ptr;
+	DWORD length = 0;
+	DWORD offset = 0;
+	WORD i;
 
-	if (name == _SC_NPROCESSORS_CONF)
-		return 4;
+	while (GetLogicalProcessorInformationEx(RelationGroup,
+				pBuffer, &length) != TRUE) {
+		if (pBuffer) free(pBuffer);
+		if ((pBuffer = (PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX)
+				malloc(length)) == NULL)
+			return FALSE;
+	}
 
-	if (name == _SC_NPROCESSORS_ONLN)
-		return 4;
+	*pConfig = 0;
+	*pOnline = 0;
 
-	if (name == _SC_PAGESIZE)
-		return 4096;
+	for (offset = 0; offset < length; offset += ptr->Size) {
+		ptr = (PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX)((char *)pBuffer + offset);
+		if (ptr->Relationship != RelationGroup) continue;
 
-	return -1;
+		for (i = 0; i < ptr->Group.ActiveGroupCount; i++) {
+			*pConfig += ptr->Group.GroupInfo[i].MaximumProcessorCount;
+			*pOnline += ptr->Group.GroupInfo[i].ActiveProcessorCount;
+		}
+	}
+
+	free(pBuffer);
+	return TRUE;
 }
 
 
-pid_t wpdk_fork()
+long
+wpdk_sysconf(int name)
 {
-	// HACK - implement
-	WPDK_UNIMPLEMENTED();
+	DWORD config, online;
+	SYSTEM_INFO info;
 
-	return (pid_t)-1;
+	switch (name) {
+		case _SC_NPROCESSORS_CONF:
+			if (wpdk_get_processor_count(&config, &online) == TRUE)
+				return config;
+
+			WPDK_WARNING("Unable to obtain the number of configured processors");
+
+			/*
+			 *  If wpdk_get_processor_count fails, then return the
+			 *  CPU count for the current processor group.
+			 */
+			GetSystemInfo(&info);
+			return info.dwNumberOfProcessors;
+
+		case _SC_NPROCESSORS_ONLN:
+			if (wpdk_get_processor_count(&config, &online) == TRUE)
+				return online;
+
+			WPDK_WARNING("Unable to obtain the number of active processors");
+
+			/*
+			 *  If wpdk_get_processor_count fails, then return the
+			 *  CPU count for the current processor group.
+			 */
+			GetSystemInfo(&info);
+			return info.dwNumberOfProcessors;
+
+		case _SC_PAGESIZE:
+			GetSystemInfo(&info);
+			return info.dwPageSize;
+
+		case _SC_IOV_MAX:
+			return LONG_MAX;
+	}
+
+	WPDK_UNIMPLEMENTED();
+	return wpdk_posix_error(EINVAL);
 }
 
 
-int wpdk_daemon(int nochdir, int noclose)
+pid_t
+wpdk_fork()
 {
-	// HACK - implement
 	WPDK_UNIMPLEMENTED();
+	return (pid_t)wpdk_posix_error(ENOSYS);
+}
 
+
+int
+wpdk_daemon(int nochdir, int noclose)
+{
+	WPDK_UNIMPLEMENTED();
 	UNREFERENCED_PARAMETER(nochdir);
 	UNREFERENCED_PARAMETER(noclose);
-	return -1;
+	return wpdk_posix_error(ENOSYS);
 }
 
 
-ssize_t wpdk_read(int fildes, void *buf, size_t nbyte)
+ssize_t
+wpdk_read(int fildes, void *buf, size_t nbyte)
 {
-	// HACK - off_t is 32 bits
-	// HACK - check nbyte is less than max uint
+	wpdk_set_invalid_handler();
+	
+	if (nbyte > INT_MAX)
+		return wpdk_posix_error(EINVAL);
+
+	if (wpdk_is_epoll(fildes))
+		return wpdk_posix_error(EBADF);
+
+	if (wpdk_is_socket(fildes))
+		return wpdk_socket_read(fildes, buf, nbyte);
+
 	return _read(fildes, buf, (unsigned int)nbyte);
 }
 
 
-ssize_t wpdk_write(int fildes, const void *buf, size_t nbyte)
+ssize_t
+wpdk_write(int fildes, const void *buf, size_t nbyte)
 {
-	// HACK - off_t is 32 bits ???
-	// HACK - check nbyte is less than max uint
+	wpdk_set_invalid_handler();
+	
+	if (nbyte > INT_MAX)
+		return wpdk_posix_error(EINVAL);
+
+	if (wpdk_is_epoll(fildes))
+		return wpdk_posix_error(EBADF);
+
+	if (wpdk_is_socket(fildes))
+		return wpdk_socket_write(fildes, buf, nbyte);
+
 	return _write(fildes, buf, (unsigned int)nbyte);
 }
 
 
-off_t wpdk_lseek(int fildes, off_t offset, int whence)
+off_t
+wpdk_lseek(int fildes, off_t offset, int whence)
 {
-	// HACK - off_t is 32 bits
-	// HACK - check size is less than max long
-	return _lseek(fildes, (long)offset, whence);
+	wpdk_set_invalid_handler();
+
+	if (!wpdk_is_fd(fildes))
+		return wpdk_posix_error(EBADF);
+
+	return _lseeki64(fildes, offset, whence);
 }
 
 
-int wpdk_unlink(const char *path)
+int
+wpdk_unlink(const char *path)
 {
 	char buf[MAX_PATH];
-	return _unlink(wpdk_get_path(path, buf, sizeof(buf)));
+	const char *file;
+
+	wpdk_set_invalid_handler();
+
+	/*
+	 *  Windows fails with EACCESS if the file is read-only,
+	 *  so try and make the file writable first.
+	 */
+	file = wpdk_get_path(path, buf, sizeof(buf));
+	_chmod(file, S_IREAD|S_IWRITE);
+
+	return _unlink(file);
 }
 
 
-int wpdk_access(const char *pathname, int mode)
+int
+wpdk_access(const char *pathname, int mode)
 {
 	char buf[MAX_PATH];
 	return _access(wpdk_get_path(pathname, buf, sizeof(buf)), mode);
 }
 
 
-int wpdk_close(int fildes)
+int
+wpdk_is_fd(int fildes)
 {
+	return !wpdk_is_epoll(fildes) && !wpdk_is_socket(fildes);
+}
+
+
+int
+wpdk_close(int fildes)
+{
+	wpdk_set_invalid_handler();
+
 	if (wpdk_is_epoll(fildes))
 		return wpdk_close_epoll(fildes);
 
@@ -188,11 +356,29 @@ int wpdk_close(int fildes)
 }
 
 
-int wpdk_fsync(int fildes)
+int
+wpdk_fsync(int fildes)
 {
-	// HACK - not implemented
-	WPDK_UNIMPLEMENTED();
+	intptr_t h;
+	DWORD rc;
 
-	UNREFERENCED_PARAMETER(fildes);
+	if (!wpdk_is_fd(fildes))
+		return wpdk_posix_error(EBADF);
+
+	h = _get_osfhandle(fildes);
+
+	if ((HANDLE)h == INVALID_HANDLE_VALUE)
+		return wpdk_posix_error(EBADF);
+
+	if (FlushFileBuffers((HANDLE)h) == 0) {
+		rc = GetLastError();
+
+		/* If the handle is unbuffered, then return success */
+		if (rc == ERROR_INVALID_HANDLE)
+			return 0;
+
+		return wpdk_windows_error(rc);
+	}
+
 	return 0;
 }

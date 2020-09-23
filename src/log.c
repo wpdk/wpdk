@@ -12,26 +12,13 @@
  */
 
 #include <wpdk/internal.h>
-#include <sys/wait.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 
-pid_t wpdk_wait(int *stat_loc)
+void wpdk_warning(const char *file,
+		int line, const char *function, const char *fmt, ...)
 {
 	WPDK_UNIMPLEMENTED();
-
-	UNREFERENCED_PARAMETER(stat_loc);
-	
-	return (pid_t)wpdk_posix_error(ENOSYS);
-}
-
-
-pid_t wpdk_waitpid(pid_t pid, int *stat_loc, int options)
-{
-	WPDK_UNIMPLEMENTED();
-
-	UNREFERENCED_PARAMETER(pid);
-	UNREFERENCED_PARAMETER(stat_loc);
-	UNREFERENCED_PARAMETER(options);
-
-	return (pid_t)wpdk_posix_error(ENOSYS);
+	fprintf(stderr, "%s:%d: %s(): %s\n", file, line, function, fmt);
 }

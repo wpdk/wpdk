@@ -24,6 +24,7 @@ void add_include_tests(void);
 void add_string_tests(void);
 void add_strings_tests(void);
 void add_uuid_tests(void);
+void add_unistd_tests(void);
 
 
 static int fatal_count;
@@ -47,6 +48,7 @@ main(int argc, char **argv)
 	add_string_tests();
 	add_strings_tests();
 	add_uuid_tests();
+	add_unistd_tests();
 
 	CU_basic_set_mode(CU_BRM_VERBOSE);
 	CU_basic_run_tests();

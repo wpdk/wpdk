@@ -64,8 +64,8 @@ int wpdk_fcntl(int fildes, int cmd, ...);
 int wpdk_open(const char *pathname, int flags, ...);
 
 #ifndef _WPDK_BUILD_LIB_
-#define open(path,oflag,...)	wpdk_open(path,oflag,__VA_ARGS__)
-#define fcntl(fildes,cmd,...)	wpdk_fcntl(fildes,cmd,__VA_ARGS__)
+#define open(path,...)		wpdk_open(path,__VA_ARGS__)
+#define fcntl(fildes,...)	wpdk_fcntl(fildes,__VA_ARGS__)
 #endif
 
 _WPDK_END_C_HEADER

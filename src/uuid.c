@@ -198,7 +198,7 @@ uuid_unparse(const uuid_t uu, char *out)
 }
 
 
-#define XXXX "%02hhX%02hhX"
+#define XXXX "%02X%02X"
 
 void
 uuid_unparse_upper(const uuid_t uu, char *out)
@@ -206,13 +206,13 @@ uuid_unparse_upper(const uuid_t uu, char *out)
 	UUID u;
 	bytes_to_uuid(uu, &u);
 
-	sprintf(out, "%08lX-%04hX-%04hX-" XXXX "-" XXXX XXXX XXXX,
+	sprintf(out, "%08lX-%04X-%04X-" XXXX "-" XXXX XXXX XXXX,
 		u.Data1, u.Data2, u.Data3, u.Data4[0], u.Data4[1], u.Data4[2],
 		u.Data4[3], u.Data4[4], u.Data4[5], u.Data4[6], u.Data4[7]);
 }
 
 
-#define xxxx "%02hhx%02hhx"
+#define xxxx "%02x%02x"
 
 void
 uuid_unparse_lower(const uuid_t uu, char *out)
@@ -220,7 +220,7 @@ uuid_unparse_lower(const uuid_t uu, char *out)
 	UUID u;
 	bytes_to_uuid(uu, &u);
 
-	sprintf(out, "%08lx-%04hx-%04hx-" xxxx "-" xxxx xxxx xxxx,
+	sprintf(out, "%08lx-%04x-%04x-" xxxx "-" xxxx xxxx xxxx,
 		u.Data1, u.Data2, u.Data3, u.Data4[0], u.Data4[1], u.Data4[2],
 		u.Data4[3], u.Data4[4], u.Data4[5], u.Data4[6], u.Data4[7]);
 }

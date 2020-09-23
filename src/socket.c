@@ -382,6 +382,17 @@ WSABUF *wpdk_get_wsabuf(WSABUF *pBuffer, int count, const struct iovec *iov, int
 }
 
 
+ssize_t
+wpdk_socket_read(int fildes, void *buf, size_t nbyte)
+{
+	struct iovec iov;
+
+	iov.iov_base = buf;
+	iov.iov_len = nbyte;
+	return wpdk_socket_readv(fildes, &iov, 1);
+}
+
+
 ssize_t wpdk_socket_readv(int fildes, const struct iovec *iov, int iovcnt)
 {
 	SOCKET s = wpdk_get_socket(fildes);
@@ -471,6 +482,17 @@ ssize_t wpdk_send(int socket, const void *buffer, size_t length, int flags)
 		return wpdk_last_wsa_error();
 
 	return rc;
+}
+
+
+ssize_t
+wpdk_socket_write(int fildes, const void *buf, size_t nbyte)
+{
+	struct iovec iov;
+
+	iov.iov_base = (void *)buf;
+	iov.iov_len = nbyte;
+	return wpdk_socket_writev(fildes, &iov, 1);
 }
 
 

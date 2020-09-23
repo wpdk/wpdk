@@ -42,6 +42,11 @@ wpdk_strerror_r_gnu(int errnum, char *buf, size_t buflen)
 int
 wpdk_strerror_r(int errnum, char *buf, size_t buflen)
 {
+	if (!buf) {
+		wpdk_posix_error(EINVAL);
+		return EINVAL;
+	}
+
 	/*
 	*  POSIX: ERANGE should be returned if the buffer is too small
 	*  to contain the message. The message will be truncated instead.

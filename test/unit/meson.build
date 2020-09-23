@@ -14,6 +14,7 @@ sources = [
 	'string_ut.c',
 	'strings_ut.c',
 	'uuid_ut.c',
+	'unistd_ut.c',
 ]
 
 include_sources = [
