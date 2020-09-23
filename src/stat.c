@@ -13,37 +13,67 @@
 
 #include <wpdk/internal.h>
 #include <sys/stat.h>
+#include <unistd.h>
+#include <fcntl.h>
 
 
 int
 wpdk_mknod(const char *path, mode_t mode, dev_t dev)
 {
-	// HACK - implementation
-	WPDK_UNIMPLEMENTED();
-	UNREFERENCED_PARAMETER(path);
-	UNREFERENCED_PARAMETER(mode);
-	UNREFERENCED_PARAMETER(dev);
-	return EINVAL;
+	mode_t omode = 0;
+	int fd;
+
+	wpdk_set_invalid_handler();
+
+	if (!S_ISREG(mode) || dev != 0) {
+		WPDK_UNIMPLEMENTED();
+		return wpdk_posix_error(ENOSYS);
+	}
+
+	if (!path)
+		return wpdk_posix_error(EINVAL);
+
+	if (mode & (S_IRUSR|S_IRGRP|S_IROTH))
+		omode |= S_IREAD;
+
+	if (mode & (S_IWUSR|S_IWGRP|S_IWOTH))
+		omode |= S_IWRITE;
+
+	fd = _open(path, _O_CREAT|_O_EXCL|O_RDONLY, omode);
+	if (fd < 0) return -1;
+
+	_close(fd);
+	return 0;
 }
 
 
-// HACK - check implementation
 int
 wpdk_stat64(const char *path, struct _stat64 *buf)
 {
-	int rc = _stat64(path, buf);
-	if (rc < 0) return rc;
-	return 0;
+	int rc;
+	
+	wpdk_set_invalid_handler();
+
+	if (!path || !buf)
+		return wpdk_posix_error(EINVAL);
+
+	rc = _stat64(path, buf);
+	return (rc == 0) ? 0 : -1;
 }
 
 
-// HACK - check implementation
 int
 wpdk_fstat64(int fildes, struct _stat64 *buf)
 {
-	int rc = _fstat64(fildes, buf);
-	if (rc < 0) return rc;
-	return 0;
+	int rc;
+	
+	wpdk_set_invalid_handler();
+
+	if (!buf)
+		return wpdk_posix_error(EINVAL);
+
+	rc = _fstat64(fildes, buf);
+	return (rc == 0) ? 0 : -1;
 }
 
 
@@ -52,6 +82,11 @@ wpdk_chmod(const char *filename, int pmode)
 {
 	char buf[MAX_PATH];
 	int mode = 0;
+	
+	wpdk_set_invalid_handler();
+
+	if (!filename)
+		return wpdk_posix_error(EINVAL);
 
 	if (pmode & S_IREAD) mode |= _S_IREAD;
 	if (pmode & S_IWRITE) mode |= _S_IWRITE;

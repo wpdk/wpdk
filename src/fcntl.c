@@ -55,9 +55,9 @@ int wpdk_open(const char *pathname, int flags, ...)
 	if (flags & O_CREAT) {
 		va_start(ap, flags);
 		m = (mode_t)va_arg(ap, int);
-		if (m & (S_IRUSR | S_IRGRP | S_IROTH))
+		if (m & (S_IRUSR|S_IRGRP|S_IROTH))
 			mode |= S_IREAD;
-		if (m & (S_IWUSR | S_IWGRP | S_IWOTH))
+		if (m & (S_IWUSR|S_IWGRP|S_IWOTH))
 			mode |= S_IWRITE;
 		va_end(ap);
 	}
