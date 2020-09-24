@@ -22,6 +22,7 @@ void add_error_tests(void);
 void add_fatal_tests(void);
 void add_include_tests(void);
 void add_stat_tests(void);
+void add_stdio_tests(void);
 void add_string_tests(void);
 void add_strings_tests(void);
 void add_uio_tests(void);
@@ -48,6 +49,7 @@ main(int argc, char **argv)
 	add_fatal_tests();
 	add_include_tests();
 	add_stat_tests();
+	add_stdio_tests();
 	add_string_tests();
 	add_strings_tests();
 	add_uio_tests();

@@ -29,6 +29,7 @@ __extension__
 _WPDK_BEGIN_C_HEADER
 
 ssize_t wpdk_getline(char **lineptr, size_t *n, FILE *stream);
+ssize_t wpdk_getdelim(char **lineptr, size_t *n, int delim, FILE *stream);
 FILE *wpdk_fopen(const char *filename, const char *mode);
 FILE *wpdk_fdopen(int fildes, const char *mode);
 
@@ -36,6 +37,7 @@ FILE *wpdk_fdopen(int fildes, const char *mode);
 #define fdopen(fildes,mode) wpdk_fdopen(fildes,mode)
 #define fopen(filename,mode) wpdk_fopen(filename,mode)
 #define getline(ptr,n,stream) wpdk_getline(ptr,n,stream)
+#define getdelim(ptr,n,delim,stream) wpdk_getdelim(ptr,n,delim,stream)
 #endif
 
 _WPDK_END_C_HEADER

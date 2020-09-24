@@ -12,19 +12,46 @@
  */
 
 #include <wpdk/internal.h>
+#include <stdlib.h>
 #include <stdio.h>
+
+
+ssize_t
+wpdk_getdelim(char **lineptr, size_t *n, int delim, FILE *stream)
+{
+	size_t newlen, len = 0;
+	int ch = 0;
+	char *buf;
+
+	wpdk_set_invalid_handler();
+
+	if (!lineptr || !n || !stream)
+		return wpdk_posix_error(EINVAL);
+
+	for (buf = *lineptr; ch != delim; buf[len++] = (char)ch) {
+		if (!buf || len + 2 >= *n) {
+			newlen = (buf && *n) ? (*n) * 2 : BUFSIZ;
+			if ((buf = realloc(buf, newlen)) == NULL)
+				return -1;
+			*lineptr = buf;
+			*n = newlen;
+		}
+
+		if ((ch = getc(stream)) == EOF) {
+			if (feof(stream) && len) break;
+			return -1;
+		}
+	}
+
+	buf[len] = 0;
+	return len;
+}
 
 
 ssize_t
 wpdk_getline(char **lineptr, size_t *n, FILE *stream)
 {
-	// HACK - unimplemented
-	WPDK_UNIMPLEMENTED();
-
-	UNREFERENCED_PARAMETER(lineptr);
-	UNREFERENCED_PARAMETER(n);
-	UNREFERENCED_PARAMETER(stream);
-	return 0;
+	return wpdk_getdelim(lineptr, n, '\n', stream);
 }
 
 
@@ -32,6 +59,8 @@ FILE *
 wpdk_fopen(const char *filename, const char *mode)
 {
 	char buf[MAX_PATH];
+
+	wpdk_set_invalid_handler();
 	return fopen(wpdk_get_path(filename, buf, sizeof(buf)), mode);
 }
 
@@ -39,5 +68,6 @@ wpdk_fopen(const char *filename, const char *mode)
 FILE *
 wpdk_fdopen(int fildes, const char *mode)
 {
+	wpdk_set_invalid_handler();
 	return _fdopen(fildes, mode);
 }
