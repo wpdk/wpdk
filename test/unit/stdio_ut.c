@@ -39,8 +39,9 @@ static void
 test_getline(void)
 {
 	char *path = "testfile";
-	size_t rc, len = 0;
 	char *buf = NULL;
+	size_t len = 0;
+	ssize_t rc;
 	int i, j;
 	FILE *fp;
 
@@ -64,18 +65,18 @@ test_getline(void)
 	rc = getline(&buf, &len, fp);
 	CU_ASSERT(rc == BUFSIZ + 11);
 	CU_ASSERT(buf != NULL);
-	CU_ASSERT(len > rc);
-	CU_ASSERT(rc == strlen(buf));
+	CU_ASSERT(len > (size_t)rc);
+	CU_ASSERT((size_t)rc == strlen(buf));
 	CU_ASSERT(buf[rc - 1] == '\n');
 	CU_ASSERT(buf[rc] == 0);
 
 	/* Check all lines */
 	for (i = 2; i < 10; i++) {
 		rc = getline(&buf, &len, fp);
-		CU_ASSERT(rc == (BUFSIZ + 10) * i + 1);
+		CU_ASSERT(rc == (ssize_t)(BUFSIZ + 10) * i + 1);
 		CU_ASSERT(buf != NULL);
-		CU_ASSERT(len > rc);
-		CU_ASSERT(rc == strlen(buf));
+		CU_ASSERT(len > (size_t)rc);
+		CU_ASSERT((size_t)rc == strlen(buf));
 		CU_ASSERT(buf[rc - 1] == '\n');
 		CU_ASSERT(buf[rc] == 0);
 	}
@@ -98,8 +99,9 @@ static void
 test_getdelim(void)
 {
 	char *path = "testfile";
-	size_t rc, len = 0;
 	char *buf = NULL;
+	size_t len = 0;
+	ssize_t rc;
 	int i, j;
 	FILE *fp;
 
@@ -123,8 +125,8 @@ test_getdelim(void)
 	rc = getdelim(&buf, &len, '-', fp);
 	CU_ASSERT(rc == 2);
 	CU_ASSERT(buf != NULL);
-	CU_ASSERT(len > rc);
-	CU_ASSERT(rc == strlen(buf));
+	CU_ASSERT(len > (size_t)rc);
+	CU_ASSERT((size_t)rc == strlen(buf));
 	CU_ASSERT(buf[rc - 1] == '-');
 	CU_ASSERT(buf[rc] == 0);
 
@@ -133,8 +135,8 @@ test_getdelim(void)
 		rc = getdelim(&buf, &len, '-', fp);
 		CU_ASSERT(rc == i + 1);
 		CU_ASSERT(buf != NULL);
-		CU_ASSERT(len > rc);
-		CU_ASSERT(rc == strlen(buf));
+		CU_ASSERT(len > (size_t)rc);
+		CU_ASSERT((size_t)rc == strlen(buf));
 		CU_ASSERT(buf[rc - 1] == '-');
 		CU_ASSERT(buf[rc] == 0);
 	}

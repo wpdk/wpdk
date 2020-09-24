@@ -12,6 +12,7 @@
  */
 
 #include <wpdk/internal.h>
+#include <sys/socket.h>
 #include <netdb.h>
 
 

@@ -23,7 +23,7 @@ __extension__
 #ifndef _WPDK_STDLIB_H_
 #define _WPDK_STDLIB_H_
 
-#include <wpdk/windows.h>
+#include <string.h>
 
 _WPDK_BEGIN_C_HEADER
 

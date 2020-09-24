@@ -15,7 +15,6 @@
 #define _WPDK_UNISTD_H_
 
 #include <wpdk/header.h>
-#include <wpdk/windows.h>
 #include <sys/time.h>
 #include <stdio.h>
 #include <io.h>

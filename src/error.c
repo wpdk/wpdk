@@ -20,18 +20,6 @@
 #include <errno.h>
 
 
-/*
- *  Define errors missing from mingw64
- */
-#ifndef WSA_SECURE_HOST_NOT_FOUND
-#define WSA_SECURE_HOST_NOT_FOUND		11032L
-#endif
-
-#ifndef WSA_IPSEC_NAME_POLICY_ERROR
-#define WSA_IPSEC_NAME_POLICY_ERROR		11033L
-#endif
-
-
 int
 wpdk_convert_to_posix(int err)
 {
@@ -71,6 +59,9 @@ wpdk_convert_to_posix(int err)
 			/* The specified device name is invalid */
 			return ENXIO;
 
+#ifndef ERROR_BAD_DEVICE_PATH
+#define ERROR_BAD_DEVICE_PATH 330L
+#endif
 		case ERROR_BAD_DEVICE_PATH:
 			/* An attempt was made to send down the command via an invalid path to the target device */
 			return EINVAL;
@@ -147,10 +138,16 @@ wpdk_convert_to_posix(int err)
 			/* The directory or file cannot be created */
 			return EPERM;
 
+#ifndef ERROR_CANT_TERMINATE_SELF
+#define ERROR_CANT_TERMINATE_SELF 555L
+#endif
 		case ERROR_CANT_TERMINATE_SELF:
 			/* The last thread in a process attempted to terminate itself */
 			return EPERM;
 
+#ifndef ERROR_CANT_WAIT
+#define ERROR_CANT_WAIT 554L
+#endif
 		case ERROR_CANT_WAIT:
 			/* An operation cannot continue without blocking for I/O */
 			return EWOULDBLOCK;
@@ -179,6 +176,9 @@ wpdk_convert_to_posix(int err)
 			/* The directory cannot be removed */
 			return EPERM;
 
+#ifndef ERROR_DATA_CHECKSUM_ERROR
+#define ERROR_DATA_CHECKSUM_ERROR 323L
+#endif
 		case ERROR_DATA_CHECKSUM_ERROR:
 			/* A data integrity checksum error occurred. Data in the file stream is corrupt */
 			return EIO;
@@ -191,10 +191,16 @@ wpdk_convert_to_posix(int err)
 			/* The specified network resource or device is no longer available */
 			return ENOENT;
 
+#ifndef ERROR_DEVICE_ALREADY_ATTACHED
+#define ERROR_DEVICE_ALREADY_ATTACHED 548L
+#endif
 		case ERROR_DEVICE_ALREADY_ATTACHED:
 			/* An attempt was made to attach to a device that was already attached */
 			return EBUSY;
 
+#ifndef ERROR_DEVICE_NO_RESOURCES
+#define ERROR_DEVICE_NO_RESOURCES 322L
+#endif
 		case ERROR_DEVICE_NO_RESOURCES:
 			/* The target device has insufficient resources to complete the operation */
 			return ENOMEM;
@@ -203,6 +209,9 @@ wpdk_convert_to_posix(int err)
 			/* The device is not connected */
 			return ENXIO;
 
+#ifndef ERROR_DEVICE_UNREACHABLE
+#define ERROR_DEVICE_UNREACHABLE 321L
+#endif
 		case ERROR_DEVICE_UNREACHABLE:
 			/* The device is unreachable */
 			return ENXIO;
@@ -219,6 +228,9 @@ wpdk_convert_to_posix(int err)
 			/* Attempt to use a file handle to an open disk partition for an operation other than raw disk I/O */
 			return EIO;
 
+#ifndef ERROR_DIRECTORY_NOT_SUPPORTED
+#define ERROR_DIRECTORY_NOT_SUPPORTED 336L
+#endif
 		case ERROR_DIRECTORY_NOT_SUPPORTED:
 			/* An operation is not supported on a directory */
 			return EPERM;
@@ -231,10 +243,16 @@ wpdk_convert_to_posix(int err)
 			/* Not connected because a duplicate name exists on the network */
 			return EADDRINUSE;
 
+#ifndef ERROR_ELEVATION_REQUIRED
+#define ERROR_ELEVATION_REQUIRED 740L
+#endif
 		case ERROR_ELEVATION_REQUIRED:
 			/* The requested operation requires elevation */
 			return EPERM;
 
+#ifndef ERROR_ERRORS_ENCOUNTERED
+#define ERROR_ERRORS_ENCOUNTERED 774L
+#endif
 		case ERROR_ERRORS_ENCOUNTERED:
 			/* One or more errors occurred while processing the request */
 			return EINVAL;
@@ -247,6 +265,9 @@ wpdk_convert_to_posix(int err)
 			/* The file exists */
 			return EEXIST;
 
+#ifndef ERROR_FILE_LEVEL_TRIM_NOT_SUPPORTED
+#define ERROR_FILE_LEVEL_TRIM_NOT_SUPPORTED 326L
+#endif
 		case ERROR_FILE_LEVEL_TRIM_NOT_SUPPORTED:
 			/* Device does not support file-level TRIM */
 			return ENOSYS;
@@ -287,6 +308,9 @@ wpdk_convert_to_posix(int err)
 			/* The handle is invalid */
 			return EBADF;
 
+#ifndef ERROR_INVALID_LOCK_RANGE
+#define ERROR_INVALID_LOCK_RANGE 307L
+#endif
 		case ERROR_INVALID_LOCK_RANGE:
 			/* A requested file lock operation cannot be processed due to an invalid byte range */
 			return EINVAL;
@@ -335,10 +359,16 @@ wpdk_convert_to_posix(int err)
 			/* The system cannot find the drive specified */
 			return ENODEV;
 
+#ifndef ERROR_INVALID_EXCEPTION_HANDLER
+#define ERROR_INVALID_EXCEPTION_HANDLER 310L
+#endif
 		case ERROR_INVALID_EXCEPTION_HANDLER:
 			/* An invalid exception handler routine has been detected */
 			return EFAULT;
 
+#ifndef ERROR_INVALID_FIELD_IN_PARAMETER_LIST
+#define ERROR_INVALID_FIELD_IN_PARAMETER_LIST 328L
+#endif
 		case ERROR_INVALID_FIELD_IN_PARAMETER_LIST:
 			/* The command specified an invalid field in its parameter list */
 			return EINVAL;
@@ -375,6 +405,9 @@ wpdk_convert_to_posix(int err)
 			/* The process cannot access the file because another process has locked a portion of the file */
 			return EBUSY;
 
+#ifndef ERROR_LOST_WRITEBEHIND_DATA
+#define ERROR_LOST_WRITEBEHIND_DATA 596L
+#endif
 		case ERROR_LOST_WRITEBEHIND_DATA:
 			/* Windows was unable to save all the data for the file */
 			return EIO;
@@ -383,6 +416,9 @@ wpdk_convert_to_posix(int err)
 			/* No more threads can be created in the system */
 			return ENOMEM;
 
+#ifndef ERROR_MEMORY_HARDWARE
+#define ERROR_MEMORY_HARDWARE 779L
+#endif
 		case ERROR_MEMORY_HARDWARE:
 			/* The hardware has reported an uncorrectable memory error */
 			return EFAULT;
@@ -391,6 +427,9 @@ wpdk_convert_to_posix(int err)
 			/* More data is available */
 			return EMSGSIZE;
 
+#ifndef ERROR_MULTIPLE_FAULT_VIOLATION
+#define ERROR_MULTIPLE_FAULT_VIOLATION 640L
+#endif
 		case ERROR_MULTIPLE_FAULT_VIOLATION:
 			/* Multiple fault violation */
 			return EFAULT;
@@ -423,10 +462,16 @@ wpdk_convert_to_posix(int err)
 			/* Invalid access to memory location */
 			return EFAULT;
 
+#ifndef ERROR_NOINTERFACE
+#define ERROR_NOINTERFACE 632L
+#endif
 		case ERROR_NOINTERFACE:
 			/* The requested interface is not supported */
 			return ENOSYS;
 
+#ifndef ERROR_NOT_CAPABLE
+#define ERROR_NOT_CAPABLE 775L
+#endif
 		case ERROR_NOT_CAPABLE:
 			/* The implementation is not capable of performing the request */
 			return ENOSYS;
@@ -487,14 +532,23 @@ wpdk_convert_to_posix(int err)
 			/* The specified disk or diskette cannot be accessed */
 			return ENODEV;
 
+#ifndef ERROR_OBJECT_NAME_EXISTS
+#define ERROR_OBJECT_NAME_EXISTS 698L
+#endif
 		case ERROR_OBJECT_NAME_EXISTS:
 			/* The object name already existed */
 			return EEXIST;
 
+#ifndef ERROR_OFFSET_ALIGNMENT_VIOLATION
+#define ERROR_OFFSET_ALIGNMENT_VIOLATION 327L
+#endif
 		case ERROR_OFFSET_ALIGNMENT_VIOLATION:
 			/* The command specified a data offset that does not align to the device's granularity/alignment */
 			return EINVAL;
 
+#ifndef ERROR_OPERATION_IN_PROGRESS
+#define ERROR_OPERATION_IN_PROGRESS 329L
+#endif
 		case ERROR_OPERATION_IN_PROGRESS:
 			/* An operation is currently in progress with the device */
 			return EINPROGRESS;
@@ -531,6 +585,9 @@ wpdk_convert_to_posix(int err)
 			/* The printer is out of paper */
 			return EIO;
 
+#ifndef ERROR_PAGEFILE_QUOTA_EXCEEDED
+#define ERROR_PAGEFILE_QUOTA_EXCEEDED 567L
+#endif
 		case ERROR_PAGEFILE_QUOTA_EXCEEDED:
 			/* Page file quota was exceeded */
 			return ENOMEM;
@@ -555,14 +612,23 @@ wpdk_convert_to_posix(int err)
 			/* The system cannot read from the specified device */
 			return EIO;
 
+#ifndef ERROR_RECEIVE_EXPEDITED
+#define ERROR_RECEIVE_EXPEDITED 708L
+#endif
 		case ERROR_RECEIVE_EXPEDITED:
 			/* Data was marked as expedited by the remote system */
 			return EMSGSIZE;
 
+#ifndef ERROR_RECEIVE_PARTIAL
+#define ERROR_RECEIVE_PARTIAL 707L
+#endif
 		case ERROR_RECEIVE_PARTIAL:
 			/* The network transport returned partial data to its client */
 			return EMSGSIZE;
 
+#ifndef ERROR_RECEIVE_PARTIAL_EXPEDITED
+#define ERROR_RECEIVE_PARTIAL_EXPEDITED 709L
+#endif
 		case ERROR_RECEIVE_PARTIAL_EXPEDITED:
 			/* Partial data was marked as expedited by the remote system */
 			return EMSGSIZE;
@@ -571,6 +637,9 @@ wpdk_convert_to_posix(int err)
 			/* Windows cannot find the network path */
 			return ENETUNREACH;
 
+#ifndef ERROR_REPARSE
+#define ERROR_REPARSE 741L
+#endif
 		case ERROR_REPARSE:
 			/* File resulted in a symbolic link */
 			return EAGAIN;
@@ -630,6 +699,9 @@ wpdk_convert_to_posix(int err)
 			/* This operation returned because the timeout period expired */
 			return ETIMEDOUT;
 
+#ifndef ERROR_TOO_MANY_DESCRIPTORS
+#define ERROR_TOO_MANY_DESCRIPTORS 331L
+#endif
 		case ERROR_TOO_MANY_DESCRIPTORS:
 			/* The command specified a number of descriptors that exceeded the maximum supported by the device */
 			return ENOMEM;
@@ -658,6 +730,9 @@ wpdk_convert_to_posix(int err)
 			/* Cannot create another thread */
 			return ENOMEM;
 
+#ifndef ERROR_TOO_MANY_THREADS
+#define ERROR_TOO_MANY_THREADS 565L
+#endif
 		case ERROR_TOO_MANY_THREADS:
 			/* A process has too many threads to perform the requested action */
 			return ENOMEM;
@@ -942,10 +1017,16 @@ wpdk_convert_to_posix(int err)
 			/* The requested name is valid, but no data of the requested type was found */
 			return ENOSYS;
 
+#ifndef WSA_SECURE_HOST_NOT_FOUND
+#define WSA_SECURE_HOST_NOT_FOUND 11032L
+#endif
 		case WSA_SECURE_HOST_NOT_FOUND:
 			/* No such host is known securely */
 			return EHOSTDOWN;
 
+#ifndef WSA_IPSEC_NAME_POLICY_ERROR
+#define WSA_IPSEC_NAME_POLICY_ERROR 11033L
+#endif
 		case WSA_IPSEC_NAME_POLICY_ERROR:
 			/* Name based IPSEC policy could not be added */
 			return ENOSYS;

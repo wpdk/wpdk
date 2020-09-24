@@ -15,7 +15,6 @@
 #define _WPDK_POLL_H_
 
 #include <wpdk/header.h>
-#include <wpdk/windows.h>
 #include <sys/socket.h>
 
 _WPDK_BEGIN_C_HEADER
