@@ -12,7 +12,6 @@
  */
 
 #include <wpdk/internal.h>
-#include <wpdk/windows.h>
 #include <sys/stat.h>
 #include <stdbool.h>
 #include <limits.h>
