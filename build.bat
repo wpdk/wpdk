@@ -56,6 +56,10 @@ if "%CC%"=="gcc" (
 	)
 )
 
+set CXX=%CC%
+if "%CC%"=="clang" set CXX="clang++"
+if "%CC%"=="gcc" set CXX="g++"
+
 echo Building %TYPE% with %CC%...
 if not exist build-tmp meson --buildtype=%TYPE% build-tmp
 echo %CC% %ARCH% %TYPE%>build-tmp\_config

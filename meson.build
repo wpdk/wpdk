@@ -2,7 +2,7 @@
 # Copyright (c) 2020, MayaData Inc. All rights reserved.
 # Copyright (c) 2020, DataCore Software Corporation. All rights reserved.
 
-project('WPDK', 'C',
+project('WPDK', 'C', 'CPP',
 	version: '0.1.0',
 	license: 'BSD',
 	default_options: [
@@ -15,6 +15,8 @@ project('WPDK', 'C',
 )
 
 cc = meson.get_compiler('c')
+cpp = meson.get_compiler('cpp')
+
 global_includes = include_directories('.', 'include')
 
 cunit = subproject('CUnit')
