@@ -21,9 +21,7 @@
 void add_error_tests(void);
 void add_fatal_tests(void);
 void add_include_c_tests(void);
-#ifdef _MSC_VER
 void add_include_cpp_tests(void);
-#endif
 void add_stat_tests(void);
 void add_stdio_tests(void);
 void add_string_tests(void);
@@ -51,9 +49,7 @@ main(int argc, char **argv)
 	add_error_tests();
 	add_fatal_tests();
 	add_include_c_tests();
-#ifdef _MSC_VER
 	add_include_cpp_tests();
-#endif
 	add_stat_tests();
 	add_stdio_tests();
 	add_string_tests();

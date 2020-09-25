@@ -76,6 +76,7 @@ install_headers(
 )
 
 install_headers(
+	'sec_api/stdlib_s.h',
 	'sec_api/string_s.h',
 	subdir : 'sec_api'
 )

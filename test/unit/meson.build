@@ -6,11 +6,14 @@ cflags = [
 	'-DCHECK_UNIMPLEMENTED',
 ]
 
+cppflags = [ ]
+
 sources = [
 	'main.c',
 	'error_ut.c',
 	'fatal_ut.c',
 	'include_c_ut.c',
+	'include_cpp_ut.cpp',
 	'stat_ut.c',
 	'stdio_ut.c',
 	'string_ut.c',
@@ -66,9 +69,6 @@ include_sources = [
 	'include_c/termios_h.c',
 	'include_c/unistd_h.c',
 	'include_c/uuid_uuid_h.c',
-]
-
-include_cpp_sources = [
 	'include_cpp/_mingw_h.cpp',
 	'include_cpp/arpa_inet_h.cpp',
 	'include_cpp/net_if_h.cpp',
@@ -116,14 +116,15 @@ include_cpp_sources = [
 	'include_cpp/uuid_uuid_h.cpp',
 ]
 
-if cc.get_id() != 'gcc'
-	sources += 'include_cpp_ut.cpp'
-	include_sources += include_cpp_sources
+# Disable g++ warnings for #include_next
+if cpp.get_id() == 'gcc' and cpp.has_argument('-Wno-pedantic')
+  cppflags += [ '-Wno-pedantic' ]
 endif
 
 unit_tests = executable('unit_tests',
 		[ sources, include_sources, ],
 		c_args: [ cflags, '-D_WPDK_UNIT_TESTS_' ],
+		cpp_args: [ cflags, cppflags, '-D_WPDK_UNIT_TESTS_' ],
 		include_directories: [ global_includes ],
 		link_with : [ static_lib ],
 		dependencies : cunit_dep,

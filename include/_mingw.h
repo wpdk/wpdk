@@ -13,7 +13,7 @@
 
 #include <wpdk/header.h>
 
-__extension__
+_WPDK_INCLUDE_NEXT_
 #include_next <_mingw.h>
 
 #ifndef _WPDK__MINGW_H_

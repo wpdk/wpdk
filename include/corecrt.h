@@ -14,7 +14,7 @@
 #include <wpdk/header.h>
 
 #ifdef _WPDK_INCLUDE_NEXT_
-__extension__
+_WPDK_INCLUDE_NEXT_
 #include_next <corecrt.h>
 #else
 #include <../ucrt/corecrt.h>

@@ -31,7 +31,11 @@
 #endif
 
 #if defined(__GNUC__) || defined(__clang__)
+#if defined(__GNUC__) && !defined(__cplusplus)
+#define _WPDK_INCLUDE_NEXT_ __extension__
+#else
 #define _WPDK_INCLUDE_NEXT_
+#endif
 #ifdef __clang__
 #pragma GCC diagnostic ignored "-Wgnu-include-next"
 #endif
