@@ -20,7 +20,7 @@ _WPDK_INCLUDE_NEXT_
 #include <../ucrt/stdlib.h>
 #endif
 
-#ifndef _WPDK_STDLIB_H_
+#if !defined(_WPDK_STDLIB_H_) && !defined(_GLIBCXX_INCLUDE_NEXT_C_HEADERS)
 #define _WPDK_STDLIB_H_
 
 #include <string.h>
@@ -45,7 +45,7 @@ void *wpdk_calloc(size_t nelem, size_t elsize);
 #define srandom(seed) wpdk_srandom(seed)
 #define rand_r(seedp) wpdk_rand_r(seedp)
 
-#if !defined(__MINGW32__) || !defined(_INC_STRING_S)
+#if !defined(__MINGW32__) || !defined(_INC_STDLIB_S)
 #define calloc(nelem,elsize) wpdk_calloc(nelem, elsize)
 #endif
 #endif

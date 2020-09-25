@@ -16,6 +16,6 @@
 _WPDK_INCLUDE_NEXT_
 #include_next <sec_api/stdlib_s.h>
 
-#ifndef _WPDK_BUILD_LIB_
+#if !defined(_WPDK_BUILD_LIB_) && !defined(_GLIBCXX_INCLUDE_NEXT_C_HEADERS)
 #define calloc(nelem,elsize) wpdk_calloc(nelem, elsize)
 #endif
