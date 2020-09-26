@@ -11,6 +11,7 @@ cppflags = [ ]
 sources = [
 	'main.c',
 	'error_ut.c',
+	'dirent_ut.c',
 	'fatal_ut.c',
 	'include_c_ut.c',
 	'include_cpp_ut.cpp',

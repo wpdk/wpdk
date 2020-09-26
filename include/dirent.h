@@ -15,5 +15,34 @@
 #define _WPDK_DIRENT_H_
 
 #include <wpdk/header.h>
+#include <wpdk/types.h>
+#include <limits.h>
+
+#define DT_REG	1
+#define DT_DIR	2
+
+typedef struct _DIR DIR;
+
+struct dirent {
+	ino_t	d_ino;
+	int		d_type;
+#ifdef _WPDK_BUILD_LIB_	
+	char	d_name[_MAX_PATH];
+#else
+	char	d_name[1];
+#endif
+};
+
+DIR *wpdk_opendir(const char *dirname);
+int wpdk_closedir(DIR *dirp);
+struct dirent *wpdk_readdir(DIR *dirp);
+void wpdk_rewinddir(DIR *dirp);
+
+#ifndef _WPDK_BUILD_LIB_
+#define opendir(dirname) wpdk_opendir(dirname)
+#define closedir(dirp) wpdk_closedir(dirp)
+#define readdir(dirp) wpdk_readdir(dirp)
+#define rewinddir(dirp) wpdk_rewinddir(dirp)
+#endif
 
 #endif /* _WPDK_DIRENT_H_ */

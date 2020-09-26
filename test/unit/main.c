@@ -18,6 +18,7 @@
 #include <CUnit/Basic.h>
 
 
+void add_dirent_tests();
 void add_error_tests(void);
 void add_fatal_tests(void);
 void add_include_c_tests(void);
@@ -46,6 +47,7 @@ main(int argc, char **argv)
 	CU_set_error_action(CUEA_ABORT);
 	CU_initialize_registry();
 
+	add_dirent_tests();
 	add_error_tests();
 	add_fatal_tests();
 	add_include_c_tests();

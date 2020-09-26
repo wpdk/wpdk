@@ -29,6 +29,10 @@ _WPDK_INCLUDE_NEXT_
 #define PATH_MAX _MAX_PATH
 #endif
 
+#ifndef NAME_MAX
+#define NAME_MAX _MAX_FNAME
+#endif
+
 #ifndef SSIZE_MAX
 #define SSIZE_MAX _I64_MAX
 #endif
