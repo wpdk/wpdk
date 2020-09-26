@@ -51,6 +51,18 @@ posix_error(void)
 
 
 static void
+posix_nullptr(void)
+{
+	void *rc;
+
+	/* Check valid error code */
+	rc = wpdk_posix_nullptr(EINTR);
+	CU_ASSERT(rc == NULL);
+	CU_ASSERT(errno == EINTR);
+}
+
+
+static void
 convert_to_posix(void)
 {
 	int err;
@@ -145,6 +157,7 @@ add_error_tests()
 	suite = CU_add_suite("error", null_init, null_clean);
 
 	CU_ADD_TEST(suite, posix_error);
+	CU_ADD_TEST(suite, posix_nullptr);
 	CU_ADD_TEST(suite, convert_to_posix);
 	CU_ADD_TEST(suite, windows_error);
 	CU_ADD_TEST(suite, last_error);
