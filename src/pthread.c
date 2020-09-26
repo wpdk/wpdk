@@ -486,3 +486,47 @@ void pthread_testcancel(void)
 	// HACK - unimplemented
 	WPDK_UNIMPLEMENTED();
 }
+
+
+int pthread_setaffinity_np(pthread_t thread, size_t cpusetsize, const cpuset_t *cpuset)
+{
+	DWORD_PTR affinity;
+
+	if (!thread || cpusetsize < sizeof(affinity) || !cpuset)
+		return EINVAL;
+
+	affinity = SetThreadAffinityMask(thread, cpuset->_bits[0]);
+
+	// HACK - error code
+	return (affinity != 0) ? 0 : EINVAL;
+}
+
+
+/*
+ *  Windows doesn't have GetThreadAffinityMask(), so change the
+ *  affinity temporarily to find the current value.  Loop through the
+ *  possible temporary affinities until we find one that succeeds.
+ */
+int pthread_getaffinity_np(pthread_t thread, size_t cpusetsize, cpuset_t *cpuset)
+{
+	DWORD_PTR affinity, temporary;
+
+	if (!thread || cpusetsize < sizeof(affinity) || !cpuset)
+		return EINVAL;
+
+	for (temporary = 1; temporary != 0; temporary <<= 1) {
+		affinity = SetThreadAffinityMask(thread, temporary);
+
+		if (affinity != 0) {
+			/* Reinstate the previous value */
+			SetThreadAffinityMask(thread, affinity);
+
+			memset(cpuset, 0, cpusetsize);
+			cpuset->_bits[0] = affinity;
+			return 0;
+		}
+	}
+
+	// HACK - error code
+	return EINVAL;
+}

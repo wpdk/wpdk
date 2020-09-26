@@ -47,3 +47,5 @@ libiscsi includes md5 code
 
 Add log message handling - also add way for unit tests to tell if called.
 
+Review the use of restrict.
+

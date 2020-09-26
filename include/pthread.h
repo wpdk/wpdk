@@ -147,6 +147,9 @@ static inline int pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutex
 }
 #endif
 
+int pthread_setaffinity_np(pthread_t thread, size_t cpusetsize, const cpuset_t *cpuset);
+int pthread_getaffinity_np(pthread_t thread, size_t cpusetsize, cpuset_t *cpuset);
+
 _WPDK_END_C_HEADER
 
 #endif /* _WPDK_PTHREAD_H_ */
