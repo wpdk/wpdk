@@ -15,6 +15,7 @@ sources = [
 	'fatal_ut.c',
 	'include_c_ut.c',
 	'include_cpp_ut.cpp',
+	'netdb_ut.c',
 	'stat_ut.c',
 	'stdio_ut.c',
 	'string_ut.c',

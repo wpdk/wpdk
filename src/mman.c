@@ -25,8 +25,9 @@ int wpdk_shm_open(const char *name, int oflag, mode_t mode)
 
 int wpdk_shm_unlink(const char *name)
 {
+	char buf[MAX_PATH];
 	// HACK - shm_unlink - check handling with open fds	
-	return _unlink(name);
+	return _unlink(wpdk_get_path(name, buf, sizeof(buf)));
 }
 
 

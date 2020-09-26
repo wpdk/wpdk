@@ -21,11 +21,12 @@ _WPDK_BEGIN_C_HEADER
 
 int wpdk_getaddrinfo(const char *node, const char *service,
 	const struct addrinfo *hints, struct addrinfo **res);
-
+void wpdk_freeaddrinfo(struct addrinfo *ai);
 const char *wpdk_gai_strerror(int ecode);
 
 #ifndef _WPDK_BUILD_LIB_
 #define getaddrinfo wpdk_getaddrinfo
+#define freeaddrinfo wpdk_freeaddrinfo
 #undef gai_strerror
 #define gai_strerror wpdk_gai_strerror
 #endif

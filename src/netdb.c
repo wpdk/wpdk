@@ -19,8 +19,6 @@
 int wpdk_getaddrinfo(const char *node, const char *service,
 					 const struct addrinfo *hints, struct addrinfo **res)
 {
-	// HACK - GAI error code needed
-	
 	if (!wpdk_socket_startup())
 		return EINVAL;
 
@@ -28,8 +26,15 @@ int wpdk_getaddrinfo(const char *node, const char *service,
 }
 
 
+void
+wpdk_freeaddrinfo(struct addrinfo *ai)
+{
+	freeaddrinfo(ai);
+}
+
+
 const char *wpdk_gai_strerror(int ecode)
 {
-	// HACK - not thread safe
+	// HACK - gai_strerror is not thread safe
 	return gai_strerror(ecode);
 }
