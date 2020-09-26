@@ -216,6 +216,72 @@ int pthread_spin_unlock(pthread_spinlock_t *lock)
 }
 
 
+int pthread_barrierattr_init(pthread_barrierattr_t *attr)
+{
+	if (!attr) return EINVAL;
+
+	attr->pshared = PTHREAD_PROCESS_PRIVATE;
+	return 0;
+}
+
+
+int pthread_barrierattr_destroy(pthread_barrierattr_t *attr)
+{
+	if (!attr) return EINVAL;
+	return 0;
+}
+
+
+int pthread_barrierattr_getpshared(const pthread_barrierattr_t *attr, int *pshared)
+{
+	if (!attr || !pshared)
+		return EINVAL;
+	*pshared = attr->pshared;
+	return 0;
+}
+
+
+int pthread_barrierattr_setpshared(pthread_barrierattr_t *attr, int pshared)
+{
+	if (!attr || pshared < PTHREAD_PROCESS_PRIVATE || pshared > PTHREAD_PROCESS_SHARED)
+		return EINVAL;
+
+	attr->pshared = pshared;
+	return 0;
+}
+
+
+int pthread_barrier_init(pthread_barrier_t *barrier,
+		const pthread_barrierattr_t *attr, unsigned count)
+{
+	UNREFERENCED_PARAMETER(attr);
+
+	if (!barrier) return EINVAL;
+
+	InitializeSynchronizationBarrier(&barrier->barrier, count, -1);
+	return 0;
+}
+
+
+int pthread_barrier_destroy(pthread_barrier_t *barrier)
+{
+	if (!barrier) return EINVAL;
+
+	DeleteSynchronizationBarrier(&barrier->barrier);
+	return 0;
+}
+
+
+int pthread_barrier_wait(pthread_barrier_t *barrier)
+{
+	if (!barrier) return EINVAL;
+
+	return (EnterSynchronizationBarrier(&barrier->barrier,
+			SYNCHRONIZATION_BARRIER_FLAGS_BLOCK_ONLY) == TRUE) ?
+			PTHREAD_BARRIER_SERIAL_THREAD : 0;
+}
+
+
 int pthread_condattr_init(pthread_condattr_t *attr)
 {
 	if (!attr) return EINVAL;

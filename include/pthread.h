@@ -70,6 +70,24 @@ int pthread_spin_trylock(pthread_spinlock_t *lock);
 int pthread_spin_unlock(pthread_spinlock_t *lock);
 
 
+typedef struct { int pshared; } pthread_barrierattr_t;
+
+int pthread_barrierattr_destroy(pthread_barrierattr_t *attr);
+int pthread_barrierattr_init(pthread_barrierattr_t *attr);
+int pthread_barrierattr_getpshared(const pthread_barrierattr_t *attr, int *pshared);
+int pthread_barrierattr_setpshared(pthread_barrierattr_t *attr, int pshared);
+
+
+#define PTHREAD_BARRIER_SERIAL_THREAD	1
+
+typedef struct { SYNCHRONIZATION_BARRIER barrier; } pthread_barrier_t;
+
+int pthread_barrier_destroy(pthread_barrier_t *barrier);
+int pthread_barrier_init(pthread_barrier_t *barrier,
+		const pthread_barrierattr_t *attr, unsigned count);
+int pthread_barrier_wait(pthread_barrier_t *barrier);	
+
+
 typedef struct { int pshared; } pthread_condattr_t;
 
 int pthread_condattr_init(pthread_condattr_t *attr);
