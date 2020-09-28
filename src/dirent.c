@@ -37,14 +37,20 @@ wpdk_opendir(const char *dirname)
 
 	wpdk_set_invalid_handler();
 
-	if (!dirname || !*dirname)
-		return wpdk_posix_nullptr(EINVAL);
+	if (!dirname || !*dirname) {
+		wpdk_posix_error(EINVAL);
+		return NULL;
+	}
 
-	if (strlen(dirname) + 2 >= MAX_PATH)
-		return wpdk_posix_nullptr(ENAMETOOLONG);
+	if (strlen(dirname) + 2 >= MAX_PATH) {
+		wpdk_posix_error(ENAMETOOLONG);
+		return NULL;
+	}
 
-	if ((dirp = calloc(1, sizeof(struct _DIR))) == NULL)
-		return wpdk_posix_nullptr(ENOMEM);
+	if ((dirp = calloc(1, sizeof(struct _DIR))) == NULL) {
+		wpdk_posix_error(ENOMEM);
+		return NULL;
+	}
 
 	if (wpdk_get_path(dirname, dirp->spec,
 			sizeof(dirp->spec) - 2) == dirname)
@@ -56,7 +62,8 @@ wpdk_opendir(const char *dirname)
 	if ((dirp->h = _findfirst(dirp->spec, &dirp->info)) == -1) {
 		error = errno;
 		free(dirp);
-		return wpdk_posix_nullptr(error);
+		wpdk_posix_error(error);
+		return NULL;
 	}
 
 	return dirp;
@@ -84,8 +91,10 @@ wpdk_readdir(DIR *dirp)
 
 	wpdk_set_invalid_handler();
 
-	if (!dirp || dirp->h == -1)
-		return wpdk_posix_nullptr(EBADF);
+	if (!dirp || dirp->h == -1) {
+		wpdk_posix_error(EBADF);
+		return NULL;
+	}
 
 	if (_findnext(dirp->h, &dirp->info) == -1) {
 		if (errno == ENOENT) _set_errno(error);

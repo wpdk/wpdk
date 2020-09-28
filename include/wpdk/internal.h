@@ -56,7 +56,6 @@ int wpdk_last_wsa_error(void);
 int wpdk_windows_error(int error);
 int wpdk_convert_to_posix(int err);
 int wpdk_posix_error(int error);
-void *wpdk_posix_nullptr(int error);
 
 void wpdk_warning(const char *file, int line, const char *function, const char *fmt, ...);
 void wpdk_fatal(const char *file, int line, const char *function, const char *message);

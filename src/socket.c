@@ -39,7 +39,7 @@ int wpdk_socket_startup()
 	fds = (SOCKET *)calloc(maxsockets, sizeof(SOCKET));
 
 	if (fds == NULL) {
-		_set_errno(ENOMEM);
+		WSASetLastError(WSA_NOT_ENOUGH_MEMORY);
 		return 0;
 	}
 
@@ -47,16 +47,16 @@ int wpdk_socket_startup()
 
 	if (domains == NULL) {
 		free(fds);
-		_set_errno(ENOMEM);
-		return -1;
+		WSASetLastError(WSA_NOT_ENOUGH_MEMORY);
+		return 0;
 	}
 
 	wsaerr = WSAStartup(wVersionRequested, &wsaData);
 
 	if (wsaerr != 0) {
-		wpdk_windows_error(wsaerr);
 		free(domains);
 		free(fds);
+		WSASetLastError(wsaerr);
 		return 0;
 	}
 
@@ -101,8 +101,7 @@ int wpdk_allocate_socket(SOCKET s, int domain)
 			}
 
 	closesocket(s);
-	_set_errno(EMFILE);
-	return -1;
+	return wpdk_posix_error(EMFILE);
 }
 
 
@@ -147,13 +146,11 @@ int wpdk_close_socket(int socket)
 	SOCKET s = wpdk_get_socket(socket);
 
 	if (s == INVALID_SOCKET)
-		return -1;
+		return wpdk_posix_error(EBADF);
 
 	if ((SOCKET)InterlockedCompareExchangePointer((void **)&wpdk_socket_fds[socket - socketbase],
-				(void *)INVALID_SOCKET, (void *)s) != s) {
-		_set_errno(EBADF);
-		return -1;
-	}
+				(void *)INVALID_SOCKET, (void *)s) != s)
+		return wpdk_posix_error(EBADF);
 
 	if (closesocket(s) == SOCKET_ERROR)
 		return wpdk_last_wsa_error();
@@ -168,7 +165,7 @@ int wpdk_accept(int socket, struct sockaddr *address, socklen_t *address_len)
 	int domain;
 
 	if (s == INVALID_SOCKET)
-		return -1;
+		return wpdk_posix_error(EBADF);
 	
 	domain = wpdk_socket_domains[socket - socketbase];
 
@@ -191,13 +188,11 @@ int wpdk_bind(int socket, const struct sockaddr *address, socklen_t address_len)
 	int rc;
 
 	if (s == INVALID_SOCKET)
-		return -1;
+		return wpdk_posix_error(EBADF);
 
 	if (address->sa_family == AF_UNIX) {
-		if (address_len > (socklen_t)sizeof(un)) {
-			_set_errno(EINVAL);
-			return -1;
-		}
+		if (address_len > (socklen_t)sizeof(un))
+			return wpdk_posix_error(EINVAL);
 
 		// HACK - wpdk_bind - stupid double copying going on here
 		cp = wpdk_get_path(addr->sun_path, buf, sizeof(buf));
@@ -227,13 +222,11 @@ int wpdk_connect(int socket, const struct sockaddr *address, socklen_t address_l
 	int rc;
 
 	if (s == INVALID_SOCKET)
-		return -1;
+		return wpdk_posix_error(EBADF);
 
 	if (address->sa_family == AF_UNIX) {
-		if (address_len > (socklen_t)sizeof(un)) {
-			_set_errno(EINVAL);
-			return -1;
-		}
+		if (address_len > (socklen_t)sizeof(un))
+			return wpdk_posix_error(EINVAL);
 
 		// HACK - wpdk_bind - stupid double copying going on here
 		cp = wpdk_get_path(addr->sun_path, buf, sizeof(buf));
@@ -262,7 +255,7 @@ int wpdk_getpeername(int socket, struct sockaddr *address, socklen_t *address_le
 	int rc;
 
 	if (s == INVALID_SOCKET)
-		return -1;
+		return wpdk_posix_error(EBADF);
 
 	rc = getpeername(s, address, address_len);
 
@@ -279,7 +272,7 @@ int wpdk_getsockname(int socket, struct sockaddr *address, socklen_t *address_le
 	int rc;
 
 	if (s == INVALID_SOCKET)
-		return -1;
+		return wpdk_posix_error(EBADF);
 
 	rc = getsockname(s, address, address_len);
 
@@ -296,7 +289,7 @@ int wpdk_getsockopt(int socket, int level, int option_name, void *option_value, 
 	int rc;
 
 	if (s == INVALID_SOCKET)
-		return -1;
+		return wpdk_posix_error(EBADF);
 
 	rc = getsockopt(s, level, option_name, (char *)option_value, option_len);
 
@@ -313,7 +306,7 @@ int wpdk_listen(int socket, int backlog)
 	int rc;
 
 	if (s == INVALID_SOCKET)
-		return -1;
+		return wpdk_posix_error(EBADF);
 
 	rc = listen(s, backlog);
 
@@ -330,7 +323,7 @@ ssize_t wpdk_recv(int socket, void *buffer, size_t length, int flags)
 	int rc;
 
 	if (s == INVALID_SOCKET)
-		return -1;
+		return wpdk_posix_error(EBADF);
 
 	// HACK - validate length is less that max int
 	rc = recv(s, buffer, (int)length, flags);
@@ -349,7 +342,7 @@ ssize_t wpdk_recvfrom(int socket, void *buffer, size_t length,
 	int rc;
 
 	if (s == INVALID_SOCKET)
-		return -1;
+		return wpdk_posix_error(EBADF);
 
 	// HACK - validate length is less that max int
 	rc = recvfrom(s, buffer, (int)length, flags, address, address_len);
@@ -402,14 +395,12 @@ ssize_t wpdk_socket_readv(int fildes, const struct iovec *iov, int iovcnt)
 	int rc;
 
 	if (s == INVALID_SOCKET)
-		return -1;
+		return wpdk_posix_error(EBADF);
 
 	pBuffer = wpdk_get_wsabuf(buf, sizeof(buf) / sizeof(buf[0]), iov, iovcnt);
 
-	if (!pBuffer) {
-		_set_errno(ENOMEM);
-		return -1;
-	}
+	if (!pBuffer)
+		return wpdk_posix_error(ENOMEM);
 
 	rc = WSARecv(s, pBuffer, iovcnt, &nbytes, &flags, NULL, NULL);	
 
@@ -434,14 +425,12 @@ ssize_t wpdk_recvmsg(int socket, struct msghdr *message, int flags)
 	UNREFERENCED_PARAMETER(flags);
 
 	if (s == INVALID_SOCKET)
-		return -1;
+		return wpdk_posix_error(EBADF);
 
 	pBuffer = wpdk_get_wsabuf(buf, sizeof(buf) / sizeof(buf[0]),
 							  message->msg_iov, message->msg_iovlen);
-	if (!pBuffer) {
-		_set_errno(ENOMEM);
-		return -1;
-	}
+	if (!pBuffer)
+		return wpdk_posix_error(ENOMEM);
 
 	msg.name = message->msg_name;
 	msg.namelen = message->msg_namelen;
@@ -473,7 +462,7 @@ ssize_t wpdk_send(int socket, const void *buffer, size_t length, int flags)
 	int rc;
 
 	if (s == INVALID_SOCKET)
-		return -1;
+		return wpdk_posix_error(EBADF);
 
 	// HACK - validate length is less that max int
 	rc = send(s, buffer, (int)length, flags);
@@ -504,14 +493,12 @@ ssize_t wpdk_socket_writev(int fildes, const struct iovec *iov, int iovcnt)
 	int rc;
 
 	if (s == INVALID_SOCKET)
-		return -1;
+		return wpdk_posix_error(EBADF);
 
 	pBuffer = wpdk_get_wsabuf(buf, sizeof(buf) / sizeof(buf[0]), iov, iovcnt);
 
-	if (!pBuffer) {
-		_set_errno(ENOMEM);
-		return -1;
-	}
+	if (!pBuffer)
+		return wpdk_posix_error(ENOMEM);
 
 	rc = WSASend(s, pBuffer, iovcnt, &nbytes, 0, NULL, NULL);	
 
@@ -535,14 +522,12 @@ ssize_t wpdk_sendmsg(int socket, const struct msghdr *message, int flags)
 	UNREFERENCED_PARAMETER(flags);
 
 	if (s == INVALID_SOCKET)
-		return -1;
+		return wpdk_posix_error(EBADF);
 
 	pBuffer = wpdk_get_wsabuf(buf, sizeof(buf) / sizeof(buf[0]),
 							  message->msg_iov, message->msg_iovlen);
-	if (!pBuffer) {
-		_set_errno(ENOMEM);
-		return -1;
-	}
+	if (!pBuffer)
+		return wpdk_posix_error(ENOMEM);
 
 	msg.name = message->msg_name;
 	msg.namelen = message->msg_namelen;
@@ -572,7 +557,7 @@ ssize_t wpdk_sendto(int socket, const void *message, size_t length,
 	int rc;
 
 	if (s == INVALID_SOCKET)
-		return -1;
+		return wpdk_posix_error(EBADF);
 
 	// HACK - validate length is less that max int
 	rc = sendto(s, message, (int)length, flags, dest_addr, dest_len);
@@ -590,7 +575,7 @@ int wpdk_setsockopt(int socket, int level, int option_name, const void *option_v
 	int rc;
 
 	if (s == INVALID_SOCKET)
-		return -1;
+		return wpdk_posix_error(EBADF);
 
 	// Setting SO_REUSEADDR for AF_UNIX causes the bind to fail
 	if (option_name == SO_REUSEADDR)
@@ -615,7 +600,7 @@ int wpdk_shutdown(int socket, int how)
 	int rc;
 
 	if (s == INVALID_SOCKET)
-		return -1;
+		return wpdk_posix_error(EBADF);
 
 	rc = shutdown(socket, how);
 
@@ -631,7 +616,7 @@ int wpdk_sockatmark(int s)
 	// HACK - TODO
 	WPDK_UNIMPLEMENTED();
 	UNREFERENCED_PARAMETER(s);
-	return -1;
+	return wpdk_posix_error(ENOSYS);
 	// return sockatmark(s);
 }
 
@@ -644,7 +629,7 @@ int wpdk_socketpair(int domain, int type, int protocol, int socket_vector[2])
 	UNREFERENCED_PARAMETER(protocol);
 	UNREFERENCED_PARAMETER(socket_vector);
 	WPDK_UNIMPLEMENTED();
-	return -1;
+	return wpdk_posix_error(ENOSYS);
 	// return socketpair(domain, type, protocol, socket_vector[2]);
 }
 

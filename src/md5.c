@@ -23,7 +23,7 @@ int MD5_Init(MD5_CTX *c)
 	WPDK_UNIMPLEMENTED();
 	
 	UNREFERENCED_PARAMETER(c);
-	return -1;
+	return 0;
 }
 
 
@@ -35,7 +35,7 @@ int MD5_Update(MD5_CTX *c, const void *data, size_t len)
 	UNREFERENCED_PARAMETER(c);
 	UNREFERENCED_PARAMETER(data);
 	UNREFERENCED_PARAMETER(len);
-	return -1;
+	return 0;
 }
 
 
@@ -46,7 +46,7 @@ int MD5_Final(unsigned char *md, MD5_CTX *c)
 
 	UNREFERENCED_PARAMETER(md);
 	UNREFERENCED_PARAMETER(c);
-	return -1;
+	return 0;
 }
 
 

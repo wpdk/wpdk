@@ -19,8 +19,9 @@
 int wpdk_getaddrinfo(const char *node, const char *service,
 					 const struct addrinfo *hints, struct addrinfo **res)
 {
+	// HACK - check return code and map it
 	if (!wpdk_socket_startup())
-		return EINVAL;
+		return EAI_MEMORY;
 
 	return getaddrinfo(node, service, hints, res);
 }

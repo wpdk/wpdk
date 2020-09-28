@@ -27,10 +27,8 @@ int wpdk_poll(struct pollfd fds[], nfds_t nfds, int timeout)
 	int n, rc;
 	nfds_t i;
 
-	if (!fds || nfds >= FD_SETSIZE) {
-		_set_errno(EINVAL);
-		return -1;
-	}
+	if (!fds || nfds >= FD_SETSIZE)
+		return wpdk_posix_error(EINVAL);
 
 	delay.tv_sec = timeout / 1000;
 	delay.tv_usec = (timeout % 1000) * 1000;

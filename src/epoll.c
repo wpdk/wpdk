@@ -52,10 +52,8 @@ int wpdk_get_epoll(int fd)
 	if (wpdk_epoll_fds && wpdk_is_epoll(fd))
 		id = fd - epollbase;
 		
-	if (id == -1 || wpdk_epoll_fds[id] == NULL) {
-		_set_errno(EBADF);
+	if (id == -1 || wpdk_epoll_fds[id] == NULL)
 		return -1;
-	}
 
 	return id;
 }
@@ -69,10 +67,8 @@ int wpdk_allocate_epoll()
 	if (!wpdk_epoll_fds) {
 		fds = calloc(maxepolls, sizeof(struct epoll *));
 
-		if (fds == NULL) {
-			_set_errno(ENOMEM);
-			return -1;
-		}
+		if (fds == NULL)
+			return wpdk_posix_error(ENOMEM);
 
 		if (InterlockedCompareExchangePointer((void **)&wpdk_epoll_fds, fds, NULL) != NULL)
 			free(fds);
@@ -80,10 +76,8 @@ int wpdk_allocate_epoll()
 
 	ep = calloc(1, sizeof(struct epoll));
 
-	if (ep == NULL) {
-		_set_errno(ENOMEM);
-		return -1;
-	}
+	if (ep == NULL)
+		return wpdk_posix_error(ENOMEM);
 
 	for (i = 0; i < FD_SETSIZE; i++)
 		ep->socket[i] = INVALID_SOCKET;
@@ -94,8 +88,7 @@ int wpdk_allocate_epoll()
 				return epollbase + i;
 
 	free(ep);
-	_set_errno(EMFILE);
-	return -1;
+	return wpdk_posix_error(EMFILE);
 }
 
 
@@ -118,32 +111,26 @@ int wpdk_epoll_ctl(int epfd, int op, int fd, struct epoll_event *event)
 	struct epoll *ep;
 
 	if (id == -1 || socket == INVALID_SOCKET)
-		return -1;
+		return wpdk_posix_error(EBADF);
 
 	// HACK - race with close
 	ep = wpdk_epoll_fds[id];
 
 	switch (op) {
 		case EPOLL_CTL_ADD:
-			if (event == NULL) {
-				_set_errno(EINVAL);
-				return -1;
-			}
+			if (event == NULL)
+				return wpdk_posix_error(EINVAL);
 
 			for (i = 0; i < ep->maxcount; i++)
-				if (ep->socket[i] == socket) {
-					_set_errno(EEXIST);
-					return -1;
-				}
+				if (ep->socket[i] == socket)
+					return wpdk_posix_error(EEXIST);
 
 			for (i = 0; i < FD_SETSIZE; i++)
 				if (ep->socket[i] == INVALID_SOCKET)
 					break;
 
-			if (i >= FD_SETSIZE) {
-				_set_errno(ENOSPC);
-				return -1;
-			}
+			if (i >= FD_SETSIZE)
+				return wpdk_posix_error(ENOSPC);
 
 			if (i >= ep->maxcount)
 				ep->maxcount = i + 1;
@@ -157,10 +144,8 @@ int wpdk_epoll_ctl(int epfd, int op, int fd, struct epoll_event *event)
 				if (ep->socket[i] == socket)
 					break;
 
-			if (i >= ep->maxcount) {
-				_set_errno(ENOENT);
-				return -1;
-			}
+			if (i >= ep->maxcount)
+				return wpdk_posix_error(ENOENT);
 
 			if (i == ep->maxcount - 1)
 				ep->maxcount--;
@@ -169,8 +154,7 @@ int wpdk_epoll_ctl(int epfd, int op, int fd, struct epoll_event *event)
 			return 0;		
 	}	
 
-	_set_errno(EINVAL);
-	return -1;
+	return wpdk_posix_error(EINVAL);
 }
 
 
@@ -184,13 +168,12 @@ int wpdk_epoll_wait(int epfd, struct epoll_event *events, int maxevents, int tim
 	int worktodo = 0;
 
 	if (id == -1)
-		return -1;
+		return wpdk_posix_error(EBADF);
 
 	// HACK - timeout not supported
 	if (timeout || !events || maxevents < 1) {
 		WPDK_UNIMPLEMENTED();
-		_set_errno(EINVAL);
-		return -1;
+		return wpdk_posix_error(EINVAL);
 	}
 
 	// HACK - race with close
@@ -253,7 +236,7 @@ int wpdk_close_epoll(int fd)
 	struct epoll *ep;
 
 	if (id == -1)
-		return -1;
+		return wpdk_posix_error(EBADF);
 
 	ep = (struct epoll *)InterlockedExchangePointer((void **)&wpdk_epoll_fds[id], NULL);
 	

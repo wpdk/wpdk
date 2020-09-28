@@ -21,14 +21,13 @@ int wpdk_sem_init(sem_t *sem, int pshared, unsigned int value)
 	// HACK - sem_init pshared
 	UNREFERENCED_PARAMETER(pshared);
 
-	if (!sem) return EINVAL;
+	if (!sem)
+		return wpdk_posix_error(EINVAL);
 
 	sem->h = CreateSemaphore(NULL, value, INT_MAX, NULL);
 
-	if (sem->h == NULL)	{
-		// HACK - improve error handling
-		return EINVAL;
-	}
+	if (sem->h == NULL)
+		return wpdk_last_error();
 
 	return 0;
 }
@@ -36,7 +35,7 @@ int wpdk_sem_init(sem_t *sem, int pshared, unsigned int value)
 int wpdk_sem_destroy(sem_t *sem)
 {
 	if (!sem || !sem->h)
-		return EINVAL;
+		return wpdk_posix_error(EINVAL);
 
 	CloseHandle(sem->h);
 
@@ -47,12 +46,10 @@ int wpdk_sem_destroy(sem_t *sem)
 int wpdk_sem_post(sem_t *sem)
 {
 	if (!sem || !sem->h)
-		return EINVAL;
+		return wpdk_posix_error(EINVAL);
 
-	if (ReleaseSemaphore(sem->h, 1, NULL) == 0) {
-		// HACK - error
-		return EINVAL;
-	}
+	if (ReleaseSemaphore(sem->h, 1, NULL) == 0)
+		return wpdk_last_error();
 
 	return 0;
 }
@@ -60,12 +57,10 @@ int wpdk_sem_post(sem_t *sem)
 int wpdk_sem_wait(sem_t *sem)
 {
 	if (!sem || !sem->h)
-		return EINVAL;
+		return wpdk_posix_error(EINVAL);
 
-	if (WaitForSingleObject(sem->h, INFINITE) != WAIT_OBJECT_0) {
-		// HACK - error
-		return EINVAL;
-	}
+	if (WaitForSingleObject(sem->h, INFINITE) != WAIT_OBJECT_0)
+		return wpdk_last_error();
 
 	return 0;
 }
@@ -73,12 +68,10 @@ int wpdk_sem_wait(sem_t *sem)
 int wpdk_sem_trywait(sem_t *sem)
 {
 	if (!sem || !sem->h)
-		return EINVAL;
+		return wpdk_posix_error(EINVAL);
 
-	if (WaitForSingleObject(sem->h, INFINITE) != WAIT_OBJECT_0) {
-		// HACK - error
-		return EINVAL;
-	}
+	if (WaitForSingleObject(sem->h, INFINITE) != WAIT_OBJECT_0)
+		return wpdk_last_error();
 
 	return 0;
 }

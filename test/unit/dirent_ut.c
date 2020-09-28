@@ -174,7 +174,7 @@ test_readdir(void)
 	CU_ASSERT(errno == 0);
 
 	/* Check all entries seen */
-	for (i = 0; i < sizeof(seen); i++)
+	for (i = 0; i < (int)sizeof(seen); i++)
 		CU_ASSERT(seen[i] == (i && i < 4) ? 1 : 0);
 
 	/* Close directory */

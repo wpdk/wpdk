@@ -23,7 +23,8 @@ int wpdk_tcsetattr(int fildes, int optional_actions, const struct termios *termi
 	UNREFERENCED_PARAMETER(fildes);
 	UNREFERENCED_PARAMETER(optional_actions);
 	UNREFERENCED_PARAMETER(termios_p);
-	return -1;
+
+	return wpdk_posix_error(EINVAL);
 }
 
 
@@ -34,5 +35,6 @@ int wpdk_tcgetattr(int fildes, struct termios *termios_p)
 
 	UNREFERENCED_PARAMETER(fildes);
 	UNREFERENCED_PARAMETER(termios_p);
-	return -1;
+
+	return wpdk_posix_error(EINVAL);
 }

@@ -95,7 +95,7 @@ int wpdk_fcntl(int fildes, int cmd, ...)
 				s = wpdk_get_socket(fildes);
 
 				if (s == INVALID_SOCKET)
-					return -1;
+					return wpdk_posix_error(EBADF);
 
 				rc = ioctlsocket(s, FIONBIO, &mode);
 
@@ -114,5 +114,5 @@ int wpdk_fcntl(int fildes, int cmd, ...)
 	}
 
 	WPDK_UNIMPLEMENTED();
-	return -1;
+	return wpdk_posix_error(EINVAL);
 }

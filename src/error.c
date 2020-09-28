@@ -1069,11 +1069,3 @@ wpdk_posix_error(int error)
 	_set_errno(error);
 	return (-1);
 }
-
-
-void *
-wpdk_posix_nullptr(int error)
-{
-	_set_errno(error);
-	return NULL;
-}

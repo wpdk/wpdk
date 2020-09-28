@@ -38,6 +38,7 @@ void *wpdk_mmap(void *addr, size_t len, int prot, int flags, int fildes, off_t o
 	SYSTEM_INFO info;
 	HANDLE h, hMap;
 	void *pMap;
+	DWORD rc;
 
 	UNREFERENCED_PARAMETER(flags);
 	UNREFERENCED_PARAMETER(prot);
@@ -45,15 +46,15 @@ void *wpdk_mmap(void *addr, size_t len, int prot, int flags, int fildes, off_t o
 	// HACK - fixed address not implemented yet
 	if (addr) {
 		WPDK_UNIMPLEMENTED();
-		_set_errno(EINVAL);
-		return NULL;
+		wpdk_posix_error(EINVAL);
+		return MAP_FAILED;
 	}
 
 	h = (HANDLE)_get_osfhandle(fildes);
 
 	if (h == INVALID_HANDLE_VALUE) {
-		_set_errno(EBADF);
-		return NULL;
+		wpdk_posix_error(EBADF);
+		return MAP_FAILED;
 	}
 
 	GetSystemInfo(&info);
@@ -64,25 +65,31 @@ void *wpdk_mmap(void *addr, size_t len, int prot, int flags, int fildes, off_t o
 	size.QuadPart = end.QuadPart - start.QuadPart;
 
 	if (size.HighPart != 0) {
-		_set_errno(EINVAL);
-		return NULL;
+		wpdk_posix_error(EINVAL);
+		return MAP_FAILED;
 	}
 
 	// HACK - mmap ignores prot
 	hMap = CreateFileMapping(h, NULL, PAGE_READWRITE, end.HighPart, end.LowPart, NULL);
 
 	if (h == INVALID_HANDLE_VALUE) {
-		_set_errno(EBADF);
-		return NULL;
+		rc = GetLastError();
+
+		// HACK - if exists, size is current size not requested size
+		if (rc != ERROR_ALREADY_EXISTS) {
+			wpdk_windows_error(rc);
+			return MAP_FAILED;
+		}
 	}
 
 	pMap = MapViewOfFile(hMap, FILE_MAP_ALL_ACCESS, start.HighPart, start.LowPart, size.LowPart);
+	rc = GetLastError();
 
 	CloseHandle(hMap);
 
 	if (pMap == NULL) {
-		_set_errno(ENOMEM);
-		return NULL;
+		wpdk_windows_error(rc);
+		return MAP_FAILED;
 	}
 
 	return (char *)pMap + (off - start.QuadPart);
@@ -92,13 +99,17 @@ void *wpdk_mmap(void *addr, size_t len, int prot, int flags, int fildes, off_t o
 int wpdk_munmap(void *addr, size_t len)
 {
 	SYSTEM_INFO info;
-	DWORD granularity;
+	DWORD rc, granularity;
 
 	UNREFERENCED_PARAMETER(len);
 
 	GetSystemInfo(&info);
 	granularity = info.dwAllocationGranularity;
 
-	// HACK - munmap error handling
-	return (UnmapViewOfFile((void *)(((ULONG_PTR)addr / granularity) * granularity)) != 0) ? 0 : -1;
+	rc = UnmapViewOfFile((void *)(((ULONG_PTR)addr / granularity) * granularity));
+	
+	if (rc == 0)
+		return wpdk_last_error();
+
+	return 0;
 }
