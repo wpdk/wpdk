@@ -11,17 +11,12 @@
  *  at https://www.kernel.org/doc/man-pages/
  */
 
-#ifndef _WPDK_NETINET_IN_H_
-#define _WPDK_NETINET_IN_H_
+#include <netinet/ip6.h>
 
-#include <wpdk/header.h>
-#include <wpdk/types.h>
-#include <sys/socket.h>
+#include <CUnit/Basic.h>
 
-typedef uint16_t in_port_t;
-typedef uint32_t in_addr_t;
 
-#define IPPROTO_IPIP	4
-#define IPPROTO_GRE		47
-
-#endif /* _WPDK_NETINET_IN_H_ */
+void
+include_cpp_netinet_ip6_h(void)
+{
+}

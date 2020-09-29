@@ -29,6 +29,7 @@ install_headers(
 	'syslog.h',
 	'termios.h',
 	'unistd.h',
+	'next/setjmp.h',
 	subdir: include_prefix
 )
 
@@ -71,6 +72,7 @@ install_headers(
 install_headers(
 	'netinet/in.h',
 	'netinet/ip.h',
+	'netinet/ip6.h',
 	'netinet/tcp.h',
 	subdir: include_prefix + 'netinet'
 )

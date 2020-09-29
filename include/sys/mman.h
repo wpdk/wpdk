@@ -35,12 +35,14 @@ void *wpdk_mmap(void *addr, size_t len, int prot, int flags, int fildes, off_t o
 int wpdk_munmap(void *addr, size_t len);
 int wpdk_shm_open(const char *name, int oflag, mode_t mode);
 int wpdk_shm_unlink(const char *name);
+int wpdk_mprotect(void *addr, size_t len, int prot);
 
 #ifndef _WPDK_BUILD_LIB_
 #define mmap(ad,len,prot,flags,fd,off) wpdk_mmap(ad,len,prot,flags,fd,off)
 #define munmap(ad,len) wpdk_munmap(ad,len)
 #define shm_open(name,oflag,mode) wpdk_shm_open(name,oflag,mode)
 #define shm_unlink(name) wpdk_shm_unlink(name)
+#define mprotect(addr,len,prot) wpdk_mprotect(addr,len,prot)
 #endif
 
 _WPDK_END_C_HEADER

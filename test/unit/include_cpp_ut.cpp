@@ -31,6 +31,7 @@
 #include <net/if.h>
 #include <netinet/in.h>
 #include <netinet/ip.h>
+#include <netinet/ip6.h>
 #include <netinet/tcp.h>
 #include <openssl/md5.h>
 #include <uuid/uuid.h>
@@ -48,6 +49,7 @@
 #include <regex.h>
 #include <sched.h>
 #include <semaphore.h>
+#include <setjmp.h>
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -68,6 +70,7 @@ void include_cpp_arpa_inet_h(void);
 void include_cpp_net_if_h(void);
 void include_cpp_netinet_in_h(void);
 void include_cpp_netinet_ip_h(void);
+void include_cpp_netinet_ip6_h(void);
 void include_cpp_netinet_tcp_h(void);
 void include_cpp_openssl_md5_h(void);
 void include_cpp_sys_cdefs_h(void);
@@ -100,6 +103,7 @@ void include_cpp_pthread_h(void);
 void include_cpp_regex_h(void);
 void include_cpp_sched_h(void);
 void include_cpp_semaphore_h(void);
+void include_cpp_setjmp_h(void);
 void include_cpp_signal_h(void);
 void include_cpp_stdio_h(void);
 void include_cpp_stdlib_h(void);
@@ -144,6 +148,7 @@ add_include_cpp_tests()
 	CU_ADD_TEST(suite, include_cpp_net_if_h);
 	CU_ADD_TEST(suite, include_cpp_netinet_in_h);
 	CU_ADD_TEST(suite, include_cpp_netinet_ip_h);
+	CU_ADD_TEST(suite, include_cpp_netinet_ip6_h);
 	CU_ADD_TEST(suite, include_cpp_netinet_tcp_h);
 	CU_ADD_TEST(suite, include_cpp_openssl_md5_h);
 	CU_ADD_TEST(suite, include_cpp_sys_cdefs_h);
@@ -176,6 +181,7 @@ add_include_cpp_tests()
 	CU_ADD_TEST(suite, include_cpp_regex_h);
 	CU_ADD_TEST(suite, include_cpp_sched_h);
 	CU_ADD_TEST(suite, include_cpp_semaphore_h);
+	CU_ADD_TEST(suite, include_cpp_setjmp_h);
 	CU_ADD_TEST(suite, include_cpp_signal_h);
 	CU_ADD_TEST(suite, include_cpp_stdio_h);
 	CU_ADD_TEST(suite, include_cpp_stdlib_h);

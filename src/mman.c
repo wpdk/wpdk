@@ -16,14 +16,16 @@
 #include <io.h>
 
 
-int wpdk_shm_open(const char *name, int oflag, mode_t mode)
+int
+wpdk_shm_open(const char *name, int oflag, mode_t mode)
 {
 	char buf[MAX_PATH];
 	return _open(wpdk_get_path(name, buf, sizeof(buf)), oflag, mode);
 }
 
 
-int wpdk_shm_unlink(const char *name)
+int
+wpdk_shm_unlink(const char *name)
 {
 	char buf[MAX_PATH];
 	// HACK - shm_unlink - check handling with open fds	
@@ -31,7 +33,8 @@ int wpdk_shm_unlink(const char *name)
 }
 
 
-void *wpdk_mmap(void *addr, size_t len, int prot, int flags, int fildes, off_t off)
+void *
+wpdk_mmap(void *addr, size_t len, int prot, int flags, int fildes, off_t off)
 {
 	LARGE_INTEGER start, end, size;
 	DWORD granularity;
@@ -96,7 +99,8 @@ void *wpdk_mmap(void *addr, size_t len, int prot, int flags, int fildes, off_t o
 }
 
 
-int wpdk_munmap(void *addr, size_t len)
+int
+wpdk_munmap(void *addr, size_t len)
 {
 	SYSTEM_INFO info;
 	DWORD rc, granularity;
@@ -111,5 +115,18 @@ int wpdk_munmap(void *addr, size_t len)
 	if (rc == 0)
 		return wpdk_last_error();
 
+	return 0;
+}
+
+
+int
+wpdk_mprotect(void *addr, size_t len, int prot)
+{
+	UNREFERENCED_PARAMETER(addr);
+	UNREFERENCED_PARAMETER(len);
+	UNREFERENCED_PARAMETER(prot);
+
+	// HACK - not implemented
+	WPDK_UNIMPLEMENTED();
 	return 0;
 }

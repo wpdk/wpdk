@@ -11,17 +11,13 @@
  *  at https://www.kernel.org/doc/man-pages/
  */
 
-#ifndef _WPDK_NETINET_IN_H_
-#define _WPDK_NETINET_IN_H_
+#include <setjmp.h>
 
-#include <wpdk/header.h>
-#include <wpdk/types.h>
-#include <sys/socket.h>
+#include <CUnit/Basic.h>
 
-typedef uint16_t in_port_t;
-typedef uint32_t in_addr_t;
 
-#define IPPROTO_IPIP	4
-#define IPPROTO_GRE		47
-
-#endif /* _WPDK_NETINET_IN_H_ */
+void
+include_cpp_setjmp_h(void)
+{
+	CU_ASSERT(sizeof(sigjmp_buf) == sizeof(jmp_buf));
+}

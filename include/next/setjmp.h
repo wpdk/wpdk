@@ -11,17 +11,30 @@
  *  at https://www.kernel.org/doc/man-pages/
  */
 
-#ifndef _WPDK_NETINET_IN_H_
-#define _WPDK_NETINET_IN_H_
-
 #include <wpdk/header.h>
+
+#ifdef _WPDK_INCLUDE_NEXT_
+_WPDK_INCLUDE_NEXT_
+#include_next <setjmp.h>
+#else
+#include <../include/setjmp.h>
+#endif
+
+#ifndef _WPDK_SETJMP_H_
+#define _WPDK_SETJMP_H_
+
 #include <wpdk/types.h>
-#include <sys/socket.h>
 
-typedef uint16_t in_port_t;
-typedef uint32_t in_addr_t;
+_WPDK_BEGIN_C_HEADER
 
-#define IPPROTO_IPIP	4
-#define IPPROTO_GRE		47
+typedef jmp_buf sigjmp_buf;
 
-#endif /* _WPDK_NETINET_IN_H_ */
+int sigsetjmp(sigjmp_buf env, int savemask);
+void siglongjmp(sigjmp_buf env, int val); 
+
+#define sigsetjmp(buf,mask) setjmp(((mask),(buf)))
+#define siglongjmp(env,val) longjmp(env,val)
+
+_WPDK_END_C_HEADER
+
+#endif /* _WPDK_SETJMP_H_ */

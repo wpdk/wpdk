@@ -19,7 +19,7 @@ cpp = meson.get_compiler('cpp')
 
 machine_args = []
 
-global_includes = include_directories('.', 'include')
+global_includes = include_directories('.', 'include', 'include/next')
 
 cunit = subproject('CUnit')
 cunit_dep = cunit.get_variable('cunit_dep')

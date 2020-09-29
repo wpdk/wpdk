@@ -3,7 +3,7 @@
  *
  *  Copyright (c) 2020, MayaData Inc. All rights reserved.
  *  Copyright (c) 2020, DataCore Software Corporation. All rights reserved.
- * 
+ *
  *  POSIX details are based on the Open Group Base Specification Issue 7,
  *  2018 edition at https://pubs.opengroup.org/onlinepubs/9699919799/
  * 
@@ -11,17 +11,7 @@
  *  at https://www.kernel.org/doc/man-pages/
  */
 
-#ifndef _WPDK_NETINET_IN_H_
-#define _WPDK_NETINET_IN_H_
+#ifndef _WPDK_NETINET_IP6_H_
+#define _WPDK_NETINET_IP6_H_
 
-#include <wpdk/header.h>
-#include <wpdk/types.h>
-#include <sys/socket.h>
-
-typedef uint16_t in_port_t;
-typedef uint32_t in_addr_t;
-
-#define IPPROTO_IPIP	4
-#define IPPROTO_GRE		47
-
-#endif /* _WPDK_NETINET_IN_H_ */
+#endif /* _WPDK_NETINET_IP6_H_ */
