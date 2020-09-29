@@ -34,6 +34,7 @@ struct termios {
 
 #define ECHO		1
 #define ICANON		2
+#define ISIG		4
 
 #define TCSANOW		1
 #define TCSADRAIN	2

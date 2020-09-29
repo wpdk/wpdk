@@ -32,7 +32,7 @@ typedef jmp_buf sigjmp_buf;
 int sigsetjmp(sigjmp_buf env, int savemask);
 void siglongjmp(sigjmp_buf env, int val); 
 
-#define sigsetjmp(buf,mask) setjmp(((mask),(buf)))
+#define sigsetjmp(buf,...) setjmp(buf)
 #define siglongjmp(env,val) longjmp(env,val)
 
 _WPDK_END_C_HEADER

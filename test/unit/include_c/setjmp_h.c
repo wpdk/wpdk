@@ -19,5 +19,8 @@
 void
 include_c_setjmp_h(void)
 {
+	sigjmp_buf env;
+	sigsetjmp(env, 0);
+
 	CU_ASSERT(sizeof(sigjmp_buf) == sizeof(jmp_buf));
 }
