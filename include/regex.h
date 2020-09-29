@@ -42,7 +42,7 @@ void wpdk_regfree(regex_t *preg);
 #define regcomp(preg,pat,cflags) wpdk_regcomp(preg,pat,cflags)
 #define regerr(err,preg,buf,size) wpdk_regerr(err,preg,buf,size)
 #define regexec(preg,str,n,pmatch,eflags) wpdk_regexec(preg,str,n,pmatch,eflags)
-#define regfree(preg) wpdk_regex(preg)
+#define regfree(preg) wpdk_regfree(preg)
 #endif
 
 _WPDK_END_C_HEADER
