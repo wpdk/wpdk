@@ -10,6 +10,7 @@ install_headers(
 	'dirent.h',
 	'errno.h',
 	'fcntl.h',
+	'fnmatch.h',
 	'getopt.h',
 	'ifaddrs.h',
 	'libaio.h',
@@ -69,6 +70,7 @@ install_headers(
 
 install_headers(
 	'netinet/in.h',
+	'netinet/ip.h',
 	'netinet/tcp.h',
 	subdir: include_prefix + 'netinet'
 )

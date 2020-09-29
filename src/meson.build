@@ -12,6 +12,7 @@ sources = [
 	'fatal.c',
 	'fcntl.c',
 	'file.c',
+	'fnmatch.c',
 	'getopt.c',
 	'ifaddrs.c',
 	'inet.c',

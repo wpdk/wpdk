@@ -26,7 +26,8 @@
 
 #define NOGDICAPMASKS
 #define NOVIRTUALKEYCODES
-#define NOWINMESSAGES
+// enable for setupapi.h
+// #define NOWINMESSAGES
 #define NOWINSTYLES
 #define NOSYSMETRICS
 #define NOMENUS
@@ -39,11 +40,13 @@
 #define NOATOM
 #define NOCLIPBOARD
 #define NOCOLOR
-#define NOCTLMGR
+// enable for setupapi.h
+// #define NOCTLMGR
 #define NODRAWTEXT
 #define NOGDI
 #define NOKERNEL
-#define NOUSER
+// enable for setupapi.h
+// #define NOUSER
 #define NONLS
 #define NOMB
 #define NOMEMMGR

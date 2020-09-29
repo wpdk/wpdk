@@ -30,12 +30,14 @@
 #include <arpa/inet.h>
 #include <net/if.h>
 #include <netinet/in.h>
+#include <netinet/ip.h>
 #include <netinet/tcp.h>
 #include <openssl/md5.h>
 #include <uuid/uuid.h>
 #include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <fnmatch.h>
 #include <getopt.h>
 #include <ifaddrs.h>
 #include <libaio.h>
@@ -55,12 +57,17 @@
 #include <termios.h>
 #include <unistd.h>
 
+// Check setupapi.h (DPDK)
+#include <windows.h>
+#include <setupapi.h>
+
 #include <CUnit/Basic.h>
 
 void include_c__mingw_h(void);
 void include_c_arpa_inet_h(void);
 void include_c_net_if_h(void);
 void include_c_netinet_in_h(void);
+void include_c_netinet_ip_h(void);
 void include_c_netinet_tcp_h(void);
 void include_c_openssl_md5_h(void);
 void include_c_sys_cdefs_h(void);
@@ -82,6 +89,7 @@ void include_c_corecrt_h(void);
 void include_c_dirent_h(void);
 void include_c_errno_h(void);
 void include_c_fcntl_h(void);
+void include_c_fnmatch_h(void);
 void include_c_getopt_h(void);
 void include_c_ifaddrs_h(void);
 void include_c_libaio_h(void);
@@ -135,6 +143,7 @@ add_include_c_tests()
 	CU_ADD_TEST(suite, include_c_arpa_inet_h);
 	CU_ADD_TEST(suite, include_c_net_if_h);
 	CU_ADD_TEST(suite, include_c_netinet_in_h);
+	CU_ADD_TEST(suite, include_c_netinet_ip_h);
 	CU_ADD_TEST(suite, include_c_netinet_tcp_h);
 	CU_ADD_TEST(suite, include_c_openssl_md5_h);
 	CU_ADD_TEST(suite, include_c_sys_cdefs_h);
@@ -156,6 +165,7 @@ add_include_c_tests()
 	CU_ADD_TEST(suite, include_c_dirent_h);
 	CU_ADD_TEST(suite, include_c_errno_h);
 	CU_ADD_TEST(suite, include_c_fcntl_h);
+	CU_ADD_TEST(suite, include_c_fnmatch_h);
 	CU_ADD_TEST(suite, include_c_getopt_h);
 	CU_ADD_TEST(suite, include_c_ifaddrs_h);
 	CU_ADD_TEST(suite, include_c_libaio_h);
