@@ -65,6 +65,6 @@ if not exist build-tmp meson --buildtype=%TYPE% build-tmp
 echo %CC% %ARCH% %TYPE%>build-tmp\_config
 
 set DESTDIR=%CD%\build
-ninja -C build-tmp install
+ninja -C build-tmp -j8 install
 
 if not "%vcvars%"=="" echo Built using "%vcvars%" %ARCH%

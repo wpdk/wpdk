@@ -21,4 +21,6 @@
 typedef uint16_t in_port_t;
 typedef uint32_t in_addr_t;
 
+#define IPPROTO_GRE		47
+
 #endif /* _WPDK_NETINET_IN_H_ */

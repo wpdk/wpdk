@@ -23,7 +23,7 @@ _WPDK_INCLUDE_NEXT_
 #ifndef _WPDK_FCNTL_H_
 #define _WPDK_FCNTL_H_
 
-#include <sys/types.h>
+#include <wpdk/types.h>
 #include <stdio.h>
 #include <io.h>
 
