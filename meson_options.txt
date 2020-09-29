@@ -1,0 +1,4 @@
+# Please keep these options sorted alphabetically.
+
+option('machine', type: 'string', value: 'native',
+	yield: true, description: 'set the target machine type')

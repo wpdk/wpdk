@@ -17,18 +17,30 @@ project('WPDK', 'C', 'CPP',
 cc = meson.get_compiler('c')
 cpp = meson.get_compiler('cpp')
 
+machine_args = []
+
 global_includes = include_directories('.', 'include')
 
 cunit = subproject('CUnit')
 cunit_dep = cunit.get_variable('cunit_dep')
 
+subdir('scripts')
+subdir('config')
+
 subdir('include')
 subdir('src')
 subdir('test/unit')
 
-wpdk_dep = declare_dependency(
-  include_directories : global_includes,
-  link_with : [ static_lib ]
+wpdk_static_dep = declare_dependency(
+	include_directories : global_includes,
+	link_with : [ static_lib ]
 )
+
+wpdk_shared_dep = declare_dependency(
+	include_directories : global_includes,
+	link_with : [ shared_lib ]
+)
+
+wpdk_dep = wpdk_static_dep
 
 meson.add_install_script('scripts/copy_libs.bat')

@@ -123,7 +123,7 @@ if cpp.get_id() == 'gcc' and cpp.has_argument('-Wno-pedantic')
   cppflags += [ '-Wno-pedantic' ]
 endif
 
-unit_tests = executable('unit_tests',
+unit_tests = executable('wpdk_unit',
 		[ sources, include_sources, ],
 		c_args: [ cflags, '-D_WPDK_UNIT_TESTS_' ],
 		cpp_args: [ cflags, cppflags, '-D_WPDK_UNIT_TESTS_' ],

@@ -32,6 +32,8 @@
 #ifndef _WPDK_BUILD_LIB_
 #define WSASetLastError(a) ((a),0)
 #define WSAIoctl(a,b,c,d,e,f,g,h,i) ((a),(b),(c),(d),(e),(f),(g),(h),(i),0)
+#define setsockopt(a,b,c,d,e) ((a),(b),(c),(d),(e),0)
+#define getsockopt(a,b,c,d,e) ((a),(b),(c),(d),(e),0)
 #endif
 
 #include <ws2tcpip.h>
@@ -82,6 +84,7 @@ int wpdk_socketpair(int domain, int type, int protocol, int socket_vector[2]);
 #define connect wpdk_connect
 #define getpeername wpdk_getpeername
 #define getsockname wpdk_getsockname
+#undef getsockopt
 #define getsockopt wpdk_getsockopt
 #define listen wpdk_listen
 #define recv wpdk_recv
@@ -94,6 +97,7 @@ static inline ssize_t sendmsg(int socket, const struct msghdr *message, int flag
 	return wpdk_sendmsg(socket, message, flags);
 }
 #define sendto wpdk_sendto
+#undef setsockopt
 #define setsockopt wpdk_setsockopt
 #define shutdown wpdk_shutdown
 #define sockatmark wpdk_sockatmark

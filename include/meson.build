@@ -2,6 +2,8 @@
 # Copyright (c) 2020, MayaData Inc. All rights reserved.
 # Copyright (c) 2020, DataCore Software Corporation. All rights reserved.
 
+include_prefix = 'wpdk/'
+
 install_headers(
 	'_mingw.h',
 	'corecrt.h',
@@ -26,6 +28,7 @@ install_headers(
 	'syslog.h',
 	'termios.h',
 	'unistd.h',
+	subdir: include_prefix
 )
 
 install_headers(
@@ -44,44 +47,44 @@ install_headers(
 	'sys/un.h',
 	'sys/user.h',
 	'sys/wait.h',
-	subdir: 'sys'
+	subdir: include_prefix + 'sys'
 )
 
 install_headers(
 	'wpdk/header.h',
 	'wpdk/types.h',
 	'wpdk/windows.h',
-	subdir: 'wpdk'
+	subdir: include_prefix + 'wpdk'
 )
 
 install_headers(
 	'arpa/inet.h',
-	subdir: 'arpa'
+	subdir: include_prefix + 'arpa'
 )
 
 install_headers(
 	'net/if.h',
-	subdir: 'net'
+	subdir: include_prefix + 'net'
 )
 
 install_headers(
 	'netinet/in.h',
 	'netinet/tcp.h',
-	subdir: 'netinet'
+	subdir: include_prefix + 'netinet'
 )
 
 install_headers(
 	'openssl/md5.h',
-	subdir: 'openssl'
+	subdir: include_prefix + 'openssl'
 )
 
 install_headers(
 	'sec_api/stdlib_s.h',
 	'sec_api/string_s.h',
-	subdir : 'sec_api'
+	subdir : include_prefix + 'sec_api'
 )
 
 install_headers(
 	'uuid/uuid.h',
-	subdir: 'uuid'
+	subdir: include_prefix + 'uuid'
 )

@@ -1,0 +1,11 @@
+WPDK_0.1 {
+	global:
+	wpdk_optarg;
+	wpdk_opterr;
+	wpdk_optind;
+	wpdk_optopt;
+	wpdk_getopt;
+	wpdk_getopt_long;
+	wpdk_getopt_long_only;
+	local: *;
+};

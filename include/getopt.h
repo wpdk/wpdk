@@ -35,13 +35,13 @@
 #else /* NEED_USUAL_GETOPT */
 
 /* avoid name collision */
-#define optarg _usual_optarg
-#define opterr _usual_opterr
-#define optind _usual_optind
-#define optopt _usual_optopt
-#define getopt(a, b, c) _usual_getopt(a, b, c)
-#define getopt_long(a, b, c, d, e) _usual_getopt_long(a, b, c, d, e)
-#define getopt_long_only(a, b, c, d, e) _usual_getopt_long_only(a, b, c, d, e)
+#define optarg wpdk_optarg
+#define opterr wpdk_opterr
+#define optind wpdk_optind
+#define optopt wpdk_optopt
+#define getopt(a, b, c) wpdk_getopt(a, b, c)
+#define getopt_long(a, b, c, d, e) wpdk_getopt_long(a, b, c, d, e)
+#define getopt_long_only(a, b, c, d, e) wpdk_getopt_long_only(a, b, c, d, e)
 
 
 /** argument to current option, or NULL if it has none */
