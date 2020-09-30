@@ -13,6 +13,7 @@ install_headers(
 	'fnmatch.h',
 	'getopt.h',
 	'ifaddrs.h',
+	'inaddr.h',
 	'libaio.h',
 	'limits.h',
 	'netdb.h',

@@ -41,6 +41,7 @@
 #include <fnmatch.h>
 #include <getopt.h>
 #include <ifaddrs.h>
+#include <inaddr.h>
 #include <libaio.h>
 #include <limits.h>
 #include <netdb.h>
@@ -95,6 +96,7 @@ void include_cpp_fcntl_h(void);
 void include_cpp_fnmatch_h(void);
 void include_cpp_getopt_h(void);
 void include_cpp_ifaddrs_h(void);
+void include_cpp_inaddr_h(void);
 void include_cpp_libaio_h(void);
 void include_cpp_limits_h(void);
 void include_cpp_netdb_h(void);
@@ -173,6 +175,7 @@ add_include_cpp_tests()
 	CU_ADD_TEST(suite, include_cpp_fnmatch_h);
 	CU_ADD_TEST(suite, include_cpp_getopt_h);
 	CU_ADD_TEST(suite, include_cpp_ifaddrs_h);
+	CU_ADD_TEST(suite, include_cpp_inaddr_h);
 	CU_ADD_TEST(suite, include_cpp_libaio_h);
 	CU_ADD_TEST(suite, include_cpp_limits_h);
 	CU_ADD_TEST(suite, include_cpp_netdb_h);

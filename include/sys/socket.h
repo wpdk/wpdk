@@ -17,6 +17,7 @@
 #include <wpdk/header.h>
 #include <wpdk/windows.h>
 #include <sys/uio.h>
+#include <inaddr.h>
 
 #ifndef _WPDK_BUILD_LIB_
 #define INCL_WINSOCK_API_PROTOTYPES 0
