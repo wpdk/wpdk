@@ -14,6 +14,7 @@
 #include <wpdk/internal.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <unistd.h>
 
 
 ssize_t
@@ -70,4 +71,18 @@ wpdk_fdopen(int fildes, const char *mode)
 {
 	wpdk_set_invalid_handler();
 	return _fdopen(fildes, mode);
+}
+
+
+int
+wpdk_vdprintf(int fd, const char *format, va_list ap)
+{
+	char buffer[4096];
+	int rc;
+
+	wpdk_set_invalid_handler();
+
+	// HACK - temporary implementation
+	rc = vsprintf_s(buffer, sizeof(buffer), format, ap);
+	return (rc > 0) ? write(fd, buffer, rc) : rc;
 }

@@ -23,5 +23,6 @@ typedef uint32_t in_addr_t;
 
 #define IPPROTO_IPIP	4
 #define IPPROTO_GRE		47
+#define IPPROTO_SCTP	132
 
 #endif /* _WPDK_NETINET_IN_H_ */

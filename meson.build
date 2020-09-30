@@ -33,11 +33,13 @@ subdir('test/unit')
 
 wpdk_static_dep = declare_dependency(
 	include_directories : global_includes,
+	link_args : [ '-lws2_32', '-lrpcrt4' ],
 	link_with : [ static_lib ]
 )
 
 wpdk_shared_dep = declare_dependency(
 	include_directories : global_includes,
+	link_args : [ '-lws2_32', '-lrpcrt4' ],
 	link_with : [ shared_lib ]
 )
 

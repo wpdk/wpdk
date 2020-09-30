@@ -24,6 +24,7 @@ _WPDK_INCLUDE_NEXT_
 #define _WPDK_STDIO_H_
 
 #include <wpdk/types.h>
+#include <stdarg.h>
 
 _WPDK_BEGIN_C_HEADER
 
@@ -31,6 +32,7 @@ ssize_t wpdk_getline(char **lineptr, size_t *n, FILE *stream);
 ssize_t wpdk_getdelim(char **lineptr, size_t *n, int delim, FILE *stream);
 FILE *wpdk_fopen(const char *filename, const char *mode);
 FILE *wpdk_fdopen(int fildes, const char *mode);
+int wpdk_vdprintf(int fd, const char *format, va_list ap);
 
 #ifndef _WPDK_BUILD_LIB_
 #define fileno(fp) _fileno(fp)
@@ -38,6 +40,7 @@ FILE *wpdk_fdopen(int fildes, const char *mode);
 #define fopen(filename,mode) wpdk_fopen(filename,mode)
 #define getline(ptr,n,stream) wpdk_getline(ptr,n,stream)
 #define getdelim(ptr,n,delim,stream) wpdk_getdelim(ptr,n,delim,stream)
+#define vdprintf(fd,fmt,...) wpdk_vdprintf(fd,fmt,__VA_ARGS__)
 #endif
 
 _WPDK_END_C_HEADER
