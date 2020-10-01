@@ -37,12 +37,14 @@ DIR *wpdk_opendir(const char *dirname);
 int wpdk_closedir(DIR *dirp);
 struct dirent *wpdk_readdir(DIR *dirp);
 void wpdk_rewinddir(DIR *dirp);
+int wpdk_dirfd(DIR *dirp);
 
 #ifndef _WPDK_BUILD_LIB_
 #define opendir(dirname) wpdk_opendir(dirname)
 #define closedir(dirp) wpdk_closedir(dirp)
 #define readdir(dirp) wpdk_readdir(dirp)
 #define rewinddir(dirp) wpdk_rewinddir(dirp)
+#define dirfd(dirp) wpdk_dirfd(dirp)
 #endif
 
 #endif /* _WPDK_DIRENT_H_ */

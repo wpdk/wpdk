@@ -124,3 +124,14 @@ wpdk_rewinddir(DIR *dirp)
 		dirp->h = _findfirst(dirp->spec, &dirp->info);
 	}
 }
+
+
+int
+wpdk_dirfd(DIR *dirp)
+{
+	UNREFERENCED_PARAMETER(dirp);
+	
+	// HACK - dirfd not implemented
+	WPDK_UNIMPLEMENTED();
+	return wpdk_posix_error(EINVAL);
+}

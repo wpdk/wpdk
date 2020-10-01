@@ -270,6 +270,26 @@ test_closedir(void)
 }
 
 
+static void
+test_dirfd(void)
+{
+	DIR *dir;
+	int rc;
+
+	/* Open directory */
+	dir = opendir(".");
+	CU_ASSERT(dir != NULL);
+
+	/* Test dirfd */
+	rc = dirfd(dir);
+	CU_ASSERT(rc == -1 && errno == EINVAL);
+
+	/* Close directory */
+	rc = closedir(dir);
+	CU_ASSERT(rc == 0);
+}
+
+
 void add_dirent_tests()
 {
 	CU_pSuite suite = NULL;
@@ -280,4 +300,5 @@ void add_dirent_tests()
 	CU_ADD_TEST(suite, test_readdir);
 	CU_ADD_TEST(suite, test_rewinddir);
 	CU_ADD_TEST(suite, test_closedir);
+	CU_ADD_TEST(suite, test_dirfd);
 }
