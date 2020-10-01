@@ -13,6 +13,7 @@
 
 #include <wpdk/internal.h>
 #include <sys/stat.h>
+#include <direct.h>
 #include <unistd.h>
 #include <fcntl.h>
 
@@ -92,4 +93,20 @@ wpdk_chmod(const char *filename, int pmode)
 	if (pmode & S_IWRITE) mode |= _S_IWRITE;
 
 	return _chmod(wpdk_get_path(filename, buf, sizeof(buf)), mode);
+}
+
+
+int wpdk_mkdir(const char *path, mode_t mode)
+{
+	char buf[MAX_PATH];
+
+	wpdk_set_invalid_handler();
+
+	// mode is ignored
+	UNREFERENCED_PARAMETER(mode);
+
+	if (!path)
+		return wpdk_posix_error(EINVAL);
+
+	return _mkdir(wpdk_get_path(path, buf, sizeof(buf)));	
 }

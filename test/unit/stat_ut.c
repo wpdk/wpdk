@@ -14,6 +14,7 @@
 #include <wpdk/internal.h>
 #include <sys/stat.h>
 #include <sys/uio.h>
+#include <direct.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <fcntl.h>
@@ -163,6 +164,26 @@ test_fstat(void)
 }
 
 
+static void
+test_mkdir(void)
+{
+	char *dirpath = "testdir";
+	int rc;
+
+	_rmdir(dirpath);
+
+	/* Create directory */
+	rc = mkdir(dirpath, S_IRWXU);
+	CU_ASSERT(rc == 0);
+
+	/* Create existing directory */
+	rc = mkdir(dirpath, S_IRWXU);
+	CU_ASSERT(rc == -1 && errno == EEXIST);
+
+	_rmdir(dirpath);
+}
+
+
 void add_stat_tests()
 {
 	CU_pSuite suite = NULL;
@@ -173,4 +194,5 @@ void add_stat_tests()
 	CU_ADD_TEST(suite, test_mknod);
 	CU_ADD_TEST(suite, test_stat);
 	CU_ADD_TEST(suite, test_fstat);
+	CU_ADD_TEST(suite, test_mkdir);
 }

@@ -78,12 +78,14 @@ int wpdk_mknod(const char *path, mode_t mode, dev_t dev);
 int wpdk_stat64(const char *path, struct _stat64 *buf);
 int wpdk_fstat64(int fildes, struct _stat64 *buf);
 int wpdk_chmod(const char *filename, int pmode);
+int wpdk_mkdir(const char *path, mode_t mode);
 
 #ifndef _WPDK_BUILD_LIB_
 #define mknod(path,mode,dev) wpdk_mknod(path,mode,dev)
 #define _stat64(path,buf) wpdk_stat64(path,buf)
 #define _fstat64(fildes,buf) wpdk_fstat64(fildes,buf)
 #define chmod(path,mode) wpdk_chmod(path,mode)
+#define mkdir(path,mode) wpdk_mkdir(path,mode)
 #endif
 
 _WPDK_END_C_HEADER
