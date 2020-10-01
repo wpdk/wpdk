@@ -40,6 +40,7 @@ c_files = [
 	'netdb_h.c',
 	'poll_h.c',
 	'pthread_h.c',
+	'pwd_h.c',
 	'regex_h.c',
 	'sched_h.c',
 	'semaphore_h.c',

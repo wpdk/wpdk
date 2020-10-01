@@ -47,6 +47,7 @@
 #include <netdb.h>
 #include <poll.h>
 #include <pthread.h>
+#include <pwd.h>
 #include <regex.h>
 #include <sched.h>
 #include <semaphore.h>
@@ -116,6 +117,7 @@ DEF_TEST(limits_h);
 DEF_TEST(netdb_h);
 DEF_TEST(poll_h);
 DEF_TEST(pthread_h);
+DEF_TEST(pwd_h);
 DEF_TEST(regex_h);
 DEF_TEST(sched_h);
 DEF_TEST(semaphore_h);
@@ -194,6 +196,7 @@ ADD_TESTS()
 	ADD_TEST(netdb_h);
 	ADD_TEST(poll_h);
 	ADD_TEST(pthread_h);
+	ADD_TEST(pwd_h);
 	ADD_TEST(regex_h);
 	ADD_TEST(sched_h);
 	ADD_TEST(semaphore_h);
