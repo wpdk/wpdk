@@ -19,6 +19,7 @@ install_headers(
 	'netdb.h',
 	'poll.h',
 	'pthread.h',
+	'pwd.h',
 	'regex.h',
 	'sched.h',
 	'semaphore.h',

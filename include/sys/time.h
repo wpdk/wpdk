@@ -24,9 +24,11 @@ _WPDK_BEGIN_C_HEADER
 #define CLOCK_REALTIME	0
 
 int wpdk_clock_gettime(clockid_t clock_id, struct timespec *tp);
+int wpdk_gettimeofday(struct timeval *tp, void *tzp);
 
 #ifndef _WPDK_BUILD_LIB_
 #define clock_gettime(id,tp) wpdk_clock_gettime(id,tp)
+#define gettimeofday(tp,tzp) wpdk_gettimeofday(tp,tzp)
 #endif
 
 _WPDK_END_C_HEADER

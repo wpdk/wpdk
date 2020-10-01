@@ -33,3 +33,20 @@ int wpdk_clock_gettime(clockid_t clk_id, struct timespec *tp)
 	WPDK_UNIMPLEMENTED();
 	return 0;
 }
+
+
+int
+wpdk_gettimeofday(struct timeval *tp, void *tzp)
+{
+	struct timespec t;
+	int rc;
+
+	if (!tp || tzp != NULL)
+		return wpdk_posix_error(EINVAL);
+
+	rc = wpdk_clock_gettime(CLOCK_REALTIME, &t);
+
+	tp->tv_sec = (long)t.tv_sec;
+	tp->tv_usec = (long)(t.tv_nsec / 1000);
+	return rc;
+}
