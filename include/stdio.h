@@ -33,9 +33,10 @@ ssize_t wpdk_getdelim(char **lineptr, size_t *n, int delim, FILE *stream);
 FILE *wpdk_fopen(const char *filename, const char *mode);
 FILE *wpdk_fdopen(int fildes, const char *mode);
 int wpdk_vdprintf(int fd, const char *format, va_list ap);
+int wpdk_fileno(FILE *stream);
 
 #ifndef _WPDK_BUILD_LIB_
-#define fileno(fp) _fileno(fp)
+#define fileno(fp) wpdk_fileno(fp)
 #define fdopen(fildes,mode) wpdk_fdopen(fildes,mode)
 #define fopen(filename,mode) wpdk_fopen(filename,mode)
 #define getline(ptr,n,stream) wpdk_getline(ptr,n,stream)

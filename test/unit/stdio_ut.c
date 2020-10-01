@@ -209,6 +209,36 @@ test_fdopen(void)
 }
 
 
+static void
+test_fileno(void)
+{
+	char *path = "testfile";
+	FILE *fp;
+	int fd;
+	
+	/* Check standard I/O handles */
+	CU_ASSERT(fileno(stdin) == 0);
+	CU_ASSERT(fileno(stdout) == 1);
+	CU_ASSERT(fileno(stderr) == 2);
+
+	unlink(path);
+
+	/* Create test file */
+	fd = open(path, O_CREAT|O_RDWR, S_IWRITE|S_IREAD);
+	CU_ASSERT(fd != -1);
+
+	/* Open file handle */
+	fp = fdopen(fd, "w+");
+	CU_ASSERT(fp != NULL);
+
+	/* Check fileno */
+	CU_ASSERT(fileno(fp) == fd);
+
+	fclose(fp);
+	unlink(path);
+}
+
+
 void
 add_stdio_tests()
 {
@@ -220,4 +250,5 @@ add_stdio_tests()
 	CU_ADD_TEST(suite, test_getdelim);
 	CU_ADD_TEST(suite, test_fopen);
 	CU_ADD_TEST(suite, test_fdopen);
+	CU_ADD_TEST(suite, test_fileno);
 }
