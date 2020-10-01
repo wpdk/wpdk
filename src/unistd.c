@@ -381,3 +381,25 @@ wpdk_fsync(int fildes)
 
 	return 0;
 }
+
+
+int
+wpdk_lockf(int fildes, int function, off_t size)
+{
+	UNREFERENCED_PARAMETER(fildes);
+	UNREFERENCED_PARAMETER(function);
+	UNREFERENCED_PARAMETER(size);
+
+	// HACK - not implemented
+	WPDK_UNIMPLEMENTED();
+	return wpdk_posix_error(ENOSYS);
+}
+
+
+uid_t
+wpdk_getuid()
+{
+	// HACK - not implemented
+	WPDK_UNIMPLEMENTED();
+	return 0;
+}

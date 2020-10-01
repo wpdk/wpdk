@@ -503,6 +503,34 @@ test_daemon(void)
 }
 
 
+static void
+test_lockf(void)
+{
+	char *path = "testfile";
+	int rc, fd;
+	
+	unlink(path);
+
+	/* Create test file */
+	fd = open(path, O_CREAT|O_RDWR, S_IWRITE|S_IREAD);
+	CU_ASSERT(fd != -1);
+
+	/* check lockf */
+	rc = lockf(fd, F_LOCK, 100);
+	CU_ASSERT(rc == -1 && errno == ENOSYS);
+
+	close(fd);
+	unlink(path);
+}
+
+
+static void
+test_getuid()
+{
+	CU_ASSERT(getuid() == 0);
+}
+
+
 void add_unistd_tests()
 {
 	CU_pSuite suite = NULL;
@@ -526,4 +554,6 @@ void add_unistd_tests()
 	CU_ADD_TEST(suite, test_sysconf);
 	CU_ADD_TEST(suite, test_fork);
 	CU_ADD_TEST(suite, test_daemon);
+	CU_ADD_TEST(suite, test_lockf);
+	CU_ADD_TEST(suite, test_getuid);
 }

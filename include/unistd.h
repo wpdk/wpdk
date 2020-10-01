@@ -40,6 +40,11 @@ _WPDK_BEGIN_C_HEADER
 #define _SC_PAGE_SIZE			_SC_PAGESIZE
 #define _SC_IOV_MAX				4
 
+#define F_LOCK		1
+#define F_TEST		2
+#define F_TLOCK		3
+#define F_ULOCK		4
+
 int wpdk_access(const char *path, int amode);
 int wpdk_close(int fildes);
 int wpdk_daemon(int nochdir, int noclose);
@@ -47,7 +52,9 @@ pid_t wpdk_fork(void);
 int wpdk_fsync(int fildes);
 int wpdk_ftruncate(int fd, off_t length);
 pid_t wpdk_getpid(void);
+uid_t wpdk_getuid(void);
 int wpdk_isatty(int fildes);
+int wpdk_lockf(int fildes, int function, off_t size);
 off_t wpdk_lseek(int fildes, off_t offset, int whence);
 ssize_t wpdk_read(int fildes, void *buf, size_t nbyte);
 unsigned wpdk_sleep(unsigned int seconds);
@@ -72,7 +79,9 @@ int wpdk_unlink(const char *path);
 #define fsync(fd) wpdk_fsync(fd)
 #define ftruncate(fd,len) wpdk_ftruncate(fd,len)
 #define getpid() wpdk_getpid()
+#define getuid() wpdk_getuid()
 #define isatty(fd) wpdk_isatty(fd)
+#define lockf(fd,func,size) wpdk_lockf(fd,func,size)
 #undef lseek
 #define lseek(fd,offset,whence) wpdk_lseek(fd,offset,whence)
 static inline ssize_t read(int fildes, void *buf, size_t nbyte) {
