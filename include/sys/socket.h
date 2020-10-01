@@ -38,6 +38,10 @@
 #endif
 
 #include <ws2tcpip.h>
+#ifdef __MINGW32__
+#define _WSACMSGHDR cmsghdr
+#include <mswsock.h>
+#endif
 
 _WPDK_BEGIN_C_HEADER
 
@@ -46,10 +50,26 @@ struct msghdr {
 	socklen_t msg_namelen;
 	struct iovec *msg_iov;
 	int msg_iovlen;
-	void *msg_control;
-	socklen_t msg_controllen;
+	struct {
+		void *buf;
+		socklen_t len;
+	} Control;
 	int msg_flags;
 };
+
+#define msg_control Control.buf
+#define msg_controllen Control.len
+
+#ifndef CMSG_FIRSTHDR
+#define CMSG_FIRSTHDR(msg) WSA_CMSG_FIRSTHDR(msg)
+#define CMSG_NXTHDR(msg,cmsg) WSA_CMSG_NXTHDR(msg,cmsg)
+#define CMSG_DATA(cmsg) WSA_CMSG_DATA(cmsg)
+#define CMSG_SPACE(length) WSA_CMSG_SPACE(length)
+#define CMSG_LEN(length) WSA_CMSG_LEN(length)
+#endif
+
+#define SCM_RIGHTS			1
+#define SCM_CREDENTIALS		2
 
 typedef unsigned short sa_family_t;
 
