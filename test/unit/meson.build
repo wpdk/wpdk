@@ -13,8 +13,7 @@ sources = [
 	'error_ut.c',
 	'dirent_ut.c',
 	'fatal_ut.c',
-	'include_c_ut.c',
-	'include_cpp_ut.cpp',
+	'include_ut.c',
 	'netdb_ut.c',
 	'stat_ut.c',
 	'stdio_ut.c',
@@ -24,6 +23,8 @@ sources = [
 	'uuid_ut.c',
 	'unistd_ut.c',
 ]
+
+sources += configure_file(copy: true, input: 'include_ut.c', output: 'include_ut.cpp')
 
 subdir('include_tests')
 
