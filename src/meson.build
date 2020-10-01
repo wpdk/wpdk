@@ -24,6 +24,7 @@ sources = [
 	'netdb.c',
 	'poll.c',
 	'pthread.c',
+	'pwd.c',
 	'regex.c',
 	'resource.c',
 	'select.c',
