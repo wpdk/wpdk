@@ -21,7 +21,7 @@ _WPDK_BEGIN_C_HEADER
 int wpdk_flock(int fd, int operation);
 
 #ifndef _WPDK_BUILD_LIB_
-#define flock(fd,op,...) wpdk_flock(fd,op,__VA_ARGS__)
+#define flock(fd,...) wpdk_flock(fd,__VA_ARGS__)
 #endif
 
 _WPDK_END_C_HEADER
