@@ -35,6 +35,17 @@ FILE *wpdk_fdopen(int fildes, const char *mode);
 int wpdk_vdprintf(int fd, const char *format, va_list ap);
 int wpdk_fileno(FILE *stream);
 
+static inline
+int dprintf(int fd, const char *format, ...)
+{
+	va_list ap;
+	int rc;
+	va_start(ap, format);
+	rc = wpdk_vdprintf(fd, format, ap);
+	va_end(ap);
+	return rc;
+}
+
 #ifndef _WPDK_BUILD_LIB_
 #define fileno(fp) wpdk_fileno(fp)
 #define fdopen(fildes,mode) wpdk_fdopen(fildes,mode)

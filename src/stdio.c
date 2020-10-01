@@ -77,14 +77,32 @@ wpdk_fdopen(int fildes, const char *mode)
 int
 wpdk_vdprintf(int fd, const char *format, va_list ap)
 {
-	char buffer[4096];
-	int rc;
+	int rc, error;
+	int newfd;
+	FILE *fp;
 
 	wpdk_set_invalid_handler();
 
-	// HACK - temporary implementation
-	rc = vsprintf_s(buffer, sizeof(buffer), format, ap);
-	return (rc > 0) ? _write(fd, buffer, rc) : rc;
+	/*
+	 *  This could be implemented using vsprintf but it is impossible
+	 *  to know the required buffer size until the output is formatted.
+	 *  Instead, duplicate the file handle, calling fdopen and vfprintf.
+	 *  This is functionally correct and vdprintf is unlikely to be
+	 *  performance critical.
+	 */
+	if ((newfd = _dup(fd)) == -1)
+		return wpdk_posix_error(EBADF);
+
+	if ((fp = _fdopen(newfd, "r+")) == NULL)
+		return -1;
+
+	rc = vfprintf(fp, format, ap);
+
+	error = errno;
+	fclose(fp);
+
+	_set_errno(error);
+	return rc;
 }
 
 

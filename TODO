@@ -51,6 +51,3 @@ Review the use of restrict.
 
 Shared library - define list of exports and add link_with flag to dependency
 Put wrap definitions into separate / static libary
-
-Unit test for vdprintf
-

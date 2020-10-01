@@ -239,6 +239,46 @@ test_fileno(void)
 }
 
 
+static void
+test_vdprintf(void)
+{
+	char *path = "testfile";
+	char buf[200];
+	ssize_t rc;
+	int fd;
+
+	unlink(path);
+
+	/* Create test file */
+	fd = open(path, O_CREAT|O_RDWR, S_IWRITE|S_IREAD);
+	CU_ASSERT(fd != -1);
+
+	/* Write initial message */
+	rc = write(fd, "Initial Write! ", 15);
+	CU_ASSERT(rc == 15);
+
+	/* dprintf message */
+	rc = dprintf(fd, "Hello %s! ", "World", 13);
+	CU_ASSERT(rc == 13);
+
+	/* Write final message */
+	rc = write(fd, "Final Write!", 12);
+	CU_ASSERT(rc == 12);
+
+	/* Rewind */
+	rc = lseek(fd, 0, SEEK_SET);
+	CU_ASSERT(rc == 0);
+
+	/* Read file contents */
+	rc = read(fd, buf, sizeof(buf));
+	CU_ASSERT(rc == 40);
+	CU_ASSERT(strncmp(buf, "Initial Write! Hello World! Final Write!", 40) == 0);
+
+	close(fd);
+	unlink(path);
+}
+
+
 void
 add_stdio_tests()
 {
@@ -251,4 +291,5 @@ add_stdio_tests()
 	CU_ADD_TEST(suite, test_fopen);
 	CU_ADD_TEST(suite, test_fdopen);
 	CU_ADD_TEST(suite, test_fileno);
+	CU_ADD_TEST(suite, test_vdprintf);
 }
