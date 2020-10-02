@@ -12,17 +12,52 @@
  */
 
 #include <wpdk/internal.h>
+#include <sys/locking.h>
+#include <sys/stat.h>
 #include <sys/file.h>
+#include <stdbool.h>
+#include <fcntl.h>
 
 
 int
 wpdk_flock(int fd, int operation)
 {
-	// HACK - not implemented
-	WPDK_UNIMPLEMENTED();
+	int rc, op = (operation & ~LOCK_NB);
+	off_t start, nbytes;
+	bool nowait;
 
-	UNREFERENCED_PARAMETER(fd);
-	UNREFERENCED_PARAMETER(operation);
+	if (op != LOCK_SH && op != LOCK_EX && op != LOCK_UN)
+		return wpdk_posix_error(EINVAL);
 
-	return 0;
+	/*
+	 *  Calculate the required range and unlock
+	 */
+	if (wpdk_lockfile_get_range(fd, SEEK_SET,
+			0, 0, &start, &nbytes) == -1)
+		return -1;
+
+	rc = wpdk_lockfile(F_UNLCK, fd, start, nbytes, false);
+	
+	/*
+	 *  Issue locking request.
+	 */
+	nowait = ((operation & LOCK_NB) != 0);
+
+	switch (op & ~LOCK_NB) {
+		case LOCK_SH:
+			rc = wpdk_lockfile(F_RDLCK, fd, start, nbytes, nowait);
+			break;
+
+		case LOCK_EX:
+			rc = wpdk_lockfile(F_WRLCK, fd, start, nbytes, nowait);
+			break;
+
+		case LOCK_UN:
+			return 0;
+	}
+
+	if (rc == -1 && errno == EACCES && nowait)
+		return wpdk_posix_error(EWOULDBLOCK);
+
+	return rc;
 }
