@@ -18,6 +18,7 @@ sources = [
 	'netdb_ut.c',
 	'stat_ut.c',
 	'stdio_ut.c',
+	'stdlib_ut.c',
 	'string_ut.c',
 	'strings_ut.c',
 	'uio_ut.c',

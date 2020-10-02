@@ -23,14 +23,12 @@ _WPDK_INCLUDE_NEXT_
 #ifndef _WPDK_LIMITS_H_
 #define _WPDK_LIMITS_H_
 
-#include <stdlib.h>
-
 #ifndef PATH_MAX
-#define PATH_MAX _MAX_PATH
+#define PATH_MAX 260
 #endif
 
 #ifndef NAME_MAX
-#define NAME_MAX _MAX_FNAME
+#define NAME_MAX 256
 #endif
 
 #ifndef SSIZE_MAX

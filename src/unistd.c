@@ -14,6 +14,7 @@
 #include <wpdk/internal.h>
 #include <sys/stat.h>
 #include <stdbool.h>
+#include <stdlib.h>
 #include <limits.h>
 #include <unistd.h>
 #include <fcntl.h>

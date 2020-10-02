@@ -21,7 +21,8 @@
 #define wpdk_calloc __real_calloc
 
 
-int wpdk_mkstemp(char *path)
+int
+wpdk_mkstemp(char *path)
 {
 	if (_mktemp(path) == NULL) return -1;
 
@@ -30,7 +31,8 @@ int wpdk_mkstemp(char *path)
 }
 
 
-int wpdk_posix_memalign(void **memptr, size_t alignment, size_t size)
+int
+wpdk_posix_memalign(void **memptr, size_t alignment, size_t size)
 {
 	// HACK - not aligned - just basic malloc for now
 	WPDK_UNIMPLEMENTED();
@@ -48,28 +50,58 @@ int wpdk_posix_memalign(void **memptr, size_t alignment, size_t size)
 }
 
 
-void wpdk_srandom(unsigned int seed)
+void
+wpdk_srand(unsigned seed)
 {
 	srand(seed);
 }
 
 
-long int wpdk_random(void)
+int
+wpdk_rand(void)
 {
-	// HACK 16 bits instead of 32-bits
-	return rand();
+	/*
+	 *  On Windows, RAND_MAX is defined as a 15-bit value, but Linux
+	 *  defines it as 31-bits. Return 31-bits for compatibility.
+	 */
+	return (int)wpdk_random();
 }
 
 
-int wpdk_rand_r(unsigned int *seedp)
+int
+wpdk_rand_r(unsigned int *seedp)
 {
-	// HACK - incomplete implementation
 	UNREFERENCED_PARAMETER(seedp);
-	return rand();
+
+	/*
+	 *  POSIX: rand_r should return a reproducible sequence if the
+	 *  seed is not modified between calls. There doesn't seem to
+	 *  be an exact counterpart to this, so just use wpdk_random().
+	 */
+	return (int)wpdk_random();
 }
 
 
-void *wpdk_calloc(size_t nelem, size_t elsize)
+void
+wpdk_srandom(unsigned int seed)
+{
+	srand(seed);
+}
+
+
+long
+int wpdk_random(void)
+{
+	/* Return a 31-bit random number */
+	int r1 = rand() & 0x7fff;
+	int r2 = rand() & 0x7fff;
+	int r3 = rand() & 1;
+	return (r1 << 16) | (r2 << 1) | r3;
+}
+
+
+void *
+wpdk_calloc(size_t nelem, size_t elsize)
 {
 	return calloc(nelem, elsize);
 }

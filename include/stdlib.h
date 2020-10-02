@@ -37,12 +37,16 @@ long int wpdk_random(void);
 void wpdk_srandom(unsigned int seed);
 int wpdk_rand_r(unsigned int *seedp);
 void *wpdk_calloc(size_t nelem, size_t elsize);
+int wpdk_rand(void);
+void wpdk_srand(unsigned seed);
 
 #ifndef _WPDK_BUILD_LIB_
 #define mkstemp(path) wpdk_mkstemp(path)
 #define posix_memalign(memptr,align,size) wpdk_posix_memalign(memptr,align,size)
 #define random() wpdk_random()
 #define srandom(seed) wpdk_srandom(seed)
+#define srand(s) wpdk_srand(s)
+#define rand() wpdk_rand()
 #define rand_r(seedp) wpdk_rand_r(seedp)
 
 #if !defined(__MINGW32__) || !defined(_INC_STDLIB_S)
