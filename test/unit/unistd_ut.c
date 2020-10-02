@@ -14,6 +14,7 @@
 #include <wpdk/internal.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <stdbool.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -507,19 +508,114 @@ static void
 test_lockf(void)
 {
 	char *path = "testfile";
-	int rc, fd;
+	int rc, fd1, fd2;
+	ssize_t nbytes;
+	char buf[200];
+	off_t posn;
 	
 	unlink(path);
 
 	/* Create test file */
-	fd = open(path, O_CREAT|O_RDWR, S_IWRITE|S_IREAD);
-	CU_ASSERT(fd != -1);
+	fd1 = open(path, O_CREAT|O_RDWR, S_IWRITE|S_IREAD);
+	CU_ASSERT(fd1 != -1);
 
-	/* check lockf */
-	rc = lockf(fd, F_LOCK, 100);
-	CU_ASSERT(rc == -1 && errno == ENOSYS);
+	/* Add some data */
+	nbytes = write(fd1, "Hello World!", 12);
+	CU_ASSERT(nbytes == 12);
 
-	close(fd);
+	/* Open second fd */
+	fd2 = open(path, O_RDWR);
+	CU_ASSERT(fd2 != -1);
+
+	/* Set to offset 0 */
+	posn = lseek(fd1, 0, SEEK_SET);
+	CU_ASSERT(posn == 0);
+
+	/* Lock 10 bytes */
+	rc = lockf(fd1, F_LOCK, 10);
+	CU_ASSERT(rc == 0);
+
+	/* Check locked */
+	rc = lockf(fd2, F_TLOCK, 10);
+	CU_ASSERT(rc == -1 && (errno == EACCES || errno == EAGAIN));
+
+	/* Check read */
+	nbytes = read(fd2, &buf, 12);
+	CU_ASSERT(nbytes == 12);
+	CU_ASSERT(strncmp(buf, "Hello World!", 12) == 0);
+
+	/* Check offset 10 is unlocked */
+	posn = lseek(fd1, 10, SEEK_SET);
+	CU_ASSERT(posn == 10);
+	rc = lockf(fd2, F_TEST, 10);
+	CU_ASSERT(rc == 0);
+
+	/* Check offset 0 is locked */
+	posn = lseek(fd2, 0, SEEK_SET);
+	CU_ASSERT(posn == 0);
+	rc = lockf(fd2, F_TEST, 10);
+	CU_ASSERT(rc == -1 && (errno == EACCES || errno == EAGAIN));
+
+	/* Check invalid size */
+	rc = lockf(fd2, F_TEST, INT64_MAX);
+	CU_ASSERT(rc == -1 && errno == EINVAL);
+
+	/* Check invalid offset */
+	posn = lseek(fd2, INT64_MAX / 2, SEEK_SET);
+	CU_ASSERT(posn == INT64_MAX / 2);
+	rc = lockf(fd2, F_TEST, 1);
+	CU_ASSERT(rc == -1 && errno == EINVAL);
+
+	/* Check invalid function */
+	posn = lseek(fd2, 0, SEEK_SET);
+	CU_ASSERT(posn == 0);
+	rc = lockf(fd2, 99999, 1);
+	CU_ASSERT(rc == -1 && errno == EINVAL);
+
+	/* Lock to end of file */
+	posn = lseek(fd1, 10, SEEK_SET);
+	CU_ASSERT(posn == 10);
+	rc = lockf(fd1, F_LOCK, 0);
+	CU_ASSERT(rc == 0);
+
+	/* Check locked */
+	posn = lseek(fd2, 0, SEEK_SET);
+	CU_ASSERT(posn == 0);
+	rc = lockf(fd2, F_TEST, 0);
+	CU_ASSERT(rc == -1 && (errno == EACCES || errno == EAGAIN));
+
+	/* Check negative unlock */
+	posn = lseek(fd1, 10, SEEK_SET);
+	CU_ASSERT(posn == 10);
+	rc = lockf(fd1, F_ULOCK, -10);
+	CU_ASSERT(rc == 0);
+
+	/* Check unlocked */
+	posn = lseek(fd2, 0, SEEK_SET);
+	CU_ASSERT(posn == 0);
+	rc = lockf(fd2, F_TEST, 10);
+	CU_ASSERT(rc == 0);
+
+	/* Check locked */
+	posn = lseek(fd2, 10, SEEK_SET);
+	CU_ASSERT(posn == 10);
+	rc = lockf(fd2, F_TEST, 0);
+	CU_ASSERT(rc == -1 && (errno == EACCES || errno == EAGAIN));
+
+	/* Unlock to end */
+	posn = lseek(fd1, 10, SEEK_SET);
+	CU_ASSERT(posn == 10);
+	rc = lockf(fd1, F_ULOCK, 0);
+	CU_ASSERT(rc == 0);
+
+	/* Check unlocked to end */
+	posn = lseek(fd2, 0, SEEK_SET);
+	CU_ASSERT(posn == 0);
+	rc = lockf(fd2, F_TEST, 0);
+	CU_ASSERT(rc == 0);
+
+	close(fd1);
+	close(fd2);
 	unlink(path);
 }
 

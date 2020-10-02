@@ -403,7 +403,7 @@ wpdk_convert_to_posix(int err)
 
 		case ERROR_LOCK_VIOLATION:
 			/* The process cannot access the file because another process has locked a portion of the file */
-			return EBUSY;
+			return EACCES;
 
 #ifndef ERROR_LOST_WRITEBEHIND_DATA
 #define ERROR_LOST_WRITEBEHIND_DATA 596L

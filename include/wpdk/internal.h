@@ -21,6 +21,7 @@
 #include <wpdk/header.h>
 #include <wpdk/windows.h>
 #include <wpdk/types.h>
+#include <stdbool.h>
 
 _WPDK_BEGIN_C_HEADER
 
@@ -48,6 +49,10 @@ ssize_t wpdk_socket_read(int fildes, void *buf, size_t nbyte);
 ssize_t wpdk_socket_write(int fildes, const void *buf, size_t nbyte);
 ssize_t wpdk_socket_readv(int fildes, const struct iovec *iov, int iovcnt);
 ssize_t wpdk_socket_writev(int fildes, const struct iovec *iov, int iovcnt);
+
+#define LOCKFILE_MAX ((INT64_MAX - 1) / 2)
+
+int wpdk_lockfile(int op, int fildes, off_t start, ssize_t nbytes, bool nowait);
 
 const char *wpdk_get_path(const char *path, char *buffer, size_t len);
 

@@ -43,6 +43,7 @@ _WPDK_BEGIN_C_HEADER
 #define F_SETFL		4
 #define F_GETLK		5
 #define F_SETLK		6
+#define F_SETLKW	7
 
 #define LOCK_SH		1
 #define LOCK_EX		2
@@ -59,6 +60,10 @@ struct flock {
 	off_t l_len;
 	pid_t l_pid;
 };
+
+#define F_RDLCK		0
+#define F_WRLCK		1
+#define F_UNLCK		2
 
 int wpdk_fcntl(int fildes, int cmd, ...);
 int wpdk_open(const char *pathname, int flags, ...);

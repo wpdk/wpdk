@@ -17,6 +17,7 @@
 #include <limits.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <io.h>
 
 
 #define wpdk_unlink __real_unlink
@@ -386,13 +387,58 @@ wpdk_fsync(int fildes)
 int
 wpdk_lockf(int fildes, int function, off_t size)
 {
-	UNREFERENCED_PARAMETER(fildes);
-	UNREFERENCED_PARAMETER(function);
-	UNREFERENCED_PARAMETER(size);
+	off_t start, nbytes;
+	ssize_t posn;
+	int rc;
 
-	// HACK - not implemented
-	WPDK_UNIMPLEMENTED();
-	return wpdk_posix_error(ENOSYS);
+	wpdk_set_invalid_handler();
+
+	/*
+	 *  Determine current position
+	 */
+	if ((posn = _telli64(fildes)) == -1)
+		return -1;
+
+	if (posn >= LOCKFILE_MAX)
+		return wpdk_posix_error(EINVAL);
+
+	/*
+	 *  Calculate the required range
+	 */
+	if (size < 0) {
+		if (posn < (-size) || (-size) > LOCKFILE_MAX)
+			return wpdk_posix_error(EINVAL);
+
+		start = posn + size;
+		nbytes = (-size);
+	} else {
+		if (size > LOCKFILE_MAX || posn + size > LOCKFILE_MAX)
+			return wpdk_posix_error(EINVAL);
+
+		start = posn;
+		nbytes = (size == 0) ? LOCKFILE_MAX - start: size;
+	}
+
+	/*
+	 *  Issue locking request.
+	 */
+	switch (function) {
+		case F_LOCK:
+			return wpdk_lockfile(F_WRLCK, fildes, start, nbytes, false);
+
+		case F_TLOCK:
+			return wpdk_lockfile(F_WRLCK, fildes, start, nbytes, true);
+
+		case F_ULOCK:
+			return wpdk_lockfile(F_UNLCK, fildes, start, nbytes, false);
+
+		case F_TEST:
+			if ((rc = wpdk_lockfile(F_WRLCK, fildes, start, nbytes, true)) != -1)
+				wpdk_lockfile(F_UNLCK, fildes, start, nbytes, false);
+			return rc;
+	}
+
+	return wpdk_posix_error(EINVAL);
 }
 
 

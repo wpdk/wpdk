@@ -41,9 +41,9 @@ _WPDK_BEGIN_C_HEADER
 #define _SC_IOV_MAX				4
 
 #define F_LOCK		1
-#define F_TEST		2
+#define F_ULOCK		2
 #define F_TLOCK		3
-#define F_ULOCK		4
+#define F_TEST		4
 
 int wpdk_access(const char *path, int amode);
 int wpdk_close(int fildes);

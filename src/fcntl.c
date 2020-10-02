@@ -13,7 +13,9 @@
 
 #include <wpdk/internal.h>
 #include <sys/socket.h>
+#include <sys/locking.h>
 #include <sys/stat.h>
+#include <stdbool.h>
 #include <fcntl.h>
 
 
@@ -115,4 +117,69 @@ int wpdk_fcntl(int fildes, int cmd, ...)
 
 	WPDK_UNIMPLEMENTED();
 	return wpdk_posix_error(EINVAL);
+}
+
+
+#define LOCKFILE_GUARD		(INT64_MAX - LOCKFILE_MAX)
+
+int
+wpdk_lockfile(int op, int fildes, off_t start, ssize_t nbytes, bool nowait)
+{
+	DWORD error, flags = 0;
+	OVERLAPPED io = {0};
+	LARGE_INTEGER v;
+	HANDLE h;
+	BOOL rc;
+
+	if ((h = (HANDLE)_get_osfhandle(fildes)) == INVALID_HANDLE_VALUE)
+		return -1;
+
+	/*
+	 *  POSIX locks are advisory, but Windows file locks are not,
+	 *  so offset into unallocated file space to avoid blocking I/O
+	 *  requests.
+	 */
+	v.QuadPart = LOCKFILE_MAX + start;
+	io.Offset = v.LowPart;
+	io.OffsetHigh = v.HighPart;
+	v.QuadPart = nbytes;
+
+	if (nowait) {
+		flags |= LOCKFILE_FAIL_IMMEDIATELY;
+
+		/*
+		 *  Checking if a region is locked involves changing the state,
+		 *  so take a guard lock to protect the operation.
+		 */
+		if (wpdk_lockfile(F_WRLCK, fildes, LOCKFILE_GUARD, 1, false) == -1)
+			return -1;
+	}
+
+	switch (op) {
+		case F_WRLCK:
+			rc = LockFileEx(h, LOCKFILE_EXCLUSIVE_LOCK | flags, 0,
+					v.LowPart, v.HighPart, &io);
+			break;
+
+		case F_RDLCK:
+			rc = LockFileEx(h, flags, 0, v.LowPart, v.HighPart, &io);
+			break;
+
+		case F_UNLCK:
+			rc = UnlockFileEx(h, 0, v.LowPart, v.HighPart, &io);
+			break;
+
+		default:
+			return wpdk_posix_error(EINVAL);
+	}
+
+	/*
+	 *  Preserve any error and release the guard lock
+	 */
+	error = GetLastError();
+
+	if (nowait)
+		wpdk_lockfile(F_UNLCK, fildes, LOCKFILE_GUARD, 1, false);
+
+	return (rc == FALSE) ? wpdk_windows_error(error) : 0;
 }
