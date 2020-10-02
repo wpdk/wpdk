@@ -21,6 +21,7 @@
 void add_dirent_tests();
 void add_error_tests(void);
 void add_fatal_tests(void);
+void add_fcntl_tests(void);
 void add_include_c_tests(void);
 void add_include_cpp_tests(void);
 void add_netdb_tests(void);
@@ -50,6 +51,7 @@ main(int argc, char **argv)
 
 	add_dirent_tests();
 	add_error_tests();
+	add_fcntl_tests();
 	add_fatal_tests();
 	add_include_c_tests();
 	add_include_cpp_tests();

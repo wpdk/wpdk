@@ -72,8 +72,58 @@ int wpdk_open(const char *pathname, int flags, ...)
 }
 
 
-int wpdk_fcntl(int fildes, int cmd, ...)
+static int
+wpdk_fcntl_lockfile(int fildes, int cmd, struct flock *flockp)
 {
+	int rc, type = flockp->l_type;
+	off_t start, nbytes;
+
+	wpdk_set_invalid_handler();
+
+	if (!flockp)
+		return wpdk_posix_error(EINVAL);
+
+	if (type != F_RDLCK && type != F_WRLCK && type != F_UNLCK)
+		return wpdk_posix_error(EINVAL);
+
+	/*
+	 *  Calculate the required range
+	 */
+	if (wpdk_lockfile_get_range(fildes, flockp->l_whence,
+			flockp->l_start, flockp->l_len, &start, &nbytes) == -1)
+		return -1;
+
+	/*
+	 *  Issue locking request.
+	 */
+	switch (cmd) {
+		case F_GETLK:
+			if (type == F_UNLCK)
+				return wpdk_posix_error(EINVAL);
+
+			if ((rc = wpdk_lockfile(type, fildes, start, nbytes, true)) != -1) {
+				wpdk_lockfile(F_UNLCK, fildes, start, nbytes, false);
+				flockp->l_type = F_UNLCK;
+			}
+
+			flockp->l_pid = -1;
+			return 0;
+
+		case F_SETLK:
+			return wpdk_lockfile(type, fildes, start, nbytes, true);
+
+		case F_SETLKW:
+			return wpdk_lockfile(type, fildes, start, nbytes, false);
+	}
+
+	return wpdk_posix_error(EINVAL);
+}
+
+
+int
+wpdk_fcntl(int fildes, int cmd, ...)
+{
+	struct flock *flockp;
 	u_long mode;
 	int rc, arg;
 	va_list ap;
@@ -112,11 +162,82 @@ int wpdk_fcntl(int fildes, int cmd, ...)
 
 		case F_GETLK:
 		case F_SETLK:
-			break;
+		case F_SETLKW:
+			/*
+			 *  Handle file lock request
+			 */
+			va_start(ap, cmd);
+			flockp = va_arg(ap, struct flock *);
+			va_end(ap);
+
+			return wpdk_fcntl_lockfile(fildes, cmd, flockp);
 	}
 
 	WPDK_UNIMPLEMENTED();
 	return wpdk_posix_error(EINVAL);
+}
+
+
+int
+wpdk_lockfile_get_range(int fildes, int whence,
+		off_t offset, off_t size, off_t *pStart, off_t *pBytes)
+{
+	LARGE_INTEGER end;
+	off_t posn = 0;
+	HANDLE h;
+
+	/*
+	 *  Adjust starting position
+	 */
+	switch (whence) {
+		case SEEK_SET:
+			break;
+
+		case SEEK_CUR:
+			if ((posn = _telli64(fildes)) == -1)
+				return -1;
+			break;
+
+		case SEEK_END:
+			if ((h = (HANDLE)_get_osfhandle(fildes)) == INVALID_HANDLE_VALUE)
+				return -1;
+
+			if (GetFileSizeEx(h, &end) == 0)
+				return wpdk_last_error();
+
+			posn = end.QuadPart;
+			break;
+
+		default:
+			return wpdk_posix_error(EINVAL);
+	}
+
+	if (posn >= LOCKFILE_MAX)
+		return wpdk_posix_error(EINVAL);
+
+	if ((offset < 0 && posn < (-offset)) || offset >= LOCKFILE_MAX)
+			return wpdk_posix_error(EINVAL);
+
+	posn += offset;
+
+	/*
+	 *  Calculate the required range
+	 */
+	if (size < 0) {
+		if (posn < (-size) || (-size) > LOCKFILE_MAX)
+			return wpdk_posix_error(EINVAL);
+
+		*pStart = posn + size;
+		*pBytes = (-size);
+	} else {
+		if (size > LOCKFILE_MAX || posn + size > LOCKFILE_MAX)
+			return wpdk_posix_error(EINVAL);
+
+		*pStart = posn;
+		*pBytes = (size == 0) ? LOCKFILE_MAX - posn : size;
+	}
+
+	return 0;
 }
 
 

@@ -388,36 +388,13 @@ int
 wpdk_lockf(int fildes, int function, off_t size)
 {
 	off_t start, nbytes;
-	ssize_t posn;
 	int rc;
 
 	wpdk_set_invalid_handler();
 
-	/*
-	 *  Determine current position
-	 */
-	if ((posn = _telli64(fildes)) == -1)
+	if (wpdk_lockfile_get_range(fildes,
+			SEEK_CUR, 0, size, &start, &nbytes) == -1)
 		return -1;
-
-	if (posn >= LOCKFILE_MAX)
-		return wpdk_posix_error(EINVAL);
-
-	/*
-	 *  Calculate the required range
-	 */
-	if (size < 0) {
-		if (posn < (-size) || (-size) > LOCKFILE_MAX)
-			return wpdk_posix_error(EINVAL);
-
-		start = posn + size;
-		nbytes = (-size);
-	} else {
-		if (size > LOCKFILE_MAX || posn + size > LOCKFILE_MAX)
-			return wpdk_posix_error(EINVAL);
-
-		start = posn;
-		nbytes = (size == 0) ? LOCKFILE_MAX - start: size;
-	}
 
 	/*
 	 *  Issue locking request.

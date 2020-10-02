@@ -13,6 +13,7 @@ sources = [
 	'error_ut.c',
 	'dirent_ut.c',
 	'fatal_ut.c',
+	'fcntl_ut.c',
 	'include_ut.c',
 	'netdb_ut.c',
 	'stat_ut.c',

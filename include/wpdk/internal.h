@@ -53,6 +53,8 @@ ssize_t wpdk_socket_writev(int fildes, const struct iovec *iov, int iovcnt);
 #define LOCKFILE_MAX ((INT64_MAX - 1) / 2)
 
 int wpdk_lockfile(int op, int fildes, off_t start, ssize_t nbytes, bool nowait);
+int wpdk_lockfile_get_range(int fildes, int whence, off_t offset,
+	off_t size, off_t *pStart, off_t *pBytes);
 
 const char *wpdk_get_path(const char *path, char *buffer, size_t len);
 
