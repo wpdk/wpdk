@@ -49,5 +49,5 @@ Add log message handling - also add way for unit tests to tell if called.
 
 Review the use of restrict.
 
-Shared library - define list of exports and add link_with flag to dependency
+Shared library - define list of exports
 Put wrap definitions into separate / static libary
