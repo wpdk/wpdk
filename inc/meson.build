@@ -31,7 +31,7 @@ install_headers(
 	'syslog.h',
 	'termios.h',
 	'unistd.h',
-	'next/setjmp.h',
+	'setjmp.h',
 	subdir: include_prefix
 )
 

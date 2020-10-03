@@ -19,7 +19,7 @@ cpp = meson.get_compiler('cpp')
 
 machine_args = []
 
-global_includes = include_directories('.', 'include', 'include/next')
+global_includes = include_directories('.', 'inc')
 
 cunit = subproject('CUnit')
 cunit_dep = cunit.get_variable('cunit_dep')
@@ -27,7 +27,7 @@ cunit_dep = cunit.get_variable('cunit_dep')
 subdir('scripts')
 subdir('config')
 
-subdir('include')
+subdir('inc')
 subdir('src')
 subdir('test/unit')
 

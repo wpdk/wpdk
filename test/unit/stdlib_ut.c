@@ -42,12 +42,14 @@ test_rand(void)
 	srand((unsigned int)time(NULL));
 
 	/* Check more than 15 bits */
-	while ((rand() & ~0x7fff) == 0) ;
+	while ((rand() & ~0x7fff) == 0)
+		;
 	CU_ASSERT(TRUE);
 
 	/* Check different values */
 	val = rand();
-	while (rand() == val) ;
+	while (rand() == val)
+		;
 	CU_ASSERT(true);
 }
 
@@ -58,15 +60,17 @@ test_rand_r(void)
 	unsigned int seed;
 	int val;
 
-	seed = (unsigned int)time(NULL);;
+	seed = (unsigned int)time(NULL);
 
 	/* Check more than 15 bits */
-	while ((rand_r(&seed) & ~0x7fff) == 0) ;
+	while ((rand_r(&seed) & ~0x7fff) == 0)
+		;
 	CU_ASSERT(TRUE);
 
 	/* Check different values */
 	val = rand_r(&seed);
-	while (rand_r(&seed) == val) ;
+	while (rand_r(&seed) == val)
+		;
 	CU_ASSERT(true);
 }
 
@@ -79,12 +83,14 @@ test_random(void)
 	srandom((unsigned int)time(NULL));
 
 	/* Check more than 15 bits */
-	while ((random() & ~0x7fff) == 0) ;
+	while ((random() & ~0x7fff) == 0)
+		;
 	CU_ASSERT(TRUE);
 
 	/* Check different values */
 	val = random();
-	while (random() == val) ;
+	while (random() == val)
+		;
 	CU_ASSERT(true);
 }
 
