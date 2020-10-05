@@ -46,10 +46,6 @@ sources = [
 	'wrap.c',
 ]
 
-if cc.has_header('getopt.h')
-	cflags += ['-DHAVE_GETOPT_H', '-DHAVE_GETOPT', '-DHAVE_GETOPT_LONG']
-endif
-
 # build static lib
 static_lib = static_library('wpdk',
 		sources,
