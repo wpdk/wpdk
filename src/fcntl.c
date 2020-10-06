@@ -19,38 +19,56 @@
 #include <fcntl.h>
 
 
-const char *wpdk_get_path(const char *path, char *buffer, size_t len)
+// HACK - hard-coded local path
+static char msys[] = "c:\\tools\\msys64";
+
+
+const char *
+wpdk_get_path(const char *path, char *buffer, size_t len)
 {
-	// HACK - hard-coded local path
-	static char *msys = "c:\\tools\\msys64";
+	size_t pathlen;
 
-	if (!path) return path;
+	if (!path || !*path) return path;
 
-	// HACK - wpdk_get_path fix pathnames and handle length
-	// HACK - get_path - return error if pathname too long
-	UNREFERENCED_PARAMETER(len);
+	wpdk_set_invalid_handler();
 
-	if (!strncmp(path, "/tmp/", 5) || !strncmp(path, "/var/tmp/", 9)) {
-		strcpy(buffer, msys);
-		strcat(buffer, path);
-		return buffer;
-	}
+	pathlen = strnlen_s(path, PATH_MAX);
 
-	if (strrchr(path, '/') == path)	{
-		strcpy(buffer, msys);
-		strcat(buffer, "/tmp");
-		strcat(buffer, path);
-		return buffer;
-	}
+	if (pathlen == 0 || pathlen >= PATH_MAX)
+		return NULL;
+
+	if (!strncmp(path, "/tmp/", 5) || !strncmp(path, "/var/tmp/", 9))
+		return (strcpy_s(buffer, len, msys) == 0
+			&& strcat_s(buffer, len, path) == 0) ? buffer : NULL;
+
+	if (strrchr(path, '/') == path)
+		return (strcpy_s(buffer, len, msys) == 0
+			&& strcat_s(buffer, len, "/tmp") == 0
+			&& strcat_s(buffer, len, path) == 0) ? buffer : NULL;
 
 	return path;
 }
 
 
-int wpdk_open(const char *pathname, int flags, ...)
+char *
+wpdk_copy_path(char *buffer, size_t len, const char *path)
+{
+	const char *cp = wpdk_get_path(path, buffer, len);
+
+	if (cp && cp == path)
+		if (strcpy_s(buffer, len, path) != 0)
+			return NULL;
+
+	return buffer;
+}
+
+
+int
+wpdk_open(const char *pathname, int flags, ...)
 {
 	char buf[MAX_PATH];
 	mode_t m, mode = 0;
+	const char *path;
 	va_list ap;
 
 	wpdk_set_invalid_handler();
@@ -68,7 +86,10 @@ int wpdk_open(const char *pathname, int flags, ...)
 	flags &= (O_RDONLY|O_WRONLY|O_RDWR|O_APPEND|O_CREAT|O_TRUNC|O_EXCL);
 	flags |= _O_BINARY;
 
-	return _open(wpdk_get_path(pathname, buf, sizeof(buf)), flags, mode);
+	if ((path = wpdk_get_path(pathname, buf, sizeof(buf))) == NULL)
+		return wpdk_posix_error(EINVAL);
+
+	return _open(path, flags, mode);
 }
 
 

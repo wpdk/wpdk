@@ -19,8 +19,10 @@
 
 
 int
-wpdk_mknod(const char *path, mode_t mode, dev_t dev)
+wpdk_mknod(const char *pathname, mode_t mode, dev_t dev)
 {
+	char buf[MAX_PATH];
+	const char *path;
 	mode_t omode = 0;
 	int fd;
 
@@ -31,14 +33,14 @@ wpdk_mknod(const char *path, mode_t mode, dev_t dev)
 		return wpdk_posix_error(ENOSYS);
 	}
 
-	if (!path)
-		return wpdk_posix_error(EINVAL);
-
 	if (mode & (S_IRUSR|S_IRGRP|S_IROTH))
 		omode |= S_IREAD;
 
 	if (mode & (S_IWUSR|S_IWGRP|S_IWOTH))
 		omode |= S_IWRITE;
+
+	if ((path = wpdk_get_path(pathname, buf, sizeof(buf))) == NULL)
+		return wpdk_posix_error(EINVAL);
 
 	fd = _open(path, _O_CREAT|_O_EXCL|O_RDONLY, omode);
 	if (fd < 0) return -1;
@@ -82,31 +84,33 @@ int
 wpdk_chmod(const char *filename, int pmode)
 {
 	char buf[MAX_PATH];
+	const char *path;
 	int mode = 0;
 	
 	wpdk_set_invalid_handler();
 
-	if (!filename)
-		return wpdk_posix_error(EINVAL);
-
 	if (pmode & S_IREAD) mode |= _S_IREAD;
 	if (pmode & S_IWRITE) mode |= _S_IWRITE;
 
-	return _chmod(wpdk_get_path(filename, buf, sizeof(buf)), mode);
+	if ((path = wpdk_get_path(filename, buf, sizeof(buf))) == NULL)
+		return wpdk_posix_error(EINVAL);
+
+	return _chmod(path, mode);
 }
 
 
-int wpdk_mkdir(const char *path, mode_t mode)
+int wpdk_mkdir(const char *pathname, mode_t mode)
 {
 	char buf[MAX_PATH];
+	const char *path;
 
 	wpdk_set_invalid_handler();
 
 	// mode is ignored
 	UNREFERENCED_PARAMETER(mode);
 
-	if (!path)
+	if ((path = wpdk_get_path(pathname, buf, sizeof(buf))) == NULL)
 		return wpdk_posix_error(EINVAL);
 
-	return _mkdir(wpdk_get_path(path, buf, sizeof(buf)));	
+	return _mkdir(path);	
 }

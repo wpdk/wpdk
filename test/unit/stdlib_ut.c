@@ -12,9 +12,13 @@
  */
 
 #include <wpdk/internal.h>
+#include <sys/stat.h>
+#include <limits.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <fcntl.h>
+#include <unistd.h>
 #include <time.h>
 
 #include <CUnit/Basic.h>
@@ -31,6 +35,48 @@ static int
 null_clean(void)
 {
 	return 0;
+}
+
+
+static void
+test_mkstemp()
+{
+	char path1[] = "/tmp/testXXXXXX";
+	char path2[] = "/tmp/testXXXXXX";
+	char path3[] = "/tmp/testXXXXXX";
+	int fd1, fd2, rc;
+
+	/* Open temporary file */
+	fd1 = mkstemp(path1);
+	CU_ASSERT(fd1 != -1);
+
+	/* Check the file exists */
+	rc = access(path1, F_OK);
+	CU_ASSERT(rc == 0);
+
+	/* Create next file */
+	strcpy(path2, path1);
+	path2[9]++;
+	rc = mknod(path2, S_IFREG|S_IRWXU|S_IRWXG|S_IRWXO, 0);	
+	CU_ASSERT(rc == 0);
+
+	/* Open next temporary file */
+	fd2 = mkstemp(path3);
+	CU_ASSERT(fd2 != -1);
+	CU_ASSERT(path1[9] != path2[9]);
+	CU_ASSERT(path2[9] != path3[9]);
+	CU_ASSERT(path1[9] != path3[9]);
+
+	/* Check newly created file */
+	rc = access(path3, R_OK|W_OK);
+	CU_ASSERT(rc == 0);
+
+	close(fd1);
+	close(fd2);
+
+	unlink(path1);
+	unlink(path2);
+	unlink(path3);
 }
 
 
@@ -101,6 +147,7 @@ void add_stdlib_tests()
 
 	suite = CU_add_suite("stdlib", null_init, null_clean);
 
+	CU_ADD_TEST(suite, test_mkstemp);
 	CU_ADD_TEST(suite, test_rand);
 	CU_ADD_TEST(suite, test_rand_r);
 	CU_ADD_TEST(suite, test_random);

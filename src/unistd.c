@@ -32,14 +32,18 @@ wpdk_getpid()
 
 
 int
-wpdk_truncate(const char *path, off_t length)
+wpdk_truncate(const char *pathname, off_t length)
 {
 	char buf[MAX_PATH];
+	const char *path;
 	int fd, rc;
 
 	wpdk_set_invalid_handler();
-	
-	if ((fd = _open(wpdk_get_path(path, buf, sizeof(buf)), O_RDWR)) == -1)
+
+	if ((path = wpdk_get_path(pathname, buf, sizeof(buf))) == NULL)
+		return wpdk_posix_error(EINVAL);
+
+	if ((fd = _open(path, O_RDWR)) == -1)
 		return -1;
 
 	if (_chsize_s(fd, length) != 0) {
@@ -309,21 +313,22 @@ wpdk_lseek(int fildes, off_t offset, int whence)
 
 
 int
-wpdk_unlink(const char *path)
+wpdk_unlink(const char *pathname)
 {
 	char buf[MAX_PATH];
-	const char *file;
+	const char *path;
 
 	wpdk_set_invalid_handler();
+
+	if ((path = wpdk_get_path(pathname, buf, sizeof(buf))) == NULL)
+		return wpdk_posix_error(EINVAL);
 
 	/*
 	 *  Windows fails with EACCESS if the file is read-only,
 	 *  so try and make the file writable first.
 	 */
-	file = wpdk_get_path(path, buf, sizeof(buf));
-	_chmod(file, S_IREAD|S_IWRITE);
-
-	return _unlink(file);
+	_chmod(path, S_IREAD|S_IWRITE);
+	return _unlink(path);
 }
 
 
@@ -331,7 +336,12 @@ int
 wpdk_access(const char *pathname, int mode)
 {
 	char buf[MAX_PATH];
-	return _access(wpdk_get_path(pathname, buf, sizeof(buf)), mode);
+	const char *path;
+
+	if ((path = wpdk_get_path(pathname, buf, sizeof(buf))) == NULL)
+		return wpdk_posix_error(EINVAL);
+		
+	return _access(path, mode);
 }
 
 

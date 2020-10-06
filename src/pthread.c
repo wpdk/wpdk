@@ -530,3 +530,10 @@ int pthread_getaffinity_np(pthread_t thread, size_t cpusetsize, cpuset_t *cpuset
 	// HACK - error code
 	return EINVAL;
 }
+
+
+int
+pthread_equal(pthread_t t1, pthread_t t2)
+{
+	return (t1 == t2);
+}

@@ -20,7 +20,12 @@ int
 wpdk_shm_open(const char *name, int oflag, mode_t mode)
 {
 	char buf[MAX_PATH];
-	return _open(wpdk_get_path(name, buf, sizeof(buf)), oflag, mode);
+	const char *path;
+
+	if ((path = wpdk_get_path(name, buf, sizeof(buf))) == NULL)
+		return wpdk_posix_error(EINVAL);
+
+	return _open(path, oflag, mode);
 }
 
 
@@ -28,8 +33,13 @@ int
 wpdk_shm_unlink(const char *name)
 {
 	char buf[MAX_PATH];
+	const char *path;
+
+	if ((path = wpdk_get_path(name, buf, sizeof(buf))) == NULL)
+		return wpdk_posix_error(EINVAL);
+
 	// HACK - shm_unlink - check handling with open fds	
-	return _unlink(wpdk_get_path(name, buf, sizeof(buf)));
+	return _unlink(path);
 }
 
 

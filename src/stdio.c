@@ -60,9 +60,16 @@ FILE *
 wpdk_fopen(const char *filename, const char *mode)
 {
 	char buf[MAX_PATH];
+	const char *path;
 
 	wpdk_set_invalid_handler();
-	return fopen(wpdk_get_path(filename, buf, sizeof(buf)), mode);
+
+	if ((path = wpdk_get_path(filename, buf, sizeof(buf))) == NULL) {
+		wpdk_posix_error(EINVAL);
+		return NULL;
+	}
+
+	return fopen(path, mode);
 }
 
 

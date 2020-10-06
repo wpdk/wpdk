@@ -56,6 +56,7 @@ int wpdk_lockfile(int op, int fildes, off_t start, ssize_t nbytes, bool nowait);
 int wpdk_lockfile_get_range(int fildes, int whence, off_t offset,
 	off_t size, off_t *pStart, off_t *pBytes);
 
+char *wpdk_copy_path(char *buffer, size_t len, const char *path);
 const char *wpdk_get_path(const char *path, char *buffer, size_t len);
 
 int wpdk_last_error(void);

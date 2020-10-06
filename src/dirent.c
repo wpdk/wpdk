@@ -52,9 +52,10 @@ wpdk_opendir(const char *dirname)
 		return NULL;
 	}
 
-	if (wpdk_get_path(dirname, dirp->spec,
-			sizeof(dirp->spec) - 2) == dirname)
-		strncpy(dirp->spec, dirname, sizeof(dirp->spec) - 2);
+	if (wpdk_copy_path(dirp->spec, sizeof(dirp->spec) - 2, dirname) == NULL) {
+		wpdk_posix_error(ENAMETOOLONG);
+		return NULL;
+	}
 
 	cp = &dirp->spec[strlen(dirp->spec)-1];
 	strcat(cp, (*cp == '/' || *cp == '\\') ? "*" : "\\*");

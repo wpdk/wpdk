@@ -183,8 +183,6 @@ int wpdk_bind(int socket, const struct sockaddr *address, socklen_t address_len)
 	struct sockaddr_un un, *addr = (struct sockaddr_un *)address;
 	SOCKET s = wpdk_get_socket(socket);
 	socklen_t len = address_len;
-	char buf[MAX_PATH];
-	const char *cp;
 	int rc;
 
 	if (s == INVALID_SOCKET)
@@ -194,10 +192,10 @@ int wpdk_bind(int socket, const struct sockaddr *address, socklen_t address_len)
 		if (address_len > (socklen_t)sizeof(un))
 			return wpdk_posix_error(EINVAL);
 
-		// HACK - wpdk_bind - stupid double copying going on here
-		cp = wpdk_get_path(addr->sun_path, buf, sizeof(buf));
 		un.sun_family = addr->sun_family;
-		strncpy_s(un.sun_path, sizeof(un.sun_path), cp, sizeof(un.sun_path)-1);
+
+		if (wpdk_copy_path(un.sun_path, sizeof(un.sun_path), addr->sun_path) == NULL)
+			return wpdk_posix_error(EINVAL);
 
 		addr = &un;
 		len = sizeof(un);
@@ -217,8 +215,6 @@ int wpdk_connect(int socket, const struct sockaddr *address, socklen_t address_l
 	struct sockaddr_un un, *addr = (struct sockaddr_un *)address;
 	SOCKET s = wpdk_get_socket(socket);
 	socklen_t len = address_len;
-	char buf[MAX_PATH];
-	const char *cp;
 	int rc;
 
 	if (s == INVALID_SOCKET)
@@ -228,10 +224,10 @@ int wpdk_connect(int socket, const struct sockaddr *address, socklen_t address_l
 		if (address_len > (socklen_t)sizeof(un))
 			return wpdk_posix_error(EINVAL);
 
-		// HACK - wpdk_bind - stupid double copying going on here
-		cp = wpdk_get_path(addr->sun_path, buf, sizeof(buf));
 		un.sun_family = addr->sun_family;
-		strncpy_s(un.sun_path, sizeof(un.sun_path), cp, sizeof(un.sun_path)-1);
+
+		if (wpdk_copy_path(un.sun_path, sizeof(un.sun_path), addr->sun_path) == NULL)
+			return wpdk_posix_error(EINVAL);
 
 		addr = &un;
 		len = sizeof(un);

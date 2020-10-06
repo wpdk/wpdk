@@ -15,6 +15,7 @@
 #include <sys/stat.h>
 #include <stdlib.h>
 #include <fcntl.h>
+#include <unistd.h>
 #include <io.h>
 
 
@@ -22,12 +23,50 @@
 
 
 int
-wpdk_mkstemp(char *path)
+wpdk_mkstemp(char *template)
 {
-	if (_mktemp(path) == NULL) return -1;
+	size_t len, pathlen;
+	char buf[PATH_MAX];
+	char *path;
+	int i, fd;
 
-	// HACK - loop on failure
-	return _open(path, O_CREAT | O_RDWR, S_IREAD | S_IWRITE);
+	wpdk_set_invalid_handler();
+
+	len = strnlen_s(template, PATH_MAX);
+
+	if (len < 6 || len >= PATH_MAX || strcmp(&template[len-6], "XXXXXX") != 0)
+		return wpdk_posix_error(EINVAL);
+
+	/*
+	 *  Another context could create the file between the return from
+	 *  _mktemp and the call to _open. Fail the open if the file exists
+	 *  and obtain a new pathname. Try this up to 26 times, to cover all
+	 *  of the possible temporary files that can be returned.
+	 */
+	for (i = 0; i < 26; i++) {
+		if ((path = wpdk_copy_path(buf, sizeof(buf), template)) == NULL)
+			return wpdk_posix_error(EINVAL);
+
+		if (_mktemp(path) == NULL)
+			return -1;
+
+		if ((fd = _open(path, O_CREAT|O_EXCL|O_RDWR|_O_BINARY, S_IREAD|S_IWRITE)) != -1) {
+			pathlen = strnlen_s(path, sizeof(buf));
+
+			if (pathlen >= 6 && pathlen < sizeof(buf) &&
+					strcpy_s(&template[len-6], 7, &path[pathlen-6]) == 0)
+				return fd;
+
+			_close(fd);
+			_unlink(path);
+			return wpdk_posix_error(EINVAL);
+		}
+
+		if (errno != EEXIST)
+			return -1;
+	}
+
+	return wpdk_posix_error(EEXIST);
 }
 
 
