@@ -39,6 +39,8 @@ int wpdk_rand_r(unsigned int *seedp);
 void *wpdk_calloc(size_t nelem, size_t elsize);
 int wpdk_rand(void);
 void wpdk_srand(unsigned seed);
+long wpdk_strtol(const char *str, char **endptr, int base);
+long long wpdk_strtoll(const char *str, char **endptr, int base);
 
 #ifndef _WPDK_BUILD_LIB_
 #define mkstemp(path) wpdk_mkstemp(path)
@@ -48,6 +50,8 @@ void wpdk_srand(unsigned seed);
 #define srand(s) wpdk_srand(s)
 #define rand() wpdk_rand()
 #define rand_r(seedp) wpdk_rand_r(seedp)
+#define strtol(str,end,base) wpdk_strtol(str,end,base)
+#define strtoll(str,end,base) wpdk_strtoll(str,end,base)
 
 #if !defined(__MINGW32__) || !defined(_INC_STDLIB_S)
 #define calloc(nelem,elsize) wpdk_calloc(nelem, elsize)

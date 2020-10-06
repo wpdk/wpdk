@@ -141,6 +141,26 @@ test_random(void)
 }
 
 
+static void
+test_strtol(void)
+{
+	long val;
+
+	val = strtol("903456", NULL, 10);
+	CU_ASSERT(val == 903456);
+}
+
+
+static void
+test_strtoll(void)
+{
+	long long val;
+
+	val = strtoll("90345610078", NULL, 10);
+	CU_ASSERT(val == 90345610078LL);
+}
+
+
 void add_stdlib_tests()
 {
 	CU_pSuite suite = NULL;
@@ -151,4 +171,6 @@ void add_stdlib_tests()
 	CU_ADD_TEST(suite, test_rand);
 	CU_ADD_TEST(suite, test_rand_r);
 	CU_ADD_TEST(suite, test_random);
+	CU_ADD_TEST(suite, test_strtol);
+	CU_ADD_TEST(suite, test_strtoll);
 }

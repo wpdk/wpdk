@@ -142,6 +142,22 @@ int wpdk_random(void)
 }
 
 
+long
+wpdk_strtol(const char *str, char **endptr, int base)
+{
+	wpdk_set_invalid_handler();
+	return strtol(str, endptr, base);
+}
+
+
+long long
+wpdk_strtoll(const char *str, char **endptr, int base)
+{
+	wpdk_set_invalid_handler();
+	return strtoll(str, endptr, base);
+}
+
+
 void *
 wpdk_calloc(size_t nelem, size_t elsize)
 {
