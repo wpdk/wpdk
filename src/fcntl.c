@@ -32,7 +32,7 @@ wpdk_get_path(const char *path, char *buffer, size_t len)
 
 	wpdk_set_invalid_handler();
 
-	pathlen = strnlen_s(path, PATH_MAX);
+	pathlen = strnlen(path, PATH_MAX);
 
 	if (pathlen == 0 || pathlen >= PATH_MAX)
 		return NULL;

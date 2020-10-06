@@ -32,7 +32,10 @@ wpdk_mkstemp(char *template)
 
 	wpdk_set_invalid_handler();
 
-	len = strnlen_s(template, PATH_MAX);
+	if (!template)
+		return wpdk_posix_error(EINVAL);
+
+	len = strnlen(template, PATH_MAX);
 
 	if (len < 6 || len >= PATH_MAX || strcmp(&template[len-6], "XXXXXX") != 0)
 		return wpdk_posix_error(EINVAL);
@@ -51,7 +54,7 @@ wpdk_mkstemp(char *template)
 			return -1;
 
 		if ((fd = _open(path, O_CREAT|O_EXCL|O_RDWR|_O_BINARY, S_IREAD|S_IWRITE)) != -1) {
-			pathlen = strnlen_s(path, sizeof(buf));
+			pathlen = strnlen(path, sizeof(buf));
 
 			if (pathlen >= 6 && pathlen < sizeof(buf) &&
 					strcpy_s(&template[len-6], 7, &path[pathlen-6]) == 0)
