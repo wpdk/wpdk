@@ -273,16 +273,22 @@ test_closedir(void)
 static void
 test_dirfd(void)
 {
+	struct stat st;
+	int rc, fd;
 	DIR *dir;
-	int rc;
 
 	/* Open directory */
 	dir = opendir(".");
 	CU_ASSERT(dir != NULL);
 
 	/* Test dirfd */
-	rc = dirfd(dir);
-	CU_ASSERT(rc == -1 && errno == EINVAL);
+	fd = dirfd(dir);
+	CU_ASSERT(fd != -1);
+
+	/* Stat directory fd */
+	rc = fstat(fd, &st);
+	CU_ASSERT(rc == 0);
+	CU_ASSERT(S_ISDIR(st.st_mode));
 
 	/* Close directory */
 	rc = closedir(dir);

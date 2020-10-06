@@ -15,13 +15,16 @@
  */
 
 #include <wpdk/internal.h>
+#include <sys/stat.h>
 #include <stdlib.h>
 #include <dirent.h>
+#include <fcntl.h>
 #include <io.h>
 
 
 struct _DIR {
 	intptr_t h;
+	int fd;
 	struct _finddata_t info;
 	struct dirent entry;
 	char spec[PATH_MAX];
@@ -34,6 +37,7 @@ wpdk_opendir(const char *dirname)
 	DIR *dirp;
 	int error;
 	char *cp;
+	HANDLE h;
 
 	wpdk_set_invalid_handler();
 
@@ -53,7 +57,24 @@ wpdk_opendir(const char *dirname)
 	}
 
 	if (wpdk_copy_path(dirp->spec, sizeof(dirp->spec) - 2, dirname) == NULL) {
+		free(dirp);
 		wpdk_posix_error(ENAMETOOLONG);
+		return NULL;
+	}
+
+    if ((h = CreateFile(dirp->spec, GENERIC_READ,
+			FILE_SHARE_DELETE|FILE_SHARE_READ|FILE_SHARE_WRITE, NULL,
+			OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, NULL)) == INVALID_HANDLE_VALUE) {
+		free(dirp);
+		wpdk_last_error();
+		return NULL;
+	}
+
+	if ((dirp->fd = _open_osfhandle((intptr_t)h, _O_RDONLY)) == -1) {
+		error = errno;
+		CloseHandle(h);
+		wpdk_closedir(dirp);
+		wpdk_posix_error(error);
 		return NULL;
 	}
 
@@ -62,7 +83,7 @@ wpdk_opendir(const char *dirname)
 
 	if ((dirp->h = _findfirst(dirp->spec, &dirp->info)) == -1) {
 		error = errno;
-		free(dirp);
+		wpdk_closedir(dirp);
 		wpdk_posix_error(error);
 		return NULL;
 	}
@@ -76,6 +97,9 @@ wpdk_closedir(DIR *dirp)
 {
 	if (!dirp)
 		return wpdk_posix_error(EBADF);
+
+	if (dirp->fd != -1)
+		_close(dirp->fd);
 
 	if (dirp->h != -1)
 		_findclose(dirp->h);
@@ -130,9 +154,8 @@ wpdk_rewinddir(DIR *dirp)
 int
 wpdk_dirfd(DIR *dirp)
 {
-	UNREFERENCED_PARAMETER(dirp);
-	
-	// HACK - dirfd not implemented
-	WPDK_UNIMPLEMENTED();
-	return wpdk_posix_error(EINVAL);
+	if (!dirp || dirp->fd == -1)
+		return wpdk_posix_error(EINVAL);
+
+	return dirp->fd;
 }
