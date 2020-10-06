@@ -17,6 +17,7 @@
 #include <sys/stat.h>
 #include <stdbool.h>
 #include <fcntl.h>
+#include <io.h>
 
 
 // HACK - hard-coded local path
@@ -150,11 +151,24 @@ wpdk_fcntl(int fildes, int cmd, ...)
 	va_list ap;
 	SOCKET s;
 
+	wpdk_set_invalid_handler();
+
 	switch (cmd) {
+		/*
+		 *  File descriptor flags. FD_CLOEXEC is the only valid
+		 *  flag and it is unimplemented on Windows.
+		 */
 		case F_GETFD:
 		case F_SETFD:
-			break;
 
+			if ((HANDLE)_get_osfhandle(fildes) == INVALID_HANDLE_VALUE)
+				return wpdk_posix_error(EBADF);
+
+			return 0;
+
+		/*
+		 *  File status flags.
+		 */
 		case F_GETFL:
 			return 0;
 
@@ -178,15 +192,15 @@ wpdk_fcntl(int fildes, int cmd, ...)
 				return 0;
 			}
 
-			// HACK - maybe use WSAIoctl
 			break;
 
+		/*
+		 *  File lock request
+		 */
 		case F_GETLK:
 		case F_SETLK:
 		case F_SETLKW:
-			/*
-			 *  Handle file lock request
-			 */
+
 			va_start(ap, cmd);
 			flockp = va_arg(ap, struct flock *);
 			va_end(ap);
