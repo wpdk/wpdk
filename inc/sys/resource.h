@@ -34,6 +34,7 @@ struct rlimit {
 };
 
 #define RLIMIT_CORE		1
+#define RLIMIT_NOFILE	2
 
 int wpdk_getrlimit(int resource, struct rlimit *rlp);
 int wpdk_setrlimit(int resource, const struct rlimit *rlp);

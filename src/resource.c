@@ -15,39 +15,84 @@
 #include <sys/resource.h>
 
 
-int wpdk_getrlimit(int resource, struct rlimit *rlp)
+int
+wpdk_getrlimit(int resource, struct rlimit *rlp)
 {
-	// HACK - not implemented
-	WPDK_UNIMPLEMENTED();
-
-	if (!rlp || resource != RLIMIT_CORE)
+	if (!rlp)
 		return wpdk_posix_error(EINVAL);
 
 	memset(rlp, 0, sizeof(struct rlimit));
-	return 0;
+
+	switch (resource) {
+		case RLIMIT_CORE:
+			return 0;
+
+		case RLIMIT_NOFILE:
+			rlp->rlim_cur = 8192;
+			rlp->rlim_max = 8192;
+			return 0;
+	}
+
+	WPDK_UNIMPLEMENTED();
+	return wpdk_posix_error(EINVAL);
 }
 
 
-int wpdk_setrlimit(int resource, const struct rlimit *rlp)
+int
+wpdk_setrlimit(int resource, const struct rlimit *rlp)
 {
-	// HACK - not implemented
-	WPDK_UNIMPLEMENTED();
-
-	if (!rlp || resource != RLIMIT_CORE)
+	if (!rlp || rlp->rlim_cur > rlp->rlim_max)
 		return wpdk_posix_error(EINVAL);
 
-	return 0;
+	switch (resource) {
+		case RLIMIT_CORE:
+			return 0;
+
+		case RLIMIT_NOFILE:
+			if (rlp->rlim_max > 8192)
+				return wpdk_posix_error(EPERM);
+
+			return 0;
+	}
+
+	WPDK_UNIMPLEMENTED();
+	return wpdk_posix_error(EINVAL);
 }
 
 
 int wpdk_getrusage(int who, struct rusage *usage)
 {
-	// HACK - not implemented
-	WPDK_UNIMPLEMENTED();
+	FILETIME creation, exit, system, user;
+	LARGE_INTEGER v;
 
-	if (!usage || who != RUSAGE_THREAD)
+	if (!usage)
 		return wpdk_posix_error(EINVAL);
 
 	memset(usage, 0, sizeof(struct rusage));
-	return 0;
+
+	switch (who) {
+		case RUSAGE_THREAD:
+			if (GetThreadTimes(GetCurrentThread(), &creation,
+					&exit, &system, &user) == 0)
+				return wpdk_last_error();
+
+			v.HighPart = user.dwHighDateTime;
+			v.LowPart = user.dwLowDateTime;
+			usage->ru_utime.tv_sec = (long)(v.QuadPart / 10000000);
+			usage->ru_utime.tv_usec = (v.QuadPart / 10) % 1000000;
+
+			v.HighPart = system.dwHighDateTime;
+			v.LowPart = system.dwLowDateTime;
+			usage->ru_stime.tv_sec = (long)(v.QuadPart / 10000000);
+			usage->ru_stime.tv_usec = (v.QuadPart / 10) % 1000000;
+
+			/*
+			 *  POSIX: Context switch counts should be reported,
+			 *  but are currently left as zero.
+			 */
+			return 0;
+	}
+
+	WPDK_UNIMPLEMENTED();
+	return wpdk_posix_error(EINVAL);
 }

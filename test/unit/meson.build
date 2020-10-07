@@ -18,6 +18,7 @@ sources = [
 	'include_ut.c',
 	'netdb_ut.c',
 	'pwd_ut.c',
+	'resource_ut.c',
 	'stat_ut.c',
 	'stdio_ut.c',
 	'stdlib_ut.c',
