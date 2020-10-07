@@ -36,8 +36,6 @@ int wpdk_is_fd(int fd);
 int wpdk_is_socket(int fd);
 int wpdk_is_epoll(int fd);
 
-int wpdk_socket_rc(int rc);
-
 typedef UINT_PTR SOCKET;
 SOCKET wpdk_get_socket(int fd);
 
@@ -49,6 +47,7 @@ ssize_t wpdk_socket_read(int fildes, void *buf, size_t nbyte);
 ssize_t wpdk_socket_write(int fildes, const void *buf, size_t nbyte);
 ssize_t wpdk_socket_readv(int fildes, const struct iovec *iov, int iovcnt);
 ssize_t wpdk_socket_writev(int fildes, const struct iovec *iov, int iovcnt);
+int wpdk_socket_fcntl(int fildes, int cmd, int arg);
 
 #define LOCKFILE_MAX ((INT64_MAX - 1) / 2)
 

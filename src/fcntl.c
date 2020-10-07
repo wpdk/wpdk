@@ -146,10 +146,8 @@ int
 wpdk_fcntl(int fildes, int cmd, ...)
 {
 	struct flock *flockp;
-	u_long mode;
-	int rc, arg;
 	va_list ap;
-	SOCKET s;
+	int arg;
 
 	wpdk_set_invalid_handler();
 
@@ -164,35 +162,37 @@ wpdk_fcntl(int fildes, int cmd, ...)
 			if ((HANDLE)_get_osfhandle(fildes) == INVALID_HANDLE_VALUE)
 				return wpdk_posix_error(EBADF);
 
+			WPDK_UNIMPLEMENTED();
 			return 0;
 
 		/*
 		 *  File status flags.
 		 */
 		case F_GETFL:
+
+			if (wpdk_is_socket(fildes))
+				return wpdk_socket_fcntl(fildes, cmd, 0);
+
+			if ((HANDLE)_get_osfhandle(fildes) == INVALID_HANDLE_VALUE)
+				return wpdk_posix_error(EBADF);
+
+			WPDK_UNIMPLEMENTED();
 			return 0;
 
 		case F_SETFL:
+
 			va_start(ap, cmd);
 			arg = va_arg(ap, int);
 			va_end(ap);
 
-			if (wpdk_is_socket(fildes)) {
-				mode = (arg & O_NONBLOCK) != 0;
-				s = wpdk_get_socket(fildes);
+			if (wpdk_is_socket(fildes))
+				return wpdk_socket_fcntl(fildes, cmd, arg);
 
-				if (s == INVALID_SOCKET)
-					return wpdk_posix_error(EBADF);
+			if ((HANDLE)_get_osfhandle(fildes) == INVALID_HANDLE_VALUE)
+				return wpdk_posix_error(EBADF);
 
-				rc = ioctlsocket(s, FIONBIO, &mode);
-
-				if (rc == SOCKET_ERROR)
-					return wpdk_last_wsa_error();
-
-				return 0;
-			}
-
-			break;
+			WPDK_UNIMPLEMENTED();
+			return 0;
 
 		/*
 		 *  File lock request
