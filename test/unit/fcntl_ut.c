@@ -37,6 +37,29 @@ null_clean(void)
 
 
 static void
+test_fcntl_getfd(void)
+{
+	char *path = "testfile";
+	int rc, flags, fd;
+	
+	unlink(path);
+
+	/* Create test file */
+	fd = open(path, O_CREAT|O_RDWR, S_IWRITE|S_IREAD);
+	CU_ASSERT(fd != -1);
+
+	flags = fcntl(fd, F_GETFD);
+	CU_ASSERT(flags == 0);
+
+	rc = fcntl(fd, F_SETFD, 0);
+	CU_ASSERT(rc == 0);
+
+	close(fd);
+	unlink(path);
+}
+
+
+static void
 test_fcntl_lock(void)
 {
 	char *path = "testfile";
@@ -288,5 +311,6 @@ void add_fcntl_tests()
 	suite = CU_add_suite("fcntl", null_init, null_clean);
 
 	CU_ADD_TEST(suite, test_fcntl_lock);
+	CU_ADD_TEST(suite, test_fcntl_getfd);
 	CU_ADD_TEST(suite, test_lockfile_get_range);
 }
