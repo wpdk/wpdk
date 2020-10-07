@@ -46,3 +46,5 @@ wpdk_shared_dep = declare_dependency(
 wpdk_dep = wpdk_static_dep
 
 meson.add_install_script('scripts/copy_libs.bat')
+
+subdir('scripts/pkg-config')
