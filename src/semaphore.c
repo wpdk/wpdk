@@ -12,17 +12,21 @@
  */
 
 #include <wpdk/internal.h>
+#include <sys/time.h>
 #include <limits.h>
 #include <semaphore.h>
 
 
-int wpdk_sem_init(sem_t *sem, int pshared, unsigned int value)
+int
+wpdk_sem_init(sem_t *sem, int pshared, unsigned int value)
 {
-	// HACK - sem_init pshared
-	UNREFERENCED_PARAMETER(pshared);
-
-	if (!sem)
+	if (!sem || value > INT_MAX)
 		return wpdk_posix_error(EINVAL);
+
+	if (pshared) {
+		WPDK_UNIMPLEMENTED();
+		return wpdk_posix_error(ENOSYS);
+	}
 
 	sem->h = CreateSemaphore(NULL, value, INT_MAX, NULL);
 
@@ -32,7 +36,9 @@ int wpdk_sem_init(sem_t *sem, int pshared, unsigned int value)
 	return 0;
 }
 
-int wpdk_sem_destroy(sem_t *sem)
+
+int
+wpdk_sem_destroy(sem_t *sem)
 {
 	if (!sem || !sem->h)
 		return wpdk_posix_error(EINVAL);
@@ -43,7 +49,9 @@ int wpdk_sem_destroy(sem_t *sem)
 	return 0;
 }
 
-int wpdk_sem_post(sem_t *sem)
+
+int
+wpdk_sem_post(sem_t *sem)
 {
 	if (!sem || !sem->h)
 		return wpdk_posix_error(EINVAL);
@@ -54,31 +62,70 @@ int wpdk_sem_post(sem_t *sem)
 	return 0;
 }
 
-int wpdk_sem_wait(sem_t *sem)
+
+static int
+wpdk_wait_sem(sem_t *sem, DWORD msecs)
 {
+	int rc;
+
 	if (!sem || !sem->h)
 		return wpdk_posix_error(EINVAL);
 
-	if (WaitForSingleObject(sem->h, INFINITE) != WAIT_OBJECT_0)
-		return wpdk_last_error();
+	rc = WaitForSingleObject(sem->h, msecs);
 
-	return 0;
+	switch (rc) {
+		case WAIT_FAILED:
+			return wpdk_last_error();
+
+		case WAIT_ABANDONED:
+			WPDK_WARNING("Semaphore abandoned");
+			return 0;
+
+		case WAIT_OBJECT_0:
+			return 0;
+
+		case WAIT_TIMEOUT:
+			return wpdk_posix_error(EAGAIN);	
+	}
+
+	return wpdk_posix_error(EINVAL);
 }
 
-int wpdk_sem_trywait(sem_t *sem)
+
+int
+wpdk_sem_wait(sem_t *sem)
 {
-	if (!sem || !sem->h)
+	return wpdk_wait_sem(sem, INFINITE);
+}
+
+
+int
+wpdk_sem_trywait(sem_t *sem)
+{
+	return wpdk_wait_sem(sem, 0);
+}
+
+
+int
+wpdk_sem_timedwait(sem_t *sem, const struct timespec *abs_timeout)
+{
+	struct timespec now;
+	time_t msecs = 0;
+	int rc;
+
+	if ((rc = wpdk_clock_gettime(CLOCK_REALTIME, &now)) == -1)
+		return -1;
+
+	if (abs_timeout->tv_sec > now.tv_sec) {
+		msecs = (abs_timeout->tv_sec - now.tv_sec) * 1000;
+		msecs += (abs_timeout->tv_nsec - now.tv_nsec) / 1000000;
+	} else if (abs_timeout->tv_sec == now.tv_sec
+			&& abs_timeout->tv_nsec > now.tv_nsec) {
+		msecs = (abs_timeout->tv_nsec - now.tv_nsec) / 1000000;
+	}
+
+	if (msecs > ULONG_MAX)
 		return wpdk_posix_error(EINVAL);
 
-	if (WaitForSingleObject(sem->h, INFINITE) != WAIT_OBJECT_0)
-		return wpdk_last_error();
-
-	return 0;
-}
-
-int wpdk_sem_timedwait(sem_t *sem, const struct timespec *abs_timeout)
-{
-	// HACK - handle timed wait
-	UNREFERENCED_PARAMETER(abs_timeout);
-	return wpdk_sem_wait(sem);
+	return wpdk_wait_sem(sem, (DWORD)msecs);
 }
