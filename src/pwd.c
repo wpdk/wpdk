@@ -15,14 +15,31 @@
 #include <pwd.h>
 
 
+static struct passwd root = {
+	.pw_name = "root",
+	.pw_uid = 0,
+	.pw_gid = 0,
+	.pw_dir = "/root",
+	.pw_shell = "/bin/bash"
+};
+
+static struct passwd guest = {
+	.pw_name = "guest",
+	.pw_uid = 1000,
+	.pw_gid = 1000,
+	.pw_dir = "/home/guest",
+	.pw_shell = "/bin/bash"
+};
+
+
 struct passwd *
 wpdk_getpwuid(uid_t uid)
 {
-	UNREFERENCED_PARAMETER(uid);
+	if (uid == 0)
+		return &root;
 
-	// HACK - not implemented
+	guest.pw_uid = uid;
+
 	WPDK_UNIMPLEMENTED();
-
-	wpdk_posix_error(ENOSYS);
-	return 0;
+	return &guest;
 }
