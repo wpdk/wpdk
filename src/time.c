@@ -15,23 +15,45 @@
 #include <sys/time.h>
 
 
-int wpdk_clock_gettime(clockid_t clk_id, struct timespec *tp)
+int
+wpdk_clock_gettime(clockid_t clk_id, struct timespec *tp)
 {
-	if (clk_id != CLOCK_REALTIME) {
-		WPDK_UNIMPLEMENTED();
+	static LARGE_INTEGER freq;
+	LARGE_INTEGER stamp;
+	ULARGE_INTEGER v;
+	FILETIME now;
+
+	if (!tp)
 		return wpdk_posix_error(EINVAL);
+
+	switch (clk_id) {
+		case CLOCK_MONOTONIC:
+		case CLOCK_MONOTONIC_RAW:
+			if (freq.QuadPart == 0)
+				QueryPerformanceFrequency(&freq);
+
+			QueryPerformanceCounter(&stamp);
+			tp->tv_sec = (long)(stamp.QuadPart / freq.QuadPart);
+			tp->tv_nsec = (long)(((stamp.QuadPart % freq.QuadPart) * 1000000000) / freq.QuadPart);
+
+			return 0;
+
+		case CLOCK_REALTIME:
+			GetSystemTimePreciseAsFileTime(&now);
+
+			v.HighPart = now.dwHighDateTime;
+			v.LowPart = now.dwLowDateTime;
+
+			/* Adjust to Unix Epoch */
+			v.QuadPart -= 116444736000000000LL;
+
+			tp->tv_sec = (long)(v.QuadPart / 10000000);
+			tp->tv_nsec = (v.QuadPart % 10000000) * 100;
+			return 0;
 	}
 
-#ifndef __MINGW32__
-	if (timespec_get(tp, TIME_UTC) != TIME_UTC)
-		return wpdk_posix_error(EINVAL);
-#else
-	memset(tp, 0, sizeof(*tp));
-#endif
-
-	// HACK - clock is msec granularity
 	WPDK_UNIMPLEMENTED();
-	return 0;
+	return wpdk_posix_error(EINVAL);
 }
 
 

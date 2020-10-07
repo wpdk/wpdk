@@ -61,7 +61,7 @@ wpdk_inet_ntoa(struct in_addr in)
 const char *
 wpdk_inet_ntop(int af, const void *src, char *dst, socklen_t size)
 {
-	return inet_ntop(af, src, dst, size);
+	return inet_ntop(af, (void *)src, dst, size);
 }
 
 

@@ -21,7 +21,9 @@
 
 _WPDK_BEGIN_C_HEADER
 
-#define CLOCK_REALTIME	0
+#define CLOCK_REALTIME			0
+#define CLOCK_MONOTONIC			1
+#define CLOCK_MONOTONIC_RAW		2
 
 int wpdk_clock_gettime(clockid_t clock_id, struct timespec *tp);
 int wpdk_gettimeofday(struct timeval *tp, void *tzp);

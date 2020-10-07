@@ -68,6 +68,10 @@ wpdk_stat64(const char *path, struct _stat64 *buf)
 int
 wpdk_fstat64(int fildes, struct _stat64 *buf)
 {
+#ifdef __MINGW32__
+	BY_HANDLE_FILE_INFORMATION info;
+	intptr_t h;
+#endif
 	int rc;
 	
 	wpdk_set_invalid_handler();
@@ -76,6 +80,17 @@ wpdk_fstat64(int fildes, struct _stat64 *buf)
 		return wpdk_posix_error(EINVAL);
 
 	rc = _fstat64(fildes, buf);
+
+#ifdef __MINGW32__
+	/*
+	 *  Mingw doesn't seem to recognise directories correctly,
+	 *  so adjust st_mode to correct it.
+	 */
+	if (rc == 0 && (HANDLE)(h = _get_osfhandle(fildes)) != INVALID_HANDLE_VALUE)
+		if (GetFileInformationByHandle((HANDLE)h, &info) != 0)
+			if (info.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+				buf->st_mode = (buf->st_mode & ~_S_IFMT) | _S_IFDIR;
+#endif
 	return (rc == 0) ? 0 : -1;
 }
 

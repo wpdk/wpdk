@@ -63,7 +63,7 @@ wpdk_setrlimit(int resource, const struct rlimit *rlp)
 int wpdk_getrusage(int who, struct rusage *usage)
 {
 	FILETIME creation, exit, system, user;
-	LARGE_INTEGER v;
+	ULARGE_INTEGER v;
 
 	if (!usage)
 		return wpdk_posix_error(EINVAL);
@@ -79,12 +79,12 @@ int wpdk_getrusage(int who, struct rusage *usage)
 			v.HighPart = user.dwHighDateTime;
 			v.LowPart = user.dwLowDateTime;
 			usage->ru_utime.tv_sec = (long)(v.QuadPart / 10000000);
-			usage->ru_utime.tv_usec = (v.QuadPart / 10) % 1000000;
+			usage->ru_utime.tv_usec = (v.QuadPart % 10000000) * 100;
 
 			v.HighPart = system.dwHighDateTime;
 			v.LowPart = system.dwLowDateTime;
 			usage->ru_stime.tv_sec = (long)(v.QuadPart / 10000000);
-			usage->ru_stime.tv_usec = (v.QuadPart / 10) % 1000000;
+			usage->ru_stime.tv_usec = (v.QuadPart % 10000000) * 100;
 
 			/*
 			 *  POSIX: Context switch counts should be reported,

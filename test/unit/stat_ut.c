@@ -115,6 +115,7 @@ test_mknod(void)
 static void
 test_stat(void)
 {
+	char *dirpath = "testdir";
 	char *path = "testfile";
 	struct stat s;
 	int rc;
@@ -127,13 +128,26 @@ test_stat(void)
 
 	/* Check file is writable */
 	rc = stat(path, &s);
-	CU_ASSERT(rc == 0 && (s.st_mode & S_IWRITE));
+	CU_ASSERT(rc == 0);
+	CU_ASSERT(s.st_mode & S_IWRITE);
 
 	/* Check null path */
 	rc = stat(NULL, &s);
 	CU_ASSERT(rc == -1 && errno == EINVAL);	
 
+	_rmdir(dirpath);
+
+	/* Create directory */
+	rc = _mkdir(dirpath);
+	CU_ASSERT(rc == 0);
+
+	/* Check directory */
+	rc = stat(dirpath, &s);
+	CU_ASSERT(rc == 0);
+	CU_ASSERT(S_ISDIR(s.st_mode) != 0);
+
 	unlink(path);
+	_rmdir(dirpath);
 }
 
 
