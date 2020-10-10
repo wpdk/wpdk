@@ -19,6 +19,20 @@
 #include <pthread.h>
 
 
+/*
+ *  Verify that the public structure definitions match the
+ *  underlying implementation. This avoids the need to include
+ *  windows.h in pthread.h.
+ */
+#define CHECK_SIZE(x,y) \
+	static_assert(sizeof(x)==sizeof(y), "Incorrect size for " #x)
+
+CHECK_SIZE(pthread_mutex_t, CRITICAL_SECTION);
+CHECK_SIZE(pthread_spinlock_t, CRITICAL_SECTION);
+CHECK_SIZE(pthread_barrier_t, SYNCHRONIZATION_BARRIER);
+CHECK_SIZE(pthread_cond_t, CONDITION_VARIABLE);
+
+
 int __real_pthread_mutexattr_init(pthread_mutexattr_t *attr)
 {
 	if (!attr) return EINVAL;
@@ -106,7 +120,7 @@ int __real_pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t 
 		return EINVAL;
 
 	// HACK - and spin count!
-	InitializeCriticalSection(&mutex->lock);
+	InitializeCriticalSection((CRITICAL_SECTION *)mutex);
 	return 0;
 }
 
@@ -118,20 +132,22 @@ int pthread_mutex_destroy(pthread_mutex_t *mutex)
 	// HACK - for now this needs to be a no-op to get unit tests running
 	// HACK revisit with extensive pthreads checking code
 
-	// DeleteCriticalSection(&mutex->lock);
+	// DeleteCriticalSection((CRITICAL_SECTION *)mutex);
 	return 0;
 }
 
 
 int pthread_mutex_lock(pthread_mutex_t *mutex)
 {
+	CRITICAL_SECTION *lock = (CRITICAL_SECTION *)mutex;
+
 	if (!mutex) return EINVAL;
 
 	// HACK - NASTY to get unit tests running
-	if (!mutex->lock.DebugInfo)
-		InitializeCriticalSection(&mutex->lock);
+	if (!lock->DebugInfo)
+		InitializeCriticalSection(lock);
 
-	EnterCriticalSection(&mutex->lock);
+	EnterCriticalSection(lock);
 	return 0;
 }
 
@@ -140,7 +156,7 @@ int pthread_mutex_trylock(pthread_mutex_t *mutex)
 {
 	if (!mutex) return EINVAL;
 
-	if (TryEnterCriticalSection(&mutex->lock) == 0)
+	if (TryEnterCriticalSection((CRITICAL_SECTION *)mutex) == 0)
 		return EBUSY;
 
 	return 0;
@@ -151,7 +167,7 @@ int pthread_mutex_unlock(pthread_mutex_t *mutex)
 {
 	if (!mutex) return EINVAL;
 
-	LeaveCriticalSection(&mutex->lock);
+	LeaveCriticalSection((CRITICAL_SECTION *)mutex);
 	return 0;
 }
 
@@ -172,7 +188,7 @@ int pthread_spin_init(pthread_spinlock_t *lock, int pshared)
 		return EINVAL;
 
 	// HACK - will eventually block
-	InitializeCriticalSectionAndSpinCount(&lock->lock, 32000);
+	InitializeCriticalSectionAndSpinCount((CRITICAL_SECTION *)lock, 32000);
 	return 0;
 }
 
@@ -182,7 +198,7 @@ int pthread_spin_destroy(pthread_spinlock_t *lock)
 	if (!lock) return EINVAL;
 
 	// HACK - leave this out for now to avoid reuse after destroy issues
-	// DeleteCriticalSection(&lock->lock);
+	// DeleteCriticalSection((CRITICAL_SECTION *)lock);
 	return 0;
 }
 
@@ -191,7 +207,7 @@ int pthread_spin_lock(pthread_spinlock_t *lock)
 {
 	if (!lock) return EINVAL;
 
-	EnterCriticalSection(&lock->lock);
+	EnterCriticalSection((CRITICAL_SECTION *)lock);
 	return 0;
 }
 
@@ -200,7 +216,7 @@ int pthread_spin_trylock(pthread_spinlock_t *lock)
 {
 	if (!lock) return EINVAL;
 
-	if (TryEnterCriticalSection(&lock->lock) == 0)
+	if (TryEnterCriticalSection((CRITICAL_SECTION *)lock) == 0)
 		return EBUSY;
 
 	return 0;
@@ -211,7 +227,7 @@ int pthread_spin_unlock(pthread_spinlock_t *lock)
 {
 	if (!lock) return EINVAL;
 
-	LeaveCriticalSection(&lock->lock);
+	LeaveCriticalSection((CRITICAL_SECTION *)lock);
 	return 0;
 }
 
@@ -258,7 +274,8 @@ int pthread_barrier_init(pthread_barrier_t *barrier,
 
 	if (!barrier) return EINVAL;
 
-	InitializeSynchronizationBarrier(&barrier->barrier, count, -1);
+	InitializeSynchronizationBarrier(
+		(SYNCHRONIZATION_BARRIER *)barrier, count, -1);
 	return 0;
 }
 
@@ -267,7 +284,7 @@ int pthread_barrier_destroy(pthread_barrier_t *barrier)
 {
 	if (!barrier) return EINVAL;
 
-	DeleteSynchronizationBarrier(&barrier->barrier);
+	DeleteSynchronizationBarrier((SYNCHRONIZATION_BARRIER *)barrier);
 	return 0;
 }
 
@@ -276,7 +293,8 @@ int pthread_barrier_wait(pthread_barrier_t *barrier)
 {
 	if (!barrier) return EINVAL;
 
-	return (EnterSynchronizationBarrier(&barrier->barrier,
+	return (EnterSynchronizationBarrier(
+			(SYNCHRONIZATION_BARRIER *)barrier,
 			SYNCHRONIZATION_BARRIER_FLAGS_BLOCK_ONLY) == TRUE) ?
 			PTHREAD_BARRIER_SERIAL_THREAD : 0;
 }
@@ -323,7 +341,7 @@ int pthread_cond_init(pthread_cond_t *cond, const pthread_condattr_t *attr)
 
 	if (!cond) return EINVAL;
 
-	InitializeConditionVariable(&cond->cond);
+	InitializeConditionVariable((CONDITION_VARIABLE *)cond);
 	return 0;
 }
 
@@ -337,21 +355,23 @@ int pthread_cond_destroy(pthread_cond_t *cond)
 
 int pthread_cond_signal(pthread_cond_t *cond)
 {
-	WakeConditionVariable(&cond->cond);
+	WakeConditionVariable((CONDITION_VARIABLE *)cond);
 	return 0;
 }
 
 
 int pthread_cond_broadcast(pthread_cond_t *cond)
 {
-	WakeAllConditionVariable(&cond->cond);
+	WakeAllConditionVariable((CONDITION_VARIABLE *)cond);
 	return 0;
 }
 
 
 int pthread_cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex)
 {
-	SleepConditionVariableCS(&cond->cond, &mutex->lock, INFINITE);
+	// HACK - check for null parameters
+	SleepConditionVariableCS((CONDITION_VARIABLE *)cond,
+			(CRITICAL_SECTION *)mutex, INFINITE);
 	return 0;
 }
 
