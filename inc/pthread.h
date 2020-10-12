@@ -35,7 +35,7 @@ typedef struct { intptr_t x[5]; } pthread_spinlock_t;
 typedef struct { void *x; long y[2]; void *z[3]; } pthread_mutex_t;
 
 #define PTHREAD_COND_INITIALIZER	{0}
-#define PTHREAD_MUTEX_INITIALIZER	{(void *)-1,-1}
+#define PTHREAD_MUTEX_INITIALIZER	{(void *)-1,{-1}}
 
 #define PTHREAD_MUTEX_NORMAL		0
 #define PTHREAD_MUTEX_ERRORCHECK	1
