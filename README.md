@@ -2,6 +2,8 @@
 
 The Windows Platform Development Kit (WPDK) enables applications based on the Storage Performance Development Kit ([SPDK](http://www.spdk.io)) to build and run as native Windows executables by providing header files and a lightweight library that implement required POSIX/Linux functionality.
 
+The project grew out of work being done by [MayaData](https://mayadata.io/) to build [Mayastor](https://github.com/openebs/mayastor), a high speed Container Attached Storage stack for [OpenEBS](https://openebs.io/).
+
 The scope of the project is limited to supporting the Storage Performance Development Kit. It is not intended to be a generic Linux emulation library like Cygwin. Functionality is mapped as closely as possible to existing Windows semantics with the minimum of emulation.
 
 <a id="design"></a>
@@ -86,4 +88,4 @@ In the initial stages of the project, please email the [maintainers](https://git
 ## Core Maintainers
 
 The core maintainers primary responsibility is to provide technical oversight for the WPDK Project. The current list of WPDK core maintainers includes:
-* Nick Connolly
+* [Nick Connolly](https://github.com/nconnolly1), [MayaData](https://mayadata.io/)
