@@ -114,7 +114,8 @@ wpdk_chmod(const char *filename, int pmode)
 }
 
 
-int wpdk_mkdir(const char *pathname, mode_t mode)
+int
+wpdk_mkdir(const char *pathname, mode_t mode)
 {
 	char buf[MAX_PATH];
 	const char *path;

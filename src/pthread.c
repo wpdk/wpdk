@@ -19,6 +19,10 @@
 #include <pthread.h>
 
 
+#define pthread_mutexattr_init __real_pthread_mutexattr_init
+#define pthread_mutex_init __real_pthread_mutex_init
+
+
 /*
  *  Verify that the public structure definitions match the
  *  underlying implementation. This avoids the need to include
@@ -33,7 +37,7 @@ CHECK_SIZE(pthread_barrier_t, SYNCHRONIZATION_BARRIER);
 CHECK_SIZE(pthread_cond_t, CONDITION_VARIABLE);
 
 
-int __real_pthread_mutexattr_init(pthread_mutexattr_t *attr)
+int pthread_mutexattr_init(pthread_mutexattr_t *attr)
 {
 	if (!attr) return EINVAL;
 
@@ -112,7 +116,7 @@ int pthread_mutexattr_setpshared(pthread_mutexattr_t *attr, int pshared)
 }
 
 
-int __real_pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *mutexattr)
+int pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *mutexattr)
 {
 	if (!mutex) return EINVAL;
 

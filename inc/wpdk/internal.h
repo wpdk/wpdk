@@ -26,7 +26,7 @@
 _WPDK_BEGIN_C_HEADER
 
 void _wpdk_set_invalid_handler();
-long _wpdk_invalid_handler_done;
+extern long _wpdk_invalid_handler_done;
 #define wpdk_set_invalid_handler() \
 	(_wpdk_invalid_handler_done || (_wpdk_set_invalid_handler(), 0))
 

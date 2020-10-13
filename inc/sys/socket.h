@@ -45,6 +45,11 @@
 
 _WPDK_BEGIN_C_HEADER
 
+#ifndef _WPDK_BUILD_LIB_
+#define wpdk_recvmsg __wrap_recvmsg
+#define wpdk_sendmsg __wrap_sendmsg
+#endif
+
 struct msghdr {
 	void *msg_name;
 	socklen_t msg_namelen;
@@ -72,11 +77,6 @@ struct msghdr {
 #define SCM_CREDENTIALS		2
 
 typedef unsigned short sa_family_t;
-
-#ifndef _WPDK_BUILD_LIB_
-#define wpdk_recvmsg __wrap_recvmsg
-#define wpdk_sendmsg __wrap_sendmsg
-#endif
 
 int wpdk_accept(int socket, struct sockaddr *address, socklen_t *address_len);
 int wpdk_bind(int socket, const struct sockaddr *address, socklen_t address_len);
