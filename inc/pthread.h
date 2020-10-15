@@ -24,11 +24,6 @@
 
 _WPDK_BEGIN_C_HEADER
 
-#ifndef _WPDK_BUILD_LIB_
-#define pthread_mutexattr_init __wrap_pthread_mutexattr_init
-#define pthread_mutex_init __wrap_pthread_mutex_init
-#endif
-
 /*
  *  Define structures which are equivalent to the underlying
  *  implementation, but which avoid the need to include windows.h.
@@ -131,8 +126,19 @@ int pthread_setcancelstate(int state, int *oldstate);
 int pthread_setcanceltype(int type, int *oldtype);
 void pthread_testcancel(void);
 
-int pthread_mutexattr_init(pthread_mutexattr_t *attr);
-int pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *mutexattr);
+int __wrap_pthread_mutexattr_init(pthread_mutexattr_t *attr);
+int __wrap_pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *mutexattr);
+
+#ifndef _WPDK_BUILD_LIB_
+static inline int pthread_mutexattr_init(pthread_mutexattr_t *attr) {
+	return __wrap_pthread_mutexattr_init(attr);
+}
+
+static inline int pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *mutexattr) {
+	return __wrap_pthread_mutex_init(mutex, mutexattr);
+}
+#endif
+
 int pthread_setaffinity_np(pthread_t thread, size_t cpusetsize, const cpuset_t *cpuset);
 int pthread_getaffinity_np(pthread_t thread, size_t cpusetsize, cpuset_t *cpuset);
 int pthread_equal(pthread_t t1, pthread_t t2);
