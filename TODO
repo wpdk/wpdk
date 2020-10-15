@@ -51,3 +51,7 @@ Review the use of restrict.
 
 Shared library - define list of exports
 Put wrap definitions into separate / static libary
+
+Implement wrap for msvc link with /alternatename
+https://devblogs.microsoft.com/oldnewthing/20200731-00/?p=104024
+https://www.thetopsites.net/article/54448190.shtml
