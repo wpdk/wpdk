@@ -16,6 +16,8 @@
 #ifndef _USUAL_GETOPT_H_
 #define _USUAL_GETOPT_H_
 
+#include <wpdk/header.h>
+
 #ifndef NEED_USUAL_GETOPT
 #if !defined(HAVE_GETOPT_H) || !defined(HAVE_GETOPT) || \
 	!defined(HAVE_GETOPT_LONG)
@@ -45,15 +47,15 @@
 
 
 /** argument to current option, or NULL if it has none */
-extern char *optarg;
+extern WPDK_IMPORT char *optarg;
 /** Current position in arg string.  Starts from 1.
  * Setting to 0 resets state.
  */
-extern int optind;
+extern WPDK_IMPORT int optind;
 /** whether getopt() should print error messages on problems.  Default: 1. */
-extern int opterr;
+extern WPDK_IMPORT int opterr;
 /** Option char which caused error */
-extern int optopt;
+extern WPDK_IMPORT int optopt;
 
 /** long option takes no argument */
 #define no_argument        0

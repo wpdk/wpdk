@@ -204,3 +204,10 @@ EXPORTS
 	__real_sendmsg
 	__real_unlink
 	__real_writev
+	__wrap_calloc
+	__wrap_pthread_mutexattr_init
+	__wrap_pthread_mutex_init
+	__wrap_recvmsg
+	__wrap_sendmsg
+	__wrap_unlink
+	__wrap_writev
