@@ -133,10 +133,10 @@ EXPORTS
 	wpdk_open
 	wpdk_opendir
 	wpdk_openlog
-	wpdk_optarg		DATA
-	wpdk_opterr		DATA
-	wpdk_optind		DATA
-	wpdk_optopt		DATA
+	wpdk_optarg
+	wpdk_opterr
+	wpdk_optind
+	wpdk_optopt
 	wpdk_poll
 	wpdk_posix_memalign
 	wpdk_rand
@@ -197,17 +197,24 @@ EXPORTS
 	wpdk_wait
 	wpdk_waitpid
 	wpdk_write
-	__real_calloc
-	__real_pthread_mutexattr_init
-	__real_pthread_mutex_init
-	__real_recvmsg
-	__real_sendmsg
-	__real_unlink
-	__real_writev
-	__wrap_calloc
-	__wrap_pthread_mutexattr_init
-	__wrap_pthread_mutex_init
-	__wrap_recvmsg
-	__wrap_sendmsg
-	__wrap_unlink
-	__wrap_writev
+	wpdk_calloc
+	wpdk_pthread_mutexattr_init
+	wpdk_pthread_mutex_init
+	wpdk_recvmsg
+	wpdk_sendmsg
+	wpdk_unlink
+	wpdk_writev
+	__real_calloc=wpdk_calloc
+	__real_pthread_mutexattr_init=wpdk_pthread_mutexattr_init
+	__real_pthread_mutex_init=wpdk_pthread_mutex_init
+	__real_recvmsg=wpdk_recvmsg
+	__real_sendmsg=wpdk_sendmsg
+	__real_unlink=wpdk_unlink
+	__real_writev=wpdk_writev
+	__wrap_calloc=wpdk_calloc
+	__wrap_pthread_mutexattr_init=wpdk_pthread_mutexattr_init
+	__wrap_pthread_mutex_init=wpdk_pthread_mutex_init
+	__wrap_recvmsg=wpdk_recvmsg
+	__wrap_sendmsg=wpdk_sendmsg
+	__wrap_unlink=wpdk_unlink
+	__wrap_writev=wpdk_writev

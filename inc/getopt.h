@@ -37,25 +37,25 @@
 #else /* NEED_USUAL_GETOPT */
 
 /* avoid name collision */
-#define optarg wpdk_optarg
-#define opterr wpdk_opterr
-#define optind wpdk_optind
-#define optopt wpdk_optopt
 #define getopt(a, b, c) wpdk_getopt(a, b, c)
 #define getopt_long(a, b, c, d, e) wpdk_getopt_long(a, b, c, d, e)
 #define getopt_long_only(a, b, c, d, e) wpdk_getopt_long_only(a, b, c, d, e)
 
 
 /** argument to current option, or NULL if it has none */
-extern WPDK_IMPORT char *optarg;
+char **wpdk_optarg(void);
+#define optarg (*wpdk_optarg())
 /** Current position in arg string.  Starts from 1.
  * Setting to 0 resets state.
  */
-extern WPDK_IMPORT int optind;
+int *wpdk_optind(void);
+#define optind (*wpdk_optind())
 /** whether getopt() should print error messages on problems.  Default: 1. */
-extern WPDK_IMPORT int opterr;
+int *wpdk_opterr(void);
+#define opterr (*wpdk_opterr())
 /** Option char which caused error */
-extern WPDK_IMPORT int optopt;
+int *wpdk_optopt(void);
+#define optopt (*wpdk_optopt())
 
 /** long option takes no argument */
 #define no_argument        0

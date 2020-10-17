@@ -45,9 +45,13 @@
 
 _WPDK_BEGIN_C_HEADER
 
-#ifndef _WPDK_BUILD_LIB_
+#if defined(_MSC_VER) && !defined(_WPDK_BUILD_LIB_)
 #define wpdk_recvmsg __wrap_recvmsg
 #define wpdk_sendmsg __wrap_sendmsg
+#pragma comment(linker, "/alternatename:__wrap_recvmsg=wpdk_recvmsg")
+#pragma comment(linker, "/alternatename:__real_recvmsg=wpdk_recvmsg")
+#pragma comment(linker, "/alternatename:__wrap_sendmsg=wpdk_sendmsg")
+#pragma comment(linker, "/alternatename:__real_sendmsg=wpdk_sendmsg")
 #endif
 
 struct msghdr {

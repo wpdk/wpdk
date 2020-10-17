@@ -21,8 +21,10 @@
 
 _WPDK_BEGIN_C_HEADER
 
-#ifndef _WPDK_BUILD_LIB_
+#if defined(_MSC_VER) && !defined(_WPDK_BUILD_LIB_)
 #define wpdk_unlink __wrap_unlink
+#pragma comment(linker, "/alternatename:__wrap_unlink=wpdk_unlink")
+#pragma comment(linker, "/alternatename:__real_unlink=wpdk_unlink")
 #endif
 
 #define F_OK	0

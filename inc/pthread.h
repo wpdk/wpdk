@@ -126,17 +126,28 @@ int pthread_setcancelstate(int state, int *oldstate);
 int pthread_setcanceltype(int type, int *oldtype);
 void pthread_testcancel(void);
 
-int __wrap_pthread_mutexattr_init(pthread_mutexattr_t *attr);
-int __wrap_pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *mutexattr);
+#if defined(_MSC_VER) && !defined(_WPDK_BUILD_LIB_)
+#define wpdk_pthread_mutexattr_init __wrap_pthread_mutexattr_init
+#define wpdk_pthread_mutex_init __wrap_pthread_mutex_init
 
-#ifndef _WPDK_BUILD_LIB_
+int wpdk_pthread_mutexattr_init(pthread_mutexattr_t *attr);
+int wpdk_pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *mutexattr);
+
+#pragma comment(linker, "/alternatename:__wrap_pthread_mutex_init=wpdk_pthread_mutex_init")
+#pragma comment(linker, "/alternatename:__real_pthread_mutex_init=wpdk_pthread_mutex_init")
+#pragma comment(linker, "/alternatename:__wrap_pthread_mutexattr_init=wpdk_pthread_mutexattr_init")
+#pragma comment(linker, "/alternatename:__real_pthread_mutexattr_init=wpdk_pthread_mutexattr_init")
+
 static inline int pthread_mutexattr_init(pthread_mutexattr_t *attr) {
-	return __wrap_pthread_mutexattr_init(attr);
+	return wpdk_pthread_mutexattr_init(attr);
 }
 
 static inline int pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *mutexattr) {
-	return __wrap_pthread_mutex_init(mutex, mutexattr);
+	return wpdk_pthread_mutex_init(mutex, mutexattr);
 }
+#else
+int pthread_mutexattr_init(pthread_mutexattr_t *attr);
+int pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *mutexattr);
 #endif
 
 int pthread_setaffinity_np(pthread_t thread, size_t cpusetsize, const cpuset_t *cpuset);

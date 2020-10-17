@@ -43,7 +43,6 @@ sources = [
 	'unistd.c',
 	'uuid.c',
 	'wait.c',
-	'wrap.c',
 ]
 
 # build static lib

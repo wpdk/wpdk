@@ -19,9 +19,6 @@
 #include <io.h>
 
 
-#define wpdk_calloc __real_calloc
-
-
 int
 wpdk_mkstemp(char *template)
 {

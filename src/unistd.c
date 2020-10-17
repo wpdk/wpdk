@@ -21,9 +21,6 @@
 #include <io.h>
 
 
-#define wpdk_unlink __real_unlink
-
-
 pid_t
 wpdk_getpid()
 {

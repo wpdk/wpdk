@@ -27,8 +27,10 @@ _WPDK_INCLUDE_NEXT_
 
 _WPDK_BEGIN_C_HEADER
 
-#ifndef _WPDK_BUILD_LIB_
+#if defined(_MSC_VER) && !defined(_WPDK_BUILD_LIB_)
 #define wpdk_calloc __wrap_calloc
+#pragma comment(linker, "/alternatename:__wrap_calloc=wpdk_calloc")
+#pragma comment(linker, "/alternatename:__real_calloc=wpdk_calloc")
 #endif
 
 int wpdk_mkstemp(char *path);

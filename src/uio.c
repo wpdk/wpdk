@@ -18,9 +18,6 @@
 #include <io.h>
 
 
-#define wpdk_writev __real_writev
-
-
 static int
 wpdk_uio_check_iovec(const struct iovec *iov, int iovcnt)
 {

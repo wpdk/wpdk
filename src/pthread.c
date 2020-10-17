@@ -19,8 +19,10 @@
 #include <pthread.h>
 
 
-#define pthread_mutexattr_init __real_pthread_mutexattr_init
-#define pthread_mutex_init __real_pthread_mutex_init
+#if defined(_MSC_VER)
+#define pthread_mutexattr_init wpdk_pthread_mutexattr_init
+#define pthread_mutex_init wpdk_pthread_mutex_init
+#endif
 
 
 /*

@@ -21,10 +21,20 @@
 #include <string.h>
 #include <stdlib.h>
 
-char *optarg;		/* argument associated with option */
-int	opterr = 1;		/* if error message should be printed */
-int	optind = 1;		/* index into parent argv vector */
-int	optopt = '?';		/* character checked for validity */
+#undef optarg
+#undef opterr
+#undef optind
+#undef optopt
+
+static char *optarg;		/* argument associated with option */
+static int	opterr = 1;		/* if error message should be printed */
+static int	optind = 1;		/* index into parent argv vector */
+static int	optopt = '?';	/* character checked for validity */
+
+char **wpdk_optarg() { return &optarg; }
+int *wpdk_optind() { return &optind; }
+int *wpdk_opterr() { return &opterr; }
+int *wpdk_optopt() { return &optopt; }
 
 static void pass(const char *a) {(void) a; }
 #define warnx(a, ...) pass(a)

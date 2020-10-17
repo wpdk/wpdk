@@ -18,9 +18,6 @@
 #include <fcntl.h>
 
 
-#define wpdk_sendmsg __real_sendmsg
-#define wpdk_recvmsg __real_recvmsg
-
 long wpdk_socket_ready;
 
 struct socket_fd {

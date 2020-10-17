@@ -41,12 +41,6 @@
 #endif
 #endif
 
-#if defined(_MSC_VER) && !defined(_WPDK_BUILD_LIB_)
-#define WPDK_IMPORT __declspec(dllimport)
-#else
-#define WPDK_IMPORT
-#endif
-
 #ifdef __cplusplus
 #define _WPDK_BEGIN_C_HEADER	extern "C" {
 #define _WPDK_END_C_HEADER		}
