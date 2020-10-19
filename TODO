@@ -1,7 +1,6 @@
 // HACK - to do list
 
 Sanity checks for pthreads to make sure init/destroy calls are being used correctly
-Build a shared library (quicker debugging turnaround)
 
 SPDK
 enable static asserts
@@ -13,6 +12,7 @@ Fix env inclusion for unit tests
 Check if initialisation segment works with msvc as well as clang
 
 Use #define __wrap_ for names to map to wpdk_ (or change wrap macro definition?)
+Auto-generate wrap.h header files
 
 Watch out for dllimport declarations - they override the static inline definitions and prevent the wrapper being private.
 
@@ -20,15 +20,13 @@ SetThreadDescription - https://docs.microsoft.com/en-us/windows/win32/api/proces
 
 Use SPDK_CONFIG_WPDK for some definitions rather than _WIN32
 
-Add dllimport/export to header files
-
 Closing one end of AF_UNIX should generate SIGPIPE signal.
 
 Common array for fd state and flags in fd.c
 
 Map paths to real temp dir
 
-Document - trap all posix calls into the library so that one heap / list of files etc.
+Document - trap all posix calls into shared library so that one heap / list of files etc.
 
 Check static for all file local functions.
 
@@ -48,10 +46,3 @@ libiscsi includes md5 code
 Add log message handling - also add way for unit tests to tell if called.
 
 Review the use of restrict.
-
-Shared library - define list of exports
-Put wrap definitions into separate / static libary
-
-Implement wrap for msvc link with /alternatename
-https://devblogs.microsoft.com/oldnewthing/20200731-00/?p=104024
-https://www.thetopsites.net/article/54448190.shtml
