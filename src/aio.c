@@ -62,7 +62,8 @@ struct io_header {
 };
 
 
-int io_setup(int maxevents, io_context_t *ctxp)
+int
+wpdk_io_setup(int maxevents, io_context_t *ctxp)
 {
 	struct io_header *hdr;
 
@@ -89,7 +90,8 @@ int io_setup(int maxevents, io_context_t *ctxp)
 }
 
 
-int io_destroy(io_context_t ctx_id)
+int
+wpdk_io_destroy(io_context_t ctx_id)
 {
 	struct io_header *hdr = (struct io_header *)ctx_id;
 
@@ -422,7 +424,8 @@ static int wpdk_aio_validate_iovec (struct iovec *iov, size_t iovcnt)
 
 
 // HACK - io_submit is synchronous at the moment
-int io_submit(io_context_t ctx_id, long nr, struct iocb *ios[])
+int
+wpdk_io_submit(io_context_t ctx_id, long nr, struct iocb *ios[])
 {
 	struct iovec *iov;
 	struct iocb *iocb;
@@ -544,7 +547,8 @@ int io_submit(io_context_t ctx_id, long nr, struct iocb *ios[])
 }
 
 
-int io_cancel(io_context_t ctx_id, struct iocb *iocb, struct io_event *evt)
+int
+wpdk_io_cancel(io_context_t ctx_id, struct iocb *iocb, struct io_event *evt)
 {
 	// HACK - not implemented
 	WPDK_UNIMPLEMENTED();
@@ -555,7 +559,8 @@ int io_cancel(io_context_t ctx_id, struct iocb *iocb, struct io_event *evt)
 }
 
 
-int io_getevents(io_context_t ctx_id, long min_nr, long nr, struct io_event *events, struct timespec *timeout)
+int
+wpdk_io_getevents(io_context_t ctx_id, long min_nr, long nr, struct io_event *events, struct timespec *timeout)
 {
 	struct io_header *hdr = (struct io_header *)ctx_id;
 	struct io_event *ctx_events;

@@ -17,7 +17,8 @@
 
 // HACK - MD5_CTX not implemented
 
-int MD5_Init(MD5_CTX *c)
+int
+wpdk_MD5_Init(MD5_CTX *c)
 {
 	// HACK - implementation
 	WPDK_UNIMPLEMENTED();
@@ -27,7 +28,8 @@ int MD5_Init(MD5_CTX *c)
 }
 
 
-int MD5_Update(MD5_CTX *c, const void *data, size_t len)
+int
+wpdk_MD5_Update(MD5_CTX *c, const void *data, size_t len)
 {
 	// HACK - implementation
 	WPDK_UNIMPLEMENTED();
@@ -39,7 +41,8 @@ int MD5_Update(MD5_CTX *c, const void *data, size_t len)
 }
 
 
-int MD5_Final(unsigned char *md, MD5_CTX *c)
+int
+wpdk_MD5_Final(unsigned char *md, MD5_CTX *c)
 {
 	// HACK - implementation
 	WPDK_UNIMPLEMENTED();
@@ -50,7 +53,8 @@ int MD5_Final(unsigned char *md, MD5_CTX *c)
 }
 
 
-unsigned char *MD5(const unsigned char *d, size_t n, unsigned char *md)
+unsigned char *
+wpdk_MD5(const unsigned char *d, size_t n, unsigned char *md)
 {
 	// HACK - implementation
 	WPDK_UNIMPLEMENTED();
@@ -62,7 +66,8 @@ unsigned char *MD5(const unsigned char *d, size_t n, unsigned char *md)
 }
 
 
-void MD5_Transform(MD5_CTX *c, const unsigned char *b)
+void
+wpdk_MD5_Transform(MD5_CTX *c, const unsigned char *b)
 {
 	// HACK - implementation
 	WPDK_UNIMPLEMENTED();

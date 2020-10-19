@@ -1,23 +1,4 @@
 EXPORTS
-	io_cancel
-	io_destroy
-	io_getevents
-	io_setup
-	io_submit
-	MD5
-	MD5_Final
-	MD5_Init
-	MD5_Transform	
-	MD5_Update
-	uuid_clear
-	uuid_compare
-	uuid_copy
-	uuid_generate
-	uuid_is_null
-	uuid_parse
-	uuid_unparse
-	uuid_unparse_lower
-	uuid_unparse_upper
 	wpdk_accept
 	wpdk_access
 	wpdk_bind
@@ -69,11 +50,21 @@ EXPORTS
 	wpdk_inet_ntop
 	wpdk_inet_pton
 	wpdk_ioctl
+	wpdk_io_cancel
+	wpdk_io_destroy
+	wpdk_io_getevents
+	wpdk_io_setup
+	wpdk_io_submit
 	wpdk_isatty
 	wpdk_kill
 	wpdk_listen
 	wpdk_lockf
 	wpdk_lseek
+	wpdk_MD5
+	wpdk_MD5_Final
+	wpdk_MD5_Init
+	wpdk_MD5_Transform	
+	wpdk_MD5_Update
 	wpdk_mkdir
 	wpdk_mknod
 	wpdk_mkstemp
@@ -199,6 +190,15 @@ EXPORTS
 	wpdk_ttyname
 	wpdk_unlink
 	wpdk_usleep
+	wpdk_uuid_clear
+	wpdk_uuid_compare
+	wpdk_uuid_copy
+	wpdk_uuid_generate
+	wpdk_uuid_is_null
+	wpdk_uuid_parse
+	wpdk_uuid_unparse
+	wpdk_uuid_unparse_lower
+	wpdk_uuid_unparse_upper	
 	wpdk_vdprintf
 	wpdk_wait
 	wpdk_waitpid

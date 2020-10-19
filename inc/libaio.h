@@ -73,12 +73,6 @@ typedef struct io_context {
 	uint32_t header_length;	
 } *io_context_t;
 
-int io_setup(int maxevents, io_context_t *ctxp);
-int io_destroy(io_context_t ctx_id);
-int io_submit(io_context_t ctx_id, long nr, struct iocb *ios[]);
-int io_getevents(io_context_t ctx_id, long min_nr, long nr, struct io_event *events, struct timespec *timeout);
-int io_cancel(io_context_t ctx_id, struct iocb *iocb, struct io_event *evt);
-
 static inline void io_prep_pread(struct iocb *iocb, int fd, void *buf, size_t count, off_t offset) {
 	memset(iocb, 0, sizeof(struct iocb));
 	iocb->aio_lio_opcode = IO_CMD_PREAD;
@@ -114,6 +108,20 @@ static inline void io_prep_pwritev(struct iocb *iocb, int fd, struct iovec *iov,
 	iocb->u.c.nbytes = iovcnt;
 	iocb->u.c.offset = offset;
 }
+
+int wpdk_io_setup(int maxevents, io_context_t *ctxp);
+int wpdk_io_destroy(io_context_t ctx_id);
+int wpdk_io_submit(io_context_t ctx_id, long nr, struct iocb *ios[]);
+int wpdk_io_getevents(io_context_t ctx_id, long min_nr, long nr, struct io_event *events, struct timespec *timeout);
+int wpdk_io_cancel(io_context_t ctx_id, struct iocb *iocb, struct io_event *evt);
+
+#ifndef _WPDK_LIB_BUILD_
+#define io_setup(maxevents,ctxp) wpdk_io_setup(maxevents,ctxp)
+#define io_destroy(ctx) wpdk_io_destroy(ctx)
+#define io_submit(ctx,nr,ios) wpdk_io_submit(ctx,nr,ios)
+#define io_getevents(ctx,min_nr,nr,events,timeout) wpdk_io_getevents(ctx,min_nr,nr,events,timeout)
+#define io_cancel(ctx,iocb,evt) wpdk_io_cancel(ctx,iocb,evt)
+#endif
 
 _WPDK_END_C_HEADER
 

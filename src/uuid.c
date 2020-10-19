@@ -111,21 +111,21 @@ bytes_to_uuid(const uuid_t src, UUID *dest)
 
 
 void
-uuid_clear(uuid_t uu)
+wpdk_uuid_clear(uuid_t uu)
 {
 	memset(uu, 0, sizeof(uuid_t));
 }
 
 
 void
-uuid_copy(uuid_t dst, const uuid_t src)
+wpdk_uuid_copy(uuid_t dst, const uuid_t src)
 {
 	memcpy(dst, src, sizeof(uuid_t));
 }
 
 
 int
-uuid_is_null(const uuid_t uu)
+wpdk_uuid_is_null(const uuid_t uu)
 {
 	size_t i;
 
@@ -137,7 +137,7 @@ uuid_is_null(const uuid_t uu)
 
 
 void
-uuid_generate(uuid_t out)
+wpdk_uuid_generate(uuid_t out)
 {
 	RPC_STATUS rc;
 	UUID id;
@@ -158,7 +158,7 @@ uuid_generate(uuid_t out)
 
 
 int
-uuid_parse(const char *in, uuid_t uu)
+wpdk_uuid_parse(const char *in, uuid_t uu)
 {
 	UUID id;
 
@@ -172,7 +172,7 @@ uuid_parse(const char *in, uuid_t uu)
 
 
 int
-uuid_compare(const uuid_t uu1, const uuid_t uu2)
+wpdk_uuid_compare(const uuid_t uu1, const uuid_t uu2)
 {
 	UUID id1, id2;
 
@@ -192,16 +192,16 @@ uuid_compare(const uuid_t uu1, const uuid_t uu2)
 
 
 void
-uuid_unparse(const uuid_t uu, char *out)
+wpdk_uuid_unparse(const uuid_t uu, char *out)
 {
-	uuid_unparse_upper(uu, out);
+	wpdk_uuid_unparse_upper(uu, out);
 }
 
 
 #define XXXX "%02X%02X"
 
 void
-uuid_unparse_upper(const uuid_t uu, char *out)
+wpdk_uuid_unparse_upper(const uuid_t uu, char *out)
 {
 	UUID u;
 	bytes_to_uuid(uu, &u);
@@ -215,7 +215,7 @@ uuid_unparse_upper(const uuid_t uu, char *out)
 #define xxxx "%02x%02x"
 
 void
-uuid_unparse_lower(const uuid_t uu, char *out)
+wpdk_uuid_unparse_lower(const uuid_t uu, char *out)
 {
 	UUID u;
 	bytes_to_uuid(uu, &u);

@@ -24,10 +24,17 @@ _WPDK_BEGIN_C_HEADER
 
 typedef struct MD5_CTX_s { int x; } MD5_CTX;
 
-int MD5_Init(MD5_CTX *c);
-int MD5_Update(MD5_CTX *c, const void *data, size_t len);
-int MD5_Final(unsigned char *md, MD5_CTX *c);
-void MD5_Transform(MD5_CTX *c, const unsigned char *b);
+int wpdk_MD5_Init(MD5_CTX *c);
+int wpdk_MD5_Update(MD5_CTX *c, const void *data, size_t len);
+int wpdk_MD5_Final(unsigned char *md, MD5_CTX *c);
+void wpdk_MD5_Transform(MD5_CTX *c, const unsigned char *b);
+
+#ifndef _WDPK_BUILD_LIB_
+#define MD5_Init(c) wpdk_MD5_Init(c)
+#define MD5_Update(c,data,len) wpdk_MD5_Update(c,data,len)
+#define MD5_Final(md,c) wpdk_MD5_Final(md,c)
+#define MD5_Transform(c,b) wpdk_MD5_Transform(c,b)
+#endif
 
 _WPDK_END_C_HEADER
 
