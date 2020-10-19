@@ -19,12 +19,6 @@
 #include <pthread.h>
 
 
-#if defined(_MSC_VER)
-#define pthread_mutexattr_init wpdk_pthread_mutexattr_init
-#define pthread_mutex_init wpdk_pthread_mutex_init
-#endif
-
-
 /*
  *  Verify that the public structure definitions match the
  *  underlying implementation. This avoids the need to include
@@ -39,7 +33,8 @@ CHECK_SIZE(pthread_barrier_t, SYNCHRONIZATION_BARRIER);
 CHECK_SIZE(pthread_cond_t, CONDITION_VARIABLE);
 
 
-int pthread_mutexattr_init(pthread_mutexattr_t *attr)
+int
+wpdk_pthread_mutexattr_init(pthread_mutexattr_t *attr)
 {
 	if (!attr) return EINVAL;
 
@@ -50,7 +45,8 @@ int pthread_mutexattr_init(pthread_mutexattr_t *attr)
 }
 
 
-int pthread_mutexattr_destroy(pthread_mutexattr_t *attr)
+int
+wpdk_pthread_mutexattr_destroy(pthread_mutexattr_t *attr)
 {
 	if (!attr) return EINVAL;
 
@@ -58,7 +54,8 @@ int pthread_mutexattr_destroy(pthread_mutexattr_t *attr)
 }
 
 
-int pthread_mutexattr_gettype(const pthread_mutexattr_t *attr, int *type)
+int
+wpdk_pthread_mutexattr_gettype(const pthread_mutexattr_t *attr, int *type)
 {
 	if (!attr || !type)
 		return EINVAL;
@@ -68,7 +65,8 @@ int pthread_mutexattr_gettype(const pthread_mutexattr_t *attr, int *type)
 }
 
 
-int pthread_mutexattr_settype(pthread_mutexattr_t *attr, int type)
+int
+wpdk_pthread_mutexattr_settype(pthread_mutexattr_t *attr, int type)
 {
 	if (!attr || type < PTHREAD_MUTEX_NORMAL || type > PTHREAD_MUTEX_RECURSIVE)
 		return EINVAL;
@@ -78,7 +76,8 @@ int pthread_mutexattr_settype(pthread_mutexattr_t *attr, int type)
 }
 
 
-int pthread_mutexattr_getrobust(const pthread_mutexattr_t *attr, int *robust)
+int
+wpdk_pthread_mutexattr_getrobust(const pthread_mutexattr_t *attr, int *robust)
 {
 	if (!attr || !robust)
 		return EINVAL;
@@ -88,7 +87,8 @@ int pthread_mutexattr_getrobust(const pthread_mutexattr_t *attr, int *robust)
 }
 
 
-int pthread_mutexattr_setrobust(pthread_mutexattr_t *attr, int robust)
+int
+wpdk_pthread_mutexattr_setrobust(pthread_mutexattr_t *attr, int robust)
 {
 	if (!attr || robust < PTHREAD_MUTEX_STALLED || robust > PTHREAD_MUTEX_ROBUST)
 		return EINVAL;
@@ -98,7 +98,8 @@ int pthread_mutexattr_setrobust(pthread_mutexattr_t *attr, int robust)
 }
 
 
-int pthread_mutexattr_getpshared(const pthread_mutexattr_t *attr, int *pshared)
+int
+wpdk_pthread_mutexattr_getpshared(const pthread_mutexattr_t *attr, int *pshared)
 {
 	if (!attr || !pshared)
 		return EINVAL;
@@ -108,7 +109,8 @@ int pthread_mutexattr_getpshared(const pthread_mutexattr_t *attr, int *pshared)
 }
 
 
-int pthread_mutexattr_setpshared(pthread_mutexattr_t *attr, int pshared)
+int
+wpdk_pthread_mutexattr_setpshared(pthread_mutexattr_t *attr, int pshared)
 {
 	if (!attr || pshared < PTHREAD_PROCESS_PRIVATE || pshared > PTHREAD_PROCESS_SHARED)
 		return EINVAL;
@@ -118,7 +120,8 @@ int pthread_mutexattr_setpshared(pthread_mutexattr_t *attr, int pshared)
 }
 
 
-int pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *mutexattr)
+int
+wpdk_pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *mutexattr)
 {
 	if (!mutex) return EINVAL;
 
@@ -131,7 +134,8 @@ int pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *mutexa
 }
 
 
-int pthread_mutex_destroy(pthread_mutex_t *mutex)
+int
+wpdk_pthread_mutex_destroy(pthread_mutex_t *mutex)
 {
 	if (!mutex) return EINVAL;
 
@@ -143,7 +147,8 @@ int pthread_mutex_destroy(pthread_mutex_t *mutex)
 }
 
 
-int pthread_mutex_lock(pthread_mutex_t *mutex)
+int
+wpdk_pthread_mutex_lock(pthread_mutex_t *mutex)
 {
 	CRITICAL_SECTION *lock = (CRITICAL_SECTION *)mutex;
 
@@ -158,7 +163,8 @@ int pthread_mutex_lock(pthread_mutex_t *mutex)
 }
 
 
-int pthread_mutex_trylock(pthread_mutex_t *mutex)
+int
+wpdk_pthread_mutex_trylock(pthread_mutex_t *mutex)
 {
 	if (!mutex) return EINVAL;
 
@@ -169,7 +175,8 @@ int pthread_mutex_trylock(pthread_mutex_t *mutex)
 }
 
 
-int pthread_mutex_unlock(pthread_mutex_t *mutex)
+int
+wpdk_pthread_mutex_unlock(pthread_mutex_t *mutex)
 {
 	if (!mutex) return EINVAL;
 
@@ -178,7 +185,8 @@ int pthread_mutex_unlock(pthread_mutex_t *mutex)
 }
 
 
-int pthread_mutex_consistent(pthread_mutex_t *mutex)
+int
+wpdk_pthread_mutex_consistent(pthread_mutex_t *mutex)
 {
 	//HACK - not implemented
 	WPDK_UNIMPLEMENTED();
@@ -188,7 +196,8 @@ int pthread_mutex_consistent(pthread_mutex_t *mutex)
 }
 
 
-int pthread_spin_init(pthread_spinlock_t *lock, int pshared)
+int
+wpdk_pthread_spin_init(pthread_spinlock_t *lock, int pshared)
 {
 	if (!lock || pshared < PTHREAD_PROCESS_PRIVATE || pshared > PTHREAD_PROCESS_SHARED)
 		return EINVAL;
@@ -199,7 +208,8 @@ int pthread_spin_init(pthread_spinlock_t *lock, int pshared)
 }
 
 
-int pthread_spin_destroy(pthread_spinlock_t *lock)
+int
+wpdk_pthread_spin_destroy(pthread_spinlock_t *lock)
 {
 	if (!lock) return EINVAL;
 
@@ -209,7 +219,8 @@ int pthread_spin_destroy(pthread_spinlock_t *lock)
 }
 
 
-int pthread_spin_lock(pthread_spinlock_t *lock)
+int
+wpdk_pthread_spin_lock(pthread_spinlock_t *lock)
 {
 	if (!lock) return EINVAL;
 
@@ -218,7 +229,8 @@ int pthread_spin_lock(pthread_spinlock_t *lock)
 }
 
 
-int pthread_spin_trylock(pthread_spinlock_t *lock)
+int
+wpdk_pthread_spin_trylock(pthread_spinlock_t *lock)
 {
 	if (!lock) return EINVAL;
 
@@ -229,7 +241,8 @@ int pthread_spin_trylock(pthread_spinlock_t *lock)
 }
 
 
-int pthread_spin_unlock(pthread_spinlock_t *lock)
+int
+wpdk_pthread_spin_unlock(pthread_spinlock_t *lock)
 {
 	if (!lock) return EINVAL;
 
@@ -238,7 +251,8 @@ int pthread_spin_unlock(pthread_spinlock_t *lock)
 }
 
 
-int pthread_barrierattr_init(pthread_barrierattr_t *attr)
+int
+wpdk_pthread_barrierattr_init(pthread_barrierattr_t *attr)
 {
 	if (!attr) return EINVAL;
 
@@ -247,14 +261,16 @@ int pthread_barrierattr_init(pthread_barrierattr_t *attr)
 }
 
 
-int pthread_barrierattr_destroy(pthread_barrierattr_t *attr)
+int
+wpdk_pthread_barrierattr_destroy(pthread_barrierattr_t *attr)
 {
 	if (!attr) return EINVAL;
 	return 0;
 }
 
 
-int pthread_barrierattr_getpshared(const pthread_barrierattr_t *attr, int *pshared)
+int
+wpdk_pthread_barrierattr_getpshared(const pthread_barrierattr_t *attr, int *pshared)
 {
 	if (!attr || !pshared)
 		return EINVAL;
@@ -263,7 +279,8 @@ int pthread_barrierattr_getpshared(const pthread_barrierattr_t *attr, int *pshar
 }
 
 
-int pthread_barrierattr_setpshared(pthread_barrierattr_t *attr, int pshared)
+int
+wpdk_pthread_barrierattr_setpshared(pthread_barrierattr_t *attr, int pshared)
 {
 	if (!attr || pshared < PTHREAD_PROCESS_PRIVATE || pshared > PTHREAD_PROCESS_SHARED)
 		return EINVAL;
@@ -273,7 +290,8 @@ int pthread_barrierattr_setpshared(pthread_barrierattr_t *attr, int pshared)
 }
 
 
-int pthread_barrier_init(pthread_barrier_t *barrier,
+int
+wpdk_pthread_barrier_init(pthread_barrier_t *barrier,
 		const pthread_barrierattr_t *attr, unsigned count)
 {
 	UNREFERENCED_PARAMETER(attr);
@@ -286,7 +304,8 @@ int pthread_barrier_init(pthread_barrier_t *barrier,
 }
 
 
-int pthread_barrier_destroy(pthread_barrier_t *barrier)
+int
+wpdk_pthread_barrier_destroy(pthread_barrier_t *barrier)
 {
 	if (!barrier) return EINVAL;
 
@@ -295,7 +314,8 @@ int pthread_barrier_destroy(pthread_barrier_t *barrier)
 }
 
 
-int pthread_barrier_wait(pthread_barrier_t *barrier)
+int
+wpdk_pthread_barrier_wait(pthread_barrier_t *barrier)
 {
 	if (!barrier) return EINVAL;
 
@@ -306,7 +326,8 @@ int pthread_barrier_wait(pthread_barrier_t *barrier)
 }
 
 
-int pthread_condattr_init(pthread_condattr_t *attr)
+int
+wpdk_pthread_condattr_init(pthread_condattr_t *attr)
 {
 	if (!attr) return EINVAL;
 
@@ -315,14 +336,16 @@ int pthread_condattr_init(pthread_condattr_t *attr)
 }
 
 
-int pthread_condattr_destroy(pthread_condattr_t *attr)
+int
+wpdk_pthread_condattr_destroy(pthread_condattr_t *attr)
 {
 	if (!attr) return EINVAL;
 	return 0;
 }
 
 
-int pthread_condattr_getpshared(const pthread_condattr_t *attr, int *pshared)
+int
+wpdk_pthread_condattr_getpshared(const pthread_condattr_t *attr, int *pshared)
 {
 	if (!attr || !pshared)
 		return EINVAL;
@@ -331,7 +354,8 @@ int pthread_condattr_getpshared(const pthread_condattr_t *attr, int *pshared)
 }
 
 
-int pthread_condattr_setpshared(pthread_condattr_t *attr, int pshared)
+int
+wpdk_pthread_condattr_setpshared(pthread_condattr_t *attr, int pshared)
 {
 	if (!attr || pshared < PTHREAD_PROCESS_PRIVATE || pshared > PTHREAD_PROCESS_SHARED)
 		return EINVAL;
@@ -341,7 +365,8 @@ int pthread_condattr_setpshared(pthread_condattr_t *attr, int pshared)
 }
 
 
-int pthread_cond_init(pthread_cond_t *cond, const pthread_condattr_t *attr)
+int
+wpdk_pthread_cond_init(pthread_cond_t *cond, const pthread_condattr_t *attr)
 {
 	UNREFERENCED_PARAMETER(attr);
 
@@ -352,28 +377,32 @@ int pthread_cond_init(pthread_cond_t *cond, const pthread_condattr_t *attr)
 }
 
 
-int pthread_cond_destroy(pthread_cond_t *cond)
+int
+wpdk_pthread_cond_destroy(pthread_cond_t *cond)
 {
 	UNREFERENCED_PARAMETER(cond);
 	return 0;
 }
 
 
-int pthread_cond_signal(pthread_cond_t *cond)
+int
+wpdk_pthread_cond_signal(pthread_cond_t *cond)
 {
 	WakeConditionVariable((CONDITION_VARIABLE *)cond);
 	return 0;
 }
 
 
-int pthread_cond_broadcast(pthread_cond_t *cond)
+int
+wpdk_pthread_cond_broadcast(pthread_cond_t *cond)
 {
 	WakeAllConditionVariable((CONDITION_VARIABLE *)cond);
 	return 0;
 }
 
 
-int pthread_cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex)
+int
+wpdk_pthread_cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex)
 {
 	// HACK - check for null parameters
 	SleepConditionVariableCS((CONDITION_VARIABLE *)cond,
@@ -382,37 +411,42 @@ int pthread_cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex)
 }
 
 
-int pthread_cond_timedwait(pthread_cond_t *cond, pthread_mutex_t *mutex, const struct timespec *abstime)
+int
+wpdk_pthread_cond_timedwait(pthread_cond_t *cond, pthread_mutex_t *mutex, const struct timespec *abstime)
 {
 	// HACK - implementation
 	UNREFERENCED_PARAMETER(abstime);
 	
-	return pthread_cond_wait(cond, mutex);
+	return wpdk_pthread_cond_wait(cond, mutex);
 }
 
 
-int pthread_attr_init(pthread_attr_t *attr)
+int
+wpdk_pthread_attr_init(pthread_attr_t *attr)
 {
 	if (!attr) return EINVAL;
 	return 0;
 }
 
 
-int pthread_attr_destroy(pthread_attr_t *attr)
+int
+wpdk_pthread_attr_destroy(pthread_attr_t *attr)
 {
 	if (!attr) return EINVAL;
 	return 0;
 }
 
 
-pthread_t pthread_self()
+pthread_t
+wpdk_pthread_self()
 {
 	// HACK - pthread_self() is only used to get self id to change name
 	return GetCurrentThread();
 }
 
 
-int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_routine)(void *), void *arg)
+int
+wpdk_pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_routine)(void *), void *arg)
 {
 	HANDLE hThread;
 
@@ -443,7 +477,8 @@ int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_
 }
 
 
-int pthread_join(pthread_t thread, void **value_ptr)
+int
+wpdk_pthread_join(pthread_t thread, void **value_ptr)
 {
 	DWORD rc, code;
 
@@ -460,7 +495,8 @@ int pthread_join(pthread_t thread, void **value_ptr)
 }
 
 
-int pthread_detach(pthread_t thread)
+int
+wpdk_pthread_detach(pthread_t thread)
 {
 	// HACK - unimplemented
 	CloseHandle(thread);
@@ -468,7 +504,8 @@ int pthread_detach(pthread_t thread)
 }
 
 
-int pthread_cancel(pthread_t thread)
+int
+wpdk_pthread_cancel(pthread_t thread)
 {
 	// HACK - unimplemented
 	UNREFERENCED_PARAMETER(thread);
@@ -477,7 +514,8 @@ int pthread_cancel(pthread_t thread)
 }
 
 
-void pthread_exit(void *value_ptr)
+void
+wpdk_pthread_exit(void *value_ptr)
 {
 	// HACK - pthread_exit unimplemented
 	// HACK - size of pthread_exit return code
@@ -485,7 +523,8 @@ void pthread_exit(void *value_ptr)
 }
 
 
-int pthread_setcancelstate(int state, int *oldstate)
+int
+wpdk_pthread_setcancelstate(int state, int *oldstate)
 {
 	// HACK - unimplemented
 	if (!oldstate || state < PTHREAD_CANCEL_DISABLE || state > PTHREAD_CANCEL_ENABLE)
@@ -496,7 +535,8 @@ int pthread_setcancelstate(int state, int *oldstate)
 }
 
 
-int pthread_setcanceltype(int type, int *oldtype)
+int
+wpdk_pthread_setcanceltype(int type, int *oldtype)
 {
 	// HACK - unimplemented
 	if (!oldtype || type < PTHREAD_CANCEL_DEFERRED || type > PTHREAD_CANCEL_ASYNCHRONOUS)
@@ -507,14 +547,16 @@ int pthread_setcanceltype(int type, int *oldtype)
 }
 
 
-void pthread_testcancel(void)
+void
+wpdk_pthread_testcancel(void)
 {
 	// HACK - unimplemented
 	WPDK_UNIMPLEMENTED();
 }
 
 
-int pthread_setaffinity_np(pthread_t thread, size_t cpusetsize, const cpuset_t *cpuset)
+int
+wpdk_pthread_setaffinity_np(pthread_t thread, size_t cpusetsize, const cpuset_t *cpuset)
 {
 	DWORD_PTR affinity;
 
@@ -533,7 +575,8 @@ int pthread_setaffinity_np(pthread_t thread, size_t cpusetsize, const cpuset_t *
  *  affinity temporarily to find the current value.  Loop through the
  *  possible temporary affinities until we find one that succeeds.
  */
-int pthread_getaffinity_np(pthread_t thread, size_t cpusetsize, cpuset_t *cpuset)
+int
+wpdk_pthread_getaffinity_np(pthread_t thread, size_t cpusetsize, cpuset_t *cpuset)
 {
 	DWORD_PTR affinity, temporary;
 
@@ -559,7 +602,7 @@ int pthread_getaffinity_np(pthread_t thread, size_t cpusetsize, cpuset_t *cpuset
 
 
 int
-pthread_equal(pthread_t t1, pthread_t t2)
+wpdk_pthread_equal(pthread_t t1, pthread_t t2)
 {
 	return (t1 == t2);
 }

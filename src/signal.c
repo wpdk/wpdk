@@ -67,7 +67,7 @@ int wpdk_sigaction(int sig, const struct sigaction *act, struct sigaction *oact)
 }
 
 
-int pthread_sigmask(int how, const sigset_t *set, sigset_t *oset)
+int wpdk_pthread_sigmask(int how, const sigset_t *set, sigset_t *oset)
 {
 	// HACK - not implemented
 	WPDK_UNIMPLEMENTED();

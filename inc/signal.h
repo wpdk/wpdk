@@ -67,7 +67,7 @@ int wpdk_sigdelset(sigset_t *set, int signo);
 int wpdk_kill(pid_t pid, int sig);
 
 #undef pthread_sigmask
-int pthread_sigmask(int how, const sigset_t *set, sigset_t *oset);
+int wpdk_pthread_sigmask(int how, const sigset_t *set, sigset_t *oset);
 
 #ifndef _WPDK_BUILD_LIB_
 #define sigaction(sig,act,oact) wpdk_sigaction(sig,act,oact)
@@ -76,6 +76,7 @@ int pthread_sigmask(int how, const sigset_t *set, sigset_t *oset);
 #define sigaddset(set,sig) wpdk_sigaddset(set,sig)
 #define sigdelset(set,sig) wpdk_sigdelset(set,sig)
 #define kill(pid,sig) wpdk_kill(pid,sig)
+#define pthread_sigmask(how,set,oset) wpdk_pthread_sigmask(how,set,oset)
 #endif
 
 _WPDK_END_C_HEADER
