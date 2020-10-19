@@ -23,13 +23,14 @@ Wrapping library calls adds a small performance overhead, but this is minor comp
 <a id="status"></a>
 ## Current Status
 
-The project is at prototype stage:
+The project is at an early stage:
 
 * Stubs have been provided to enable all of the SPDK source to compile, apart from spdk_top which requires *libcurses*.
 * Functionality has been provided to enable virtually all of the SPDK Unit Tests to pass.
 * The initial implementation of sockets is sufficient to enable an iSCSI target to start and to serve storage.
+* Unit tests exist for the majority of the functionality.
 
-There are many areas that are currently unimplemented, or where quick hacks have been applied.
+There are a few areas that are currently unimplemented, or where quick hacks have been applied.
 These are indicated in the code with *WPDK_UNIMPLEMENTED* and *HACK*.
 
 Currently only x64 builds are supported.
