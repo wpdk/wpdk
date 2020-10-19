@@ -1,5 +1,10 @@
 WPDK_0.1 {
 	global:
+	wpdk_MD5;
+	wpdk_MD5_Final;
+	wpdk_MD5_Init;
+	wpdk_MD5_Transform;
+	wpdk_MD5_Update;
 	wpdk_accept;
 	wpdk_access;
 	wpdk_bind;
@@ -50,22 +55,17 @@ WPDK_0.1 {
 	wpdk_inet_ntoa;
 	wpdk_inet_ntop;
 	wpdk_inet_pton;
-	wpdk_ioctl;
 	wpdk_io_cancel;
 	wpdk_io_destroy;
-	wpdk-io_getevents;
+	wpdk_io_getevents;
 	wpdk_io_setup;
 	wpdk_io_submit;	
+	wpdk_ioctl;
 	wpdk_isatty;
 	wpdk_kill;
 	wpdk_listen;
 	wpdk_lockf;
 	wpdk_lseek;
-	wpdk_MD5;
-	wpdk_MD5_Final;
-	wpdk_MD5_Init;
-	wpdk_MD5_Transform;
-	wpdk_MD5_Update;
 	wpdk_mkdir;
 	wpdk_mknod;
 	wpdk_mkstemp;

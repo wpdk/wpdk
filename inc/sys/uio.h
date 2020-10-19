@@ -19,12 +19,6 @@
 
 _WPDK_BEGIN_C_HEADER
 
-#if defined(_MSC_VER) && !defined(_WPDK_BUILD_LIB_)
-#define wpdk_writev __wrap_writev
-#pragma comment(linker, "/alternatename:__wrap_writev=wpdk_writev")
-#pragma comment(linker, "/alternatename:__real_writev=wpdk_writev")
-#endif
-
 struct iovec {
 	void *iov_base;     /* Address */
 	size_t iov_len;     /* Length */

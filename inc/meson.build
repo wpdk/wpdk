@@ -58,6 +58,7 @@ install_headers(
 	'wpdk/header.h',
 	'wpdk/types.h',
 	'wpdk/windows.h',
+	'wpdk/wrap.h',
 	subdir: include_prefix + 'wpdk'
 )
 

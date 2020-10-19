@@ -24,15 +24,6 @@
 
 _WPDK_BEGIN_C_HEADER
 
-#if defined(_MSC_VER) && !defined(_WPDK_BUILD_LIB_)
-#define wpdk_pthread_mutexattr_init __wrap_pthread_mutexattr_init
-#define wpdk_pthread_mutex_init __wrap_pthread_mutex_init
-#pragma comment(linker, "/alternatename:__wrap_pthread_mutex_init=wpdk_pthread_mutex_init")
-#pragma comment(linker, "/alternatename:__real_pthread_mutex_init=wpdk_pthread_mutex_init")
-#pragma comment(linker, "/alternatename:__wrap_pthread_mutexattr_init=wpdk_pthread_mutexattr_init")
-#pragma comment(linker, "/alternatename:__real_pthread_mutexattr_init=wpdk_pthread_mutexattr_init")
-#endif
-
 /*
  *  Define structures which are equivalent to the underlying
  *  implementation, but which avoid the need to include windows.h.

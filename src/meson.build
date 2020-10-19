@@ -65,15 +65,15 @@ endforeach
 sources = []
 objs = static_lib.extract_all_objects(recursive: false)
 
-version_map = files('src_version.map')
+version_map = files('version.map')
 
 def_file = custom_target('src_def',
 	command: [map_to_win_cmd, '@INPUT@', '@OUTPUT@'],
-	input: version_map, output: 'src_exports.def')
+	input: version_map, output: 'exports.def')
 
 mingw_map = custom_target('src_mingw',
 	command: [map_to_win_cmd, '@INPUT@', '@OUTPUT@'],
-	input: version_map,	output: 'src_mingw.map')
+	input: version_map,	output: 'mingw.map')
 
 if cc.get_id() == 'msvc'
 	def_arg = ['/def:' + def_file.full_path()]

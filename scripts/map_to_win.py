@@ -40,6 +40,13 @@ def main(args):
                          if is_function_line(ln)]
             functions = ["EXPORTS\n"] + functions
 
+# generate __wrap_ and __real_ aliases to simulate GCC --wrap
+    for line in functions:
+        if line.startswith('\twpdk_'):
+            fn = line.replace('\twpdk_', '').replace('\n','')
+            functions = functions + ['\t__wrap_' + fn + '=wpdk_' + fn + '\n']
+            functions = functions + ['\t__real_' + fn + '=wpdk_' + fn + '\n']
+    
     with open(args[2], 'w') as f_out:
         f_out.writelines(functions)
     return 0
