@@ -33,6 +33,16 @@ CHECK_SIZE(pthread_barrier_t, SYNCHRONIZATION_BARRIER);
 CHECK_SIZE(pthread_cond_t, CONDITION_VARIABLE);
 
 
+/*
+ *  Default initialisation value to ensure that all mutexes are
+ *  initialised identically. Includes a spin count.
+ */ 
+static const CRITICAL_SECTION mutex_init = PTHREAD_MUTEX_INITIALIZER;
+
+static bool spdk_mutex_workarounds = true;
+static SRWLOCK mutex_init_lock = SRWLOCK_INIT;
+
+
 int
 wpdk_pthread_mutexattr_init(pthread_mutexattr_t *attr)
 {
@@ -181,9 +191,9 @@ wpdk_pthread_mutexattr_getprioceiling(const pthread_mutexattr_t *attr, int *prio
 int
 wpdk_pthread_mutexattr_setprioceiling(pthread_mutexattr_t *attr, int prioceiling)
 {
-	if (!attr) return EINVAL;
-
 	UNREFERENCED_PARAMETER(prioceiling);
+
+	if (!attr) return EINVAL;
 
 	WPDK_UNIMPLEMENTED();
 	return ENOSYS;
@@ -193,13 +203,11 @@ wpdk_pthread_mutexattr_setprioceiling(pthread_mutexattr_t *attr, int prioceiling
 int
 wpdk_pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *mutexattr)
 {
+	UNREFERENCED_PARAMETER(mutexattr);
+	
 	if (!mutex) return EINVAL;
 
-	if (mutexattr && (mutexattr->type < PTHREAD_MUTEX_NORMAL || mutexattr->type > PTHREAD_MUTEX_RECURSIVE))
-		return EINVAL;
-
-	// HACK - and spin count!
-	InitializeCriticalSection((CRITICAL_SECTION *)mutex);
+	memcpy(mutex, &mutex_init, sizeof(*mutex));
 	return 0;
 }
 
@@ -209,10 +217,15 @@ wpdk_pthread_mutex_destroy(pthread_mutex_t *mutex)
 {
 	if (!mutex) return EINVAL;
 
-	// HACK - for now this needs to be a no-op to get unit tests running
-	// HACK revisit with extensive pthreads checking code
+	DeleteCriticalSection((CRITICAL_SECTION *)mutex);
 
-	// DeleteCriticalSection((CRITICAL_SECTION *)mutex);
+	/*
+	 *  Reinitialise the mutex to handle the SPDK Unit Tests
+	 *  which can reuse it without calling init().
+	 */
+	if (spdk_mutex_workarounds)
+		memcpy(mutex, &mutex_init, sizeof(*mutex));
+
 	return 0;
 }
 
@@ -224,9 +237,19 @@ wpdk_pthread_mutex_lock(pthread_mutex_t *mutex)
 
 	if (!mutex) return EINVAL;
 
-	// HACK - NASTY to get unit tests running
-	if (!lock->DebugInfo)
-		InitializeCriticalSection(lock);
+	/*
+	 *  The SPDK Unit Tests can use the mutex without initialising it.
+	 *  If the DebugInfo field is zero then assume this has happened and
+	 *  initialise the lock in a threadsafe manner.
+	 */
+	if (spdk_mutex_workarounds && !lock->DebugInfo) {
+		AcquireSRWLockExclusive(&mutex_init_lock);
+		memset(mutex, 0, sizeof(*mutex));
+		lock->LockCount = -1;
+		lock->SpinCount = 4000;
+		InterlockedExchangePointer(&lock->DebugInfo, (void *)-1);
+		ReleaseSRWLockExclusive(&mutex_init_lock);
+	}
 
 	EnterCriticalSection(lock);
 	return 0;
@@ -258,21 +281,27 @@ wpdk_pthread_mutex_unlock(pthread_mutex_t *mutex)
 int
 wpdk_pthread_mutex_consistent(pthread_mutex_t *mutex)
 {
-	//HACK - not implemented
-	WPDK_UNIMPLEMENTED();
-	
 	UNREFERENCED_PARAMETER(mutex);
-	return 0;
+
+	WPDK_UNIMPLEMENTED();
+	return EINVAL;
 }
 
 
 int
 wpdk_pthread_spin_init(pthread_spinlock_t *lock, int pshared)
 {
-	if (!lock || pshared < PTHREAD_PROCESS_PRIVATE || pshared > PTHREAD_PROCESS_SHARED)
-		return EINVAL;
+	if (!lock) return EINVAL;
 
-	// HACK - will eventually block
+	switch (pshared) {
+		case PTHREAD_PROCESS_PRIVATE:
+		case PTHREAD_PROCESS_SHARED:
+			break;
+
+		default:
+			return EINVAL;
+	}
+
 	InitializeCriticalSectionAndSpinCount((CRITICAL_SECTION *)lock, 32000);
 	return 0;
 }
@@ -283,8 +312,15 @@ wpdk_pthread_spin_destroy(pthread_spinlock_t *lock)
 {
 	if (!lock) return EINVAL;
 
-	// HACK - leave this out for now to avoid reuse after destroy issues
-	// DeleteCriticalSection((CRITICAL_SECTION *)lock);
+	DeleteCriticalSection((CRITICAL_SECTION *)lock);
+
+	/*
+	 *  Reinitialise the lock to handle the SPDK Unit Tests
+	 *  which can reuse it without calling init().
+	 */
+	if (spdk_mutex_workarounds)
+		InitializeCriticalSectionAndSpinCount((CRITICAL_SECTION *)lock, 32000);
+
 	return 0;
 }
 
@@ -344,6 +380,7 @@ wpdk_pthread_barrierattr_getpshared(const pthread_barrierattr_t *attr, int *psha
 {
 	if (!attr || !pshared)
 		return EINVAL;
+
 	*pshared = attr->pshared;
 	return 0;
 }
@@ -352,11 +389,16 @@ wpdk_pthread_barrierattr_getpshared(const pthread_barrierattr_t *attr, int *psha
 int
 wpdk_pthread_barrierattr_setpshared(pthread_barrierattr_t *attr, int pshared)
 {
-	if (!attr || pshared < PTHREAD_PROCESS_PRIVATE || pshared > PTHREAD_PROCESS_SHARED)
-		return EINVAL;
+	if (!attr) return EINVAL;
 
-	attr->pshared = pshared;
-	return 0;
+	switch (pshared) {
+		case PTHREAD_PROCESS_PRIVATE:
+		case PTHREAD_PROCESS_SHARED:
+			attr->pshared = pshared;
+			return 0;
+	}
+
+	return EINVAL;
 }
 
 
@@ -366,7 +408,8 @@ wpdk_pthread_barrier_init(pthread_barrier_t *barrier,
 {
 	UNREFERENCED_PARAMETER(attr);
 
-	if (!barrier) return EINVAL;
+	if (!barrier || count == 0)
+		return EINVAL;
 
 	InitializeSynchronizationBarrier(
 		(SYNCHRONIZATION_BARRIER *)barrier, count, -1);
