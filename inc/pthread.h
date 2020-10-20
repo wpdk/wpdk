@@ -40,7 +40,7 @@ typedef struct { void *x; long y[2]; void *z[3]; } pthread_mutex_t;
 #define PTHREAD_MUTEX_NORMAL		0
 #define PTHREAD_MUTEX_ERRORCHECK	1
 #define PTHREAD_MUTEX_RECURSIVE		2
-#define PTHREAD_MUTEX_DEFAULT		PTHREAD_MUTEX_NORMAL
+#define PTHREAD_MUTEX_DEFAULT		PTHREAD_MUTEX_RECURSIVE
 
 #define PTHREAD_MUTEX_STALLED		0
 #define PTHREAD_MUTEX_ROBUST		1
@@ -48,10 +48,15 @@ typedef struct { void *x; long y[2]; void *z[3]; } pthread_mutex_t;
 #define PTHREAD_PROCESS_PRIVATE		0
 #define PTHREAD_PROCESS_SHARED		1
 
+#define PTHREAD_PRIO_NONE			0
+#define PTHREAD_PRIO_INHERIT		1
+#define PTHREAD_PRIO_PROTECT		2
+
 typedef struct pthread_mutexattr_s {
 	int type;
 	int robust;
 	int pshared;
+	int protocol;
 } pthread_mutexattr_t;
 
 int wpdk_pthread_mutexattr_init(pthread_mutexattr_t *attr);
@@ -62,6 +67,11 @@ int wpdk_pthread_mutexattr_getrobust(const pthread_mutexattr_t *attr, int *robus
 int wpdk_pthread_mutexattr_setrobust(pthread_mutexattr_t *attr, int robust);
 int wpdk_pthread_mutexattr_getpshared(const pthread_mutexattr_t *attr, int *pshared);
 int wpdk_pthread_mutexattr_setpshared(pthread_mutexattr_t *attr, int pshared);
+int wpdk_pthread_mutexattr_getprotocol(const pthread_mutexattr_t *attr, int *protocol);
+int wpdk_pthread_mutexattr_setprotocol(pthread_mutexattr_t *attr, int protocol);
+int wpdk_pthread_mutexattr_setprioceiling(pthread_mutexattr_t *attr, int prioceiling);
+int wpdk_pthread_mutexattr_getprioceiling(const pthread_mutexattr_t *attr, int *prioceiling);
+
 int wpdk_pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *mutexattr);
 int wpdk_pthread_mutex_lock(pthread_mutex_t *mutex);
 int wpdk_pthread_mutex_trylock(pthread_mutex_t *mutex);
@@ -80,6 +90,10 @@ static inline int pthread_mutexattr_init(pthread_mutexattr_t *attr) {
 #define pthread_mutexattr_setrobust(attr,robust) wpdk_pthread_mutexattr_setrobust(attr,robust)
 #define pthread_mutexattr_getpshared(attr,pshared) wpdk_pthread_mutexattr_getpshared(attr,pshared)
 #define pthread_mutexattr_setpshared(attr,pshared) wpdk_pthread_mutexattr_setpshared(attr,pshared)
+#define pthread_mutexattr_getprotocol(attr,protocol) wpdk_pthread_mutexattr_getprotocol(attr,protocol)
+#define pthread_mutexattr_setprotocol(attr,protocol) wpdk_pthread_mutexattr_setprotocol(attr,protocol)
+#define pthread_mutexattr_setprioceiling(attr,prio) wpdk_pthread_mutexattr_setprioceiling(attr,prio)
+#define pthread_mutexattr_getprioceiling(attr,prio) wpdk_pthread_mutexattr_getprioceiling(attr,prio)
 static inline int pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *mutexattr) {
 	return wpdk_pthread_mutex_init(mutex, mutexattr);
 }

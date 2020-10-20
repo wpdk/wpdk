@@ -110,10 +110,14 @@ WPDK_0.1 {
 	wpdk_pthread_getaffinity_np;
 	wpdk_pthread_join;
 	wpdk_pthread_mutexattr_destroy;
+	wpdk_pthread_mutexattr_getprioceiling;
+	wpdk_pthread_mutexattr_getprotocol;
 	wpdk_pthread_mutexattr_getpshared;
 	wpdk_pthread_mutexattr_getrobust;
 	wpdk_pthread_mutexattr_gettype;
 	wpdk_pthread_mutexattr_init;
+	wpdk_pthread_mutexattr_setprioceiling;
+	wpdk_pthread_mutexattr_setprotocol;
 	wpdk_pthread_mutexattr_setpshared;
 	wpdk_pthread_mutexattr_setrobust;
 	wpdk_pthread_mutexattr_settype;

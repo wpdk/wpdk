@@ -26,6 +26,7 @@ void add_file_tests(void);
 void add_include_c_tests(void);
 void add_include_cpp_tests(void);
 void add_netdb_tests(void);
+void add_pthread_tests(void);
 void add_pwd_tests(void);
 void add_resource_tests(void);
 void add_semaphore_tests(void);
@@ -63,6 +64,7 @@ main(int argc, char **argv)
 	add_include_c_tests();
 	add_include_cpp_tests();
 	add_netdb_tests();
+	add_pthread_tests();
 	add_pwd_tests();
 	add_resource_tests();
 	add_semaphore_tests();

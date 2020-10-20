@@ -41,6 +41,7 @@ wpdk_pthread_mutexattr_init(pthread_mutexattr_t *attr)
 	attr->type = PTHREAD_MUTEX_DEFAULT;
 	attr->robust = PTHREAD_MUTEX_STALLED;
 	attr->pshared = PTHREAD_PROCESS_PRIVATE;
+	attr->protocol = PTHREAD_PRIO_NONE;
 	return 0;
 }
 
@@ -49,7 +50,6 @@ int
 wpdk_pthread_mutexattr_destroy(pthread_mutexattr_t *attr)
 {
 	if (!attr) return EINVAL;
-
 	return 0;
 }
 
@@ -68,11 +68,17 @@ wpdk_pthread_mutexattr_gettype(const pthread_mutexattr_t *attr, int *type)
 int
 wpdk_pthread_mutexattr_settype(pthread_mutexattr_t *attr, int type)
 {
-	if (!attr || type < PTHREAD_MUTEX_NORMAL || type > PTHREAD_MUTEX_RECURSIVE)
-		return EINVAL;
+	if (!attr) return EINVAL;
 
-	attr->type = type;
-	return 0;
+	switch (type) {
+		case PTHREAD_MUTEX_RECURSIVE:
+		case PTHREAD_MUTEX_NORMAL:
+		case PTHREAD_MUTEX_ERRORCHECK:
+			attr->type = type;
+			return 0;
+	}
+
+	return EINVAL;
 }
 
 
@@ -90,11 +96,16 @@ wpdk_pthread_mutexattr_getrobust(const pthread_mutexattr_t *attr, int *robust)
 int
 wpdk_pthread_mutexattr_setrobust(pthread_mutexattr_t *attr, int robust)
 {
-	if (!attr || robust < PTHREAD_MUTEX_STALLED || robust > PTHREAD_MUTEX_ROBUST)
-		return EINVAL;
+	if (!attr) return EINVAL;
 
-	attr->robust = robust;
-	return 0;
+	switch (robust) {
+		case PTHREAD_MUTEX_ROBUST:
+		case PTHREAD_MUTEX_STALLED:
+			attr->robust = robust;
+			return 0;
+	}
+
+	return EINVAL;
 }
 
 
@@ -112,11 +123,70 @@ wpdk_pthread_mutexattr_getpshared(const pthread_mutexattr_t *attr, int *pshared)
 int
 wpdk_pthread_mutexattr_setpshared(pthread_mutexattr_t *attr, int pshared)
 {
-	if (!attr || pshared < PTHREAD_PROCESS_PRIVATE || pshared > PTHREAD_PROCESS_SHARED)
+	if (!attr) return EINVAL;
+
+	switch (pshared) {
+		case PTHREAD_PROCESS_PRIVATE:
+		case PTHREAD_PROCESS_SHARED:
+			attr->pshared = pshared;
+			return 0;
+	}
+
+	return EINVAL;
+}
+
+
+int
+wpdk_pthread_mutexattr_getprotocol(const pthread_mutexattr_t *attr, int *protocol)
+{
+	if (!attr || !protocol)
 		return EINVAL;
 
-	attr->pshared = pshared;
+	*protocol = attr->protocol;
 	return 0;
+}
+
+
+int
+wpdk_pthread_mutexattr_setprotocol(pthread_mutexattr_t *attr, int protocol)
+{
+	if (!attr) return EINVAL;
+
+	switch (protocol) {
+		case PTHREAD_PRIO_INHERIT:
+		case PTHREAD_PRIO_PROTECT:
+			WPDK_UNIMPLEMENTED();
+			return ENOSYS;
+
+		case PTHREAD_PRIO_NONE:
+			attr->protocol = protocol;
+			return 0;
+	}
+
+	return EINVAL;
+}
+
+
+int
+wpdk_pthread_mutexattr_getprioceiling(const pthread_mutexattr_t *attr, int *prioceiling)
+{
+	if (!attr || !prioceiling)
+		return EINVAL;
+
+	WPDK_UNIMPLEMENTED();
+	return ENOSYS;
+}
+
+
+int
+wpdk_pthread_mutexattr_setprioceiling(pthread_mutexattr_t *attr, int prioceiling)
+{
+	if (!attr) return EINVAL;
+
+	UNREFERENCED_PARAMETER(prioceiling);
+
+	WPDK_UNIMPLEMENTED();
+	return ENOSYS;
 }
 
 

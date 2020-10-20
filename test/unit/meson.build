@@ -17,6 +17,7 @@ sources = [
 	'file_ut.c',
 	'include_ut.c',
 	'netdb_ut.c',
+	'pthread_ut.c',
 	'pwd_ut.c',
 	'resource_ut.c',
 	'semaphore_ut.c',
