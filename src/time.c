@@ -72,3 +72,29 @@ wpdk_gettimeofday(struct timeval *tp, void *tzp)
 	tp->tv_usec = (long)(t.tv_nsec / 1000);
 	return rc;
 }
+
+
+int
+wpdk_abstime_to_msecs(const struct timespec *abstime, DWORD *pmsecs)
+{
+	struct timespec now;
+	time_t msecs = 0;
+	int rc;
+
+	if ((rc = wpdk_clock_gettime(CLOCK_REALTIME, &now)) == -1)
+		return -1;
+
+	if (abstime->tv_sec > now.tv_sec) {
+		msecs = (abstime->tv_sec - now.tv_sec) * 1000;
+		msecs += (abstime->tv_nsec - now.tv_nsec) / 1000000;
+	} else if (abstime->tv_sec == now.tv_sec
+			&& abstime->tv_nsec > now.tv_nsec) {
+		msecs = (abstime->tv_nsec - now.tv_nsec) / 1000000;
+	}
+
+	if (msecs >= 1000000000)
+		return wpdk_posix_error(EINVAL);
+
+	*pmsecs = (DWORD)msecs;
+	return 0;
+}

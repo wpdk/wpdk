@@ -16,6 +16,7 @@
  */
 
 #include <wpdk/internal.h>
+#include <sys/time.h>
 #include <pthread.h>
 
 
@@ -462,6 +463,7 @@ wpdk_pthread_condattr_getpshared(const pthread_condattr_t *attr, int *pshared)
 {
 	if (!attr || !pshared)
 		return EINVAL;
+
 	*pshared = attr->pshared;
 	return 0;
 }
@@ -470,11 +472,16 @@ wpdk_pthread_condattr_getpshared(const pthread_condattr_t *attr, int *pshared)
 int
 wpdk_pthread_condattr_setpshared(pthread_condattr_t *attr, int pshared)
 {
-	if (!attr || pshared < PTHREAD_PROCESS_PRIVATE || pshared > PTHREAD_PROCESS_SHARED)
-		return EINVAL;
+	if (!attr) return EINVAL;
 
-	attr->pshared = pshared;
-	return 0;
+	switch (pshared) {
+		case PTHREAD_PROCESS_PRIVATE:
+		case PTHREAD_PROCESS_SHARED:
+			attr->pshared = pshared;
+			return 0;
+	}
+
+	return EINVAL;
 }
 
 
@@ -493,7 +500,7 @@ wpdk_pthread_cond_init(pthread_cond_t *cond, const pthread_condattr_t *attr)
 int
 wpdk_pthread_cond_destroy(pthread_cond_t *cond)
 {
-	UNREFERENCED_PARAMETER(cond);
+	if (!cond) return EINVAL;
 	return 0;
 }
 
@@ -501,6 +508,8 @@ wpdk_pthread_cond_destroy(pthread_cond_t *cond)
 int
 wpdk_pthread_cond_signal(pthread_cond_t *cond)
 {
+	if (!cond) return EINVAL;
+
 	WakeConditionVariable((CONDITION_VARIABLE *)cond);
 	return 0;
 }
@@ -509,7 +518,26 @@ wpdk_pthread_cond_signal(pthread_cond_t *cond)
 int
 wpdk_pthread_cond_broadcast(pthread_cond_t *cond)
 {
+	if (!cond) return EINVAL;
+
 	WakeAllConditionVariable((CONDITION_VARIABLE *)cond);
+	return 0;
+}
+
+
+static int
+wpdk_cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex, DWORD msecs)
+{
+	if (!cond || !mutex)
+		return EINVAL;
+
+	if (SleepConditionVariableCS((CONDITION_VARIABLE *)cond,
+			(CRITICAL_SECTION *)mutex, msecs) != 0)
+		return 0;
+
+	if (GetLastError() == ERROR_TIMEOUT)
+		return ETIMEDOUT;
+
 	return 0;
 }
 
@@ -517,20 +545,19 @@ wpdk_pthread_cond_broadcast(pthread_cond_t *cond)
 int
 wpdk_pthread_cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex)
 {
-	// HACK - check for null parameters
-	SleepConditionVariableCS((CONDITION_VARIABLE *)cond,
-			(CRITICAL_SECTION *)mutex, INFINITE);
-	return 0;
+	return wpdk_cond_wait(cond, mutex, INFINITE);
 }
 
 
 int
 wpdk_pthread_cond_timedwait(pthread_cond_t *cond, pthread_mutex_t *mutex, const struct timespec *abstime)
 {
-	// HACK - implementation
-	UNREFERENCED_PARAMETER(abstime);
-	
-	return wpdk_pthread_cond_wait(cond, mutex);
+	DWORD msecs;
+
+	if (wpdk_abstime_to_msecs(abstime, &msecs) == -1)
+		return errno;
+
+	return wpdk_cond_wait(cond, mutex, msecs);
 }
 
 

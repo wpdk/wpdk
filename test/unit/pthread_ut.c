@@ -12,6 +12,7 @@
  */
 
 #include <wpdk/internal.h>
+#include <sys/time.h>
 #include <pthread.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -475,6 +476,163 @@ test_barrier_wait(void)
 }
 
 
+static void
+test_condattr_pshared(void)
+{
+	pthread_condattr_t attr;
+	int rc, val;
+
+	/* Check initialisation */
+	rc = pthread_condattr_init(&attr);
+	CU_ASSERT(rc == 0);
+
+	/* Check pshared */
+	val = -1;
+	rc = wpdk_pthread_condattr_getpshared(&attr, &val);
+	CU_ASSERT(rc == 0);
+	CU_ASSERT(val == PTHREAD_PROCESS_PRIVATE);
+
+	/* Check getpshared null attr */
+	val = -1;
+	rc = wpdk_pthread_condattr_getpshared(NULL, &val);
+	CU_ASSERT(rc == EINVAL);
+
+	/* Check getpshared null arg */
+	rc = wpdk_pthread_condattr_getpshared(&attr, NULL);
+	CU_ASSERT(rc == EINVAL);
+
+	/* Check setpshared */
+	val = -1;
+	rc = wpdk_pthread_condattr_setpshared(&attr, PTHREAD_PROCESS_SHARED);
+	CU_ASSERT(rc == 0);
+	rc = wpdk_pthread_condattr_getpshared(&attr, &val);
+	CU_ASSERT(rc == 0);
+	CU_ASSERT(val == PTHREAD_PROCESS_SHARED);
+
+	/* Check setpshared null attr */
+	rc = wpdk_pthread_condattr_setpshared(NULL, PTHREAD_PROCESS_SHARED);
+	CU_ASSERT(rc == EINVAL);
+
+	/* Check invalid pshared */
+	rc = wpdk_pthread_condattr_setpshared(&attr, -1);
+	CU_ASSERT(rc == EINVAL);
+}
+
+
+static void
+test_cond_init(void)
+{
+	pthread_condattr_t attr;
+	pthread_cond_t cond;
+	int rc;
+
+	/* Create attributes */
+	rc = pthread_condattr_init(&attr);
+	CU_ASSERT(rc == 0);
+
+	/* Check null cond */
+	rc = pthread_cond_init(NULL, &attr);
+	CU_ASSERT(rc == EINVAL);
+
+	/* Check init */
+	rc = pthread_cond_init(&cond, &attr);
+	CU_ASSERT(rc == 0);
+	rc = pthread_cond_destroy(&cond);
+	CU_ASSERT(rc == 0);
+
+	/* Check null attr */
+	memset(&cond, 0, sizeof(cond));
+	rc = pthread_cond_init(&cond, NULL);
+	CU_ASSERT(rc == 0);
+	rc = pthread_cond_destroy(&cond);
+	CU_ASSERT(rc == 0);
+}
+
+
+static void
+test_cond_signal(void)
+{
+	pthread_cond_t cond;
+	int rc;
+
+	/* Check init */
+	rc = pthread_cond_init(&cond, NULL);
+	CU_ASSERT(rc == 0);
+
+	rc = pthread_cond_signal(&cond);
+	CU_ASSERT(rc == 0);
+
+	rc = pthread_cond_destroy(&cond);
+	CU_ASSERT(rc == 0);
+}
+
+
+static void
+test_cond_broadcast(void)
+{
+	pthread_cond_t cond;
+	int rc;
+
+	/* Check init */
+	rc = pthread_cond_init(&cond, NULL);
+	CU_ASSERT(rc == 0);
+
+	rc = pthread_cond_broadcast(&cond);
+	CU_ASSERT(rc == 0);
+
+	rc = pthread_cond_destroy(&cond);
+	CU_ASSERT(rc == 0);
+}
+
+
+static void
+test_cond_timedwait(void)
+{
+	struct timespec now, delay;
+	pthread_mutex_t mutex;
+	pthread_cond_t cond;
+	int rc;
+
+	/* Check init */
+	rc = pthread_mutex_init(&mutex, NULL);
+	CU_ASSERT(rc == 0);
+
+	/* Check init */
+	rc = pthread_cond_init(&cond, NULL);
+	CU_ASSERT(rc == 0);
+
+	/* Check lock */
+	rc = pthread_mutex_lock(&mutex);
+	CU_ASSERT(rc == 0);
+
+	/* Check timedwait */
+	rc = clock_gettime(CLOCK_REALTIME, &now);
+	CU_ASSERT(rc == 0);
+	rc = pthread_cond_timedwait(&cond, &mutex, &now);
+	CU_ASSERT(rc == ETIMEDOUT);
+
+	/* Check 40msec timedwait */
+	rc = clock_gettime(CLOCK_REALTIME, &delay);
+	CU_ASSERT(rc == 0);
+	delay.tv_nsec += 40000000;
+	rc = pthread_cond_timedwait(&cond, &mutex, &delay);
+	CU_ASSERT(rc == ETIMEDOUT);
+
+	/* Check delay time to within 2 msec*/
+	rc = clock_gettime(CLOCK_REALTIME, &now);
+	CU_ASSERT(rc == 0);
+	CU_ASSERT(now.tv_sec > delay.tv_sec ||
+		(now.tv_sec == delay.tv_sec && now.tv_nsec + 2000000 >= delay.tv_nsec));
+
+	rc = pthread_mutex_unlock(&mutex);
+	CU_ASSERT(rc == 0);
+	rc = pthread_cond_destroy(&cond);
+	CU_ASSERT(rc == 0);
+	rc = pthread_mutex_destroy(&mutex);
+	CU_ASSERT(rc == 0);
+}
+
+
 void
 add_pthread_tests()
 {
@@ -496,4 +654,9 @@ add_pthread_tests()
 	CU_ADD_TEST(suite, test_barrierattr_pshared);
 	CU_ADD_TEST(suite, test_barrier_init);
 	CU_ADD_TEST(suite, test_barrier_wait);
+	CU_ADD_TEST(suite, test_condattr_pshared);
+	CU_ADD_TEST(suite, test_cond_init);
+	CU_ADD_TEST(suite, test_cond_signal);
+	CU_ADD_TEST(suite, test_cond_broadcast);
+	CU_ADD_TEST(suite, test_cond_timedwait);
 }

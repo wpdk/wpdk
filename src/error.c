@@ -1069,3 +1069,10 @@ wpdk_posix_error(int error)
 	_set_errno(error);
 	return (-1);
 }
+
+
+void
+wpdk_set_last_wsa_error(int error)
+{
+	WSASetLastError(error);
+}

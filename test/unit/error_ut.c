@@ -124,13 +124,13 @@ last_wsa_error(void)
 	int err;
 
 	/* Check valid error code */
-	WSASetLastError(WSAEINTR);
+	wpdk_set_last_wsa_error(WSAEINTR);
 	err = wpdk_last_wsa_error();
 	CU_ASSERT(err == -1);
 	CU_ASSERT(errno == EINTR);
 
 	/* Check invalid error is EINVAL */
-	WSASetLastError((DWORD)-1);
+	wpdk_set_last_wsa_error((DWORD)-1);
 	err = wpdk_last_wsa_error();
 	CU_ASSERT(err == -1);
 	CU_ASSERT(errno == EINVAL);

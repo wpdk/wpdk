@@ -109,23 +109,10 @@ wpdk_sem_trywait(sem_t *sem)
 int
 wpdk_sem_timedwait(sem_t *sem, const struct timespec *abs_timeout)
 {
-	struct timespec now;
-	time_t msecs = 0;
-	int rc;
+	DWORD msecs;
 
-	if ((rc = wpdk_clock_gettime(CLOCK_REALTIME, &now)) == -1)
+	if (wpdk_abstime_to_msecs(abs_timeout, &msecs) == -1)
 		return -1;
 
-	if (abs_timeout->tv_sec > now.tv_sec) {
-		msecs = (abs_timeout->tv_sec - now.tv_sec) * 1000;
-		msecs += (abs_timeout->tv_nsec - now.tv_nsec) / 1000000;
-	} else if (abs_timeout->tv_sec == now.tv_sec
-			&& abs_timeout->tv_nsec > now.tv_nsec) {
-		msecs = (abs_timeout->tv_nsec - now.tv_nsec) / 1000000;
-	}
-
-	if (msecs > ULONG_MAX)
-		return wpdk_posix_error(EINVAL);
-
-	return wpdk_wait_sem(sem, (DWORD)msecs);
+	return wpdk_wait_sem(sem, msecs);
 }

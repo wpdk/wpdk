@@ -43,6 +43,13 @@
 #include <mswsock.h>
 #endif
 
+#ifndef _WPDK_BUILD_LIB_
+#undef WSASetLastError
+#undef WSAIoctl
+#undef setsockopt
+#undef getsockopt
+#endif
+
 _WPDK_BEGIN_C_HEADER
 
 struct msghdr {

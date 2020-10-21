@@ -155,11 +155,11 @@ test_sem_timedwait(void)
 	rc = sem_timedwait(&sem, &delay);
 	CU_ASSERT(rc == -1 && errno == EAGAIN);
 
-	/* Check delay time to within 1 msec*/
+	/* Check delay time to within 2 msec*/
 	rc = clock_gettime(CLOCK_REALTIME, &now);
 	CU_ASSERT(rc == 0);
 	CU_ASSERT(now.tv_sec > delay.tv_sec ||
-		(now.tv_sec == delay.tv_sec && now.tv_nsec + 1000000 >= delay.tv_nsec));
+		(now.tv_sec == delay.tv_sec && now.tv_nsec + 2000000 >= delay.tv_nsec));
 
 	/* Check trywait */
 	rc = sem_trywait(&sem);
