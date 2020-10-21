@@ -85,13 +85,17 @@ WPDK_0.1 {
 	wpdk_posix_memalign;
 	wpdk_pthread_attr_destroy;
 	wpdk_pthread_attr_init;
+	wpdk_pthread_attr_getdetachstate;
+	wpdk_pthread_attr_getstacksize;
+	wpdk_pthread_attr_setdetachstate;
+	wpdk_pthread_attr_setstacksize;
 	wpdk_pthread_barrierattr_destroy;
 	wpdk_pthread_barrierattr_getpshared;
 	wpdk_pthread_barrierattr_init;
 	wpdk_pthread_barrierattr_setpshared;
 	wpdk_pthread_barrier_destroy;
 	wpdk_pthread_barrier_init;
-	wpdk_pthread_barrier_wait	;
+	wpdk_pthread_barrier_wait;
 	wpdk_pthread_cancel;
 	wpdk_pthread_condattr_destroy;
 	wpdk_pthread_condattr_getpshared;

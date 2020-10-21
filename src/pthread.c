@@ -248,7 +248,7 @@ wpdk_pthread_mutex_lock(pthread_mutex_t *mutex)
 		memset(mutex, 0, sizeof(*mutex));
 		lock->LockCount = -1;
 		lock->SpinCount = 4000;
-		InterlockedExchangePointer(&lock->DebugInfo, (void *)-1);
+		InterlockedExchangePointer((void **)&lock->DebugInfo, (void *)-1);
 		ReleaseSRWLockExclusive(&mutex_init_lock);
 	}
 
@@ -565,6 +565,9 @@ int
 wpdk_pthread_attr_init(pthread_attr_t *attr)
 {
 	if (!attr) return EINVAL;
+
+	attr->detachstate = PTHREAD_CREATE_JOINABLE;
+	attr->stacksize = 0;
 	return 0;
 }
 
@@ -573,6 +576,54 @@ int
 wpdk_pthread_attr_destroy(pthread_attr_t *attr)
 {
 	if (!attr) return EINVAL;
+	return 0;
+}
+
+
+int
+wpdk_pthread_attr_getdetachstate(const pthread_attr_t *attr, int *detachstate)
+{
+	if (!attr || !detachstate)
+		return EINVAL;
+
+	*detachstate = attr->detachstate;
+	return 0;
+}
+
+
+int
+wpdk_pthread_attr_setdetachstate(pthread_attr_t *attr, int detachstate)
+{
+	if (!attr) return EINVAL;
+
+	switch (detachstate) {
+		case PTHREAD_CREATE_JOINABLE:
+		case PTHREAD_CREATE_DETACHED:
+			attr->detachstate = detachstate;
+			return 0;
+	}
+
+	return EINVAL;
+}
+
+
+int
+wpdk_pthread_attr_getstacksize(const pthread_attr_t *attr, size_t *stacksize)
+{
+	if (!attr || !stacksize)
+		return EINVAL;
+
+	*stacksize = attr->stacksize;
+	return 0;
+}
+
+
+int
+wpdk_pthread_attr_setstacksize(pthread_attr_t *attr, size_t stacksize)
+{
+	if (!attr) return EINVAL;
+
+	attr->stacksize = stacksize;
 	return 0;
 }
 

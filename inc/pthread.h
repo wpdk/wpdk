@@ -52,6 +52,9 @@ typedef struct { void *x; long y[2]; intptr_t z[3]; } pthread_mutex_t;
 #define PTHREAD_PRIO_INHERIT		1
 #define PTHREAD_PRIO_PROTECT		2
 
+#define PTHREAD_CREATE_JOINABLE		0
+#define PTHREAD_CREATE_DETACHED		1
+
 typedef struct pthread_mutexattr_s {
 	int type;
 	int robust;
@@ -168,11 +171,16 @@ int wpdk_pthread_cond_timedwait(pthread_cond_t *cond, pthread_mutex_t *mutex, co
 #endif
 
 typedef struct pthread_attr_s {
-	void *x;
+	int detachstate;
+	size_t stacksize;
 } pthread_attr_t;
 
 int wpdk_pthread_attr_init(pthread_attr_t *attr);
 int wpdk_pthread_attr_destroy(pthread_attr_t *attr);
+int wpdk_pthread_attr_setdetachstate(pthread_attr_t *attr, int detachstate);
+int wpdk_pthread_attr_getdetachstate(const pthread_attr_t *attr, int *detachstate);
+int wpdk_pthread_attr_setstacksize(pthread_attr_t *attr, size_t stacksize);
+int wpdk_pthread_attr_getstacksize(const pthread_attr_t *attr, size_t *stacksize);
 pthread_t wpdk_pthread_self(void);
 int wpdk_pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_routine)(void*), void *arg);
 int wpdk_pthread_join(pthread_t thread, void **value_ptr);
@@ -183,6 +191,10 @@ void wpdk_pthread_exit(void *value_ptr);
 #ifndef _WPDK_BUILD_LIB_
 #define pthread_attr_init(attr) wpdk_pthread_attr_init(attr)
 #define pthread_attr_destroy(attr) wpdk_pthread_attr_destroy(attr)
+#define pthread_attr_setdetachstate(attr,detachstate) wpdk_pthread_attr_setdetachstate(attr,detachstate)
+#define pthread_attr_getdetachstate(attr,detachstate) wpdk_pthread_attr_getdetachstate(attr,detachstate)
+#define pthread_attr_setstacksize(attr,stacksize) wpdk_pthread_attr_setstacksize(attr,stacksize)
+#define pthread_attr_getstacksize(attr,stacksize) wpdk_pthread_attr_getstacksize(attr,stacksize)
 #define pthread_self() wpdk_pthread_self()
 #define pthread_create(thread,attr,start,arg) wpdk_pthread_create(thread,attr,start,arg)
 #define pthread_join(thread,ptr) wpdk_pthread_join(thread,ptr)

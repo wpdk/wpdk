@@ -633,6 +633,88 @@ test_cond_timedwait(void)
 }
 
 
+static void
+test_attr_detachstate(void)
+{
+	pthread_attr_t attr;
+	int rc, val;
+
+	/* Check initialisation */
+	rc = pthread_attr_init(&attr);
+	CU_ASSERT(rc == 0);
+
+	/* Check detachstate */
+	val = -1;
+	rc = wpdk_pthread_attr_getdetachstate(&attr, &val);
+	CU_ASSERT(rc == 0);
+	CU_ASSERT(val == PTHREAD_CREATE_JOINABLE);
+
+	/* Check getdetachstate null attr */
+	val = -1;
+	rc = wpdk_pthread_attr_getdetachstate(NULL, &val);
+	CU_ASSERT(rc == EINVAL);
+
+	/* Check getdetachstate null arg */
+	rc = wpdk_pthread_attr_getdetachstate(&attr, NULL);
+	CU_ASSERT(rc == EINVAL);
+
+	/* Check setdetachstate */
+	val = -1;
+	rc = wpdk_pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+	CU_ASSERT(rc == 0);
+	rc = wpdk_pthread_attr_getdetachstate(&attr, &val);
+	CU_ASSERT(rc == 0);
+	CU_ASSERT(val == PTHREAD_CREATE_DETACHED);
+
+	/* Check setdetachstate null attr */
+	rc = wpdk_pthread_attr_setdetachstate(NULL, PTHREAD_CREATE_DETACHED);
+	CU_ASSERT(rc == EINVAL);
+
+	/* Check invalid detachstate */
+	rc = wpdk_pthread_attr_setdetachstate(&attr, -1);
+	CU_ASSERT(rc == EINVAL);
+}
+
+
+static void
+test_attr_stacksize(void)
+{
+	pthread_attr_t attr;
+	size_t val;
+	int rc;
+
+	/* Check initialisation */
+	rc = pthread_attr_init(&attr);
+	CU_ASSERT(rc == 0);
+
+	/* Check stacksize */
+	val = 0;
+	rc = wpdk_pthread_attr_getstacksize(&attr, &val);
+	CU_ASSERT(rc == 0);
+
+	/* Check getstacksize null attr */
+	val = 0;
+	rc = wpdk_pthread_attr_getstacksize(NULL, &val);
+	CU_ASSERT(rc == EINVAL);
+
+	/* Check getstacksize null arg */
+	rc = wpdk_pthread_attr_getstacksize(&attr, NULL);
+	CU_ASSERT(rc == EINVAL);
+
+	/* Check setstacksize */
+	val = 0;
+	rc = wpdk_pthread_attr_setstacksize(&attr, 1024 * 1024);
+	CU_ASSERT(rc == 0);
+	rc = wpdk_pthread_attr_getstacksize(&attr, &val);
+	CU_ASSERT(rc == 0);
+	CU_ASSERT(val == 1024 * 1024);
+
+	/* Check setstacksize null attr */
+	rc = wpdk_pthread_attr_setstacksize(NULL, 1024 * 1024);
+	CU_ASSERT(rc == EINVAL);
+}
+
+
 void
 add_pthread_tests()
 {
@@ -659,4 +741,6 @@ add_pthread_tests()
 	CU_ADD_TEST(suite, test_cond_signal);
 	CU_ADD_TEST(suite, test_cond_broadcast);
 	CU_ADD_TEST(suite, test_cond_timedwait);
+	CU_ADD_TEST(suite, test_attr_detachstate);
+	CU_ADD_TEST(suite, test_attr_stacksize);
 }
