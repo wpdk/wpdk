@@ -45,7 +45,8 @@ int wpdk_is_epoll(int fd)
 }
 
 
-int wpdk_get_epoll(int fd)
+static int
+wpdk_get_epoll(int fd)
 {
 	int id = -1;
 
@@ -59,7 +60,8 @@ int wpdk_get_epoll(int fd)
 }
 
 
-int wpdk_allocate_epoll()
+static int
+wpdk_allocate_epoll()
 {
 	struct epoll **fds, *ep;
 	int i;

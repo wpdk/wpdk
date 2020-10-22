@@ -715,6 +715,264 @@ test_attr_stacksize(void)
 }
 
 
+static void *
+test_create_async(void *arg)
+{
+	return (void *)(~(ULONG_PTR)arg);
+}
+
+
+static void
+test_create(void)
+{
+	pthread_t thread, threadv[10];
+	ULONG_PTR val = 0x5665689;
+	pthread_attr_t attr;
+	void *result;
+	int i, rc;
+
+	/* Check null thread pointer */
+	rc = pthread_create(NULL, NULL, test_create_async, (void *)val);
+	CU_ASSERT(rc == EINVAL);
+
+	/* Check null start routine */
+	rc = pthread_create(&thread, NULL, NULL, (void *)val);
+	CU_ASSERT(rc == EINVAL);
+
+	/* Check create */
+	thread = 0;
+	rc = pthread_create(&thread, NULL, test_create_async, (void *)val);
+	CU_ASSERT(rc == 0);
+	CU_ASSERT(thread != 0);
+
+	/* Check join */
+	result = 0;
+	rc = pthread_join(thread, &result);
+	CU_ASSERT(rc == 0);
+	CU_ASSERT(result == (void *)(~val));
+
+	/* Check create detached */
+	rc = pthread_attr_init(&attr);
+	CU_ASSERT(rc == 0);
+	rc = wpdk_pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+	CU_ASSERT(rc == 0);
+	thread = 0;
+	rc = pthread_create(&thread, &attr, test_create_async, (void *)val);
+	CU_ASSERT(rc == 0);
+	CU_ASSERT(thread != 0);
+
+	/* Check join fails */
+	rc = pthread_join(thread, &result);
+	CU_ASSERT(rc == EINVAL);
+
+	/* Check create multiple */
+	for (i = 0; i < sizeof(threadv) / sizeof(threadv[0]); i++) {
+		threadv[i] = 0;
+		rc = pthread_create(&threadv[i], NULL, test_create_async, (void *)(val+i));
+		CU_ASSERT(rc == 0);
+		CU_ASSERT(threadv[i] != 0);
+	}
+
+	/* Check join multiple */
+	for (i = 0; i < sizeof(threadv) / sizeof(threadv[0]); i++) {
+		result = 0;
+		rc = pthread_join(threadv[i], &result);
+		CU_ASSERT(rc == 0);
+		CU_ASSERT(result == (void *)~(val+i));
+	}
+}
+
+
+static void
+test_join(void)
+{
+	pthread_t thread, threadv[10];
+	ULONG_PTR val = 0x5665689;
+	void *result;
+	int i, rc;
+
+	/* Check create */
+	thread = 0;
+	rc = pthread_create(&thread, NULL, test_create_async, (void *)val);
+	CU_ASSERT(rc == 0);
+	CU_ASSERT(thread != 0);
+
+	/* Check zero thread */
+	rc = pthread_join(0, &result);
+	CU_ASSERT(rc == EINVAL);
+
+	/* Check join */
+	result = 0;
+	rc = pthread_join(thread, &result);
+	CU_ASSERT(rc == 0);
+	CU_ASSERT(result == (void *)(~val));
+
+	/* Check second join */
+	result = 0;
+	rc = pthread_join(thread, &result);
+	CU_ASSERT(rc == EINVAL);
+
+	/* Check create multiple */
+	for (i = 0; i < sizeof(threadv) / sizeof(threadv[0]); i++) {
+		threadv[i] = 0;
+		rc = pthread_create(&threadv[i], NULL, test_create_async, (void *)(val+i));
+		CU_ASSERT(rc == 0);
+		CU_ASSERT(threadv[i] != 0);
+	}
+
+	/* Check join multiple reverse order */
+	for (i = sizeof(threadv) / sizeof(threadv[0]) - 1; i >= 0; i--) {
+		result = 0;
+		rc = pthread_join(threadv[i], &result);
+		CU_ASSERT(rc == 0);
+		CU_ASSERT(result == (void *)~(val+i));
+	}
+}
+
+
+static void
+test_detach(void)
+{
+	pthread_t thread;
+	void *result;
+	int rc;
+
+	/* Check create */
+	thread = 0;
+	rc = pthread_create(&thread, NULL, test_create_async, NULL);
+	CU_ASSERT(rc == 0);
+	CU_ASSERT(thread != 0);
+
+	/* Check zero thread */
+	rc = pthread_detach(0);
+	CU_ASSERT(rc == EINVAL);
+
+	/* Check detach */
+	rc = pthread_detach(thread);
+	CU_ASSERT(rc == 0);
+
+	/* Check second detach */
+	rc = pthread_detach(thread);
+	CU_ASSERT(rc == EINVAL);
+
+	/* Check join */
+	rc = pthread_join(thread, &result);
+	CU_ASSERT(rc == EINVAL);
+}
+
+
+static void *
+test_exit_async(void *arg)
+{
+	pthread_exit((void *)(~(ULONG_PTR)arg));
+	return (void *)-1;
+}
+
+
+static void
+test_exit(void)
+{
+	pthread_t thread;
+	void *result;
+	int rc;
+
+	/* Check create */
+	thread = 0;
+	rc = pthread_create(&thread, NULL, test_exit_async, (void *)0x1234);
+	CU_ASSERT(rc == 0);
+	CU_ASSERT(thread != 0);
+
+	/* Check join */
+	rc = pthread_join(thread, &result);
+	CU_ASSERT(rc == 0);
+	CU_ASSERT(result == (void *)~0x1234)
+}
+
+
+static void
+test_getaffinity(void)
+{
+	pthread_t thread;
+	cpuset_t set;
+	int rc;
+
+	/* Check create */
+	thread = 0;
+	rc = pthread_create(&thread, NULL, test_exit_async, NULL);
+	CU_ASSERT(rc == 0);
+	CU_ASSERT(thread != 0);
+
+	/* Check getaffinity */
+	rc = pthread_getaffinity_np(thread, sizeof(set), &set);
+	CU_ASSERT(rc == 0);
+
+	/* Check join */
+	rc = pthread_join(thread, NULL);
+	CU_ASSERT(rc == 0);
+}
+
+
+static void
+test_setaffinity(void)
+{
+	pthread_t thread;
+	cpuset_t set;
+	int rc;
+
+	/* Check create */
+	thread = 0;
+	rc = pthread_create(&thread, NULL, test_exit_async, NULL);
+	CU_ASSERT(rc == 0);
+	CU_ASSERT(thread != 0);
+
+	/* Check getaffinity */
+	rc = pthread_getaffinity_np(thread, sizeof(set), &set);
+	CU_ASSERT(rc == 0);
+
+	/* Check setaffinity */
+	rc = wpdk_pthread_setaffinity_np(thread, sizeof(set), &set);
+	CU_ASSERT(rc == 0);
+
+	/* Check join */
+	rc = pthread_join(thread, NULL);
+	CU_ASSERT(rc == 0);
+}
+
+
+static void
+test_equal(void)
+{
+	pthread_t thread, thread2;
+	int rc;
+
+	/* Check create */
+	thread = 0;
+	rc = pthread_create(&thread, NULL, test_create_async, NULL);
+	CU_ASSERT(rc == 0);
+	CU_ASSERT(thread != 0);
+
+	/* Check second create */
+	thread2 = 0;
+	rc = pthread_create(&thread2, NULL, test_create_async, NULL);
+	CU_ASSERT(rc == 0);
+	CU_ASSERT(thread2 != 0);
+
+	/* Check equal */
+	rc = (pthread_equal(thread, thread) != 0);
+	CU_ASSERT(rc != 0);
+
+	/* Check unequal */
+	rc = (pthread_equal(thread, thread2) != 0);
+	CU_ASSERT(rc == 0);
+
+	rc = pthread_join(thread, NULL);
+	CU_ASSERT(rc == 0);
+
+	rc = pthread_join(thread2, NULL);
+	CU_ASSERT(rc == 0);
+}
+
+
 void
 add_pthread_tests()
 {
@@ -743,4 +1001,11 @@ add_pthread_tests()
 	CU_ADD_TEST(suite, test_cond_timedwait);
 	CU_ADD_TEST(suite, test_attr_detachstate);
 	CU_ADD_TEST(suite, test_attr_stacksize);
+	CU_ADD_TEST(suite, test_create);
+	CU_ADD_TEST(suite, test_join);
+	CU_ADD_TEST(suite, test_detach);
+	CU_ADD_TEST(suite, test_exit);
+	CU_ADD_TEST(suite, test_getaffinity);
+	CU_ADD_TEST(suite, test_setaffinity);
+	CU_ADD_TEST(suite, test_equal);
 }

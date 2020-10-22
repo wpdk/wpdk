@@ -28,7 +28,7 @@ _WPDK_BEGIN_C_HEADER
  *  Define structures which are equivalent to the underlying
  *  implementation, but which avoid the need to include windows.h.
  */
-typedef void *pthread_t;
+typedef unsigned long pthread_t;
 typedef struct { intptr_t x; } pthread_cond_t;
 typedef struct { intptr_t x[4]; } pthread_barrier_t;
 typedef struct { intptr_t x[5]; } pthread_spinlock_t;
@@ -172,7 +172,7 @@ int wpdk_pthread_cond_timedwait(pthread_cond_t *cond, pthread_mutex_t *mutex, co
 
 typedef struct pthread_attr_s {
 	int detachstate;
-	size_t stacksize;
+	unsigned int stacksize;
 } pthread_attr_t;
 
 int wpdk_pthread_attr_init(pthread_attr_t *attr);

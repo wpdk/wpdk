@@ -17,7 +17,10 @@
 
 #include <wpdk/internal.h>
 #include <sys/time.h>
+#include <process.h>
 #include <pthread.h>
+#include <stdlib.h>
+#include <stdbool.h>
 
 
 /*
@@ -42,6 +45,169 @@ static const CRITICAL_SECTION mutex_init = PTHREAD_MUTEX_INITIALIZER;
 
 static bool spdk_mutex_workarounds = true;
 static SRWLOCK mutex_init_lock = SRWLOCK_INIT;
+
+struct thread {
+	DWORD id;
+	HANDLE h;
+	void *(*start)(void *);
+	void *arg;
+	void *result;
+	int index;
+};
+
+static struct thread **wpdk_threads;
+static SRWLOCK wpdk_threads_lock = SRWLOCK_INIT;
+
+static const int maxthreads = 8192;
+
+
+static struct thread *
+wpdk_allocate_thread()
+{
+	struct thread *pthread = NULL;
+	int i;
+
+	AcquireSRWLockExclusive(&wpdk_threads_lock);
+
+	if (!wpdk_threads)
+		wpdk_threads = calloc(maxthreads, sizeof(struct thread *));
+
+	if (wpdk_threads)
+		pthread = calloc(1, sizeof(struct thread));
+
+	if (!pthread) {
+		ReleaseSRWLockExclusive(&wpdk_threads_lock);
+		wpdk_posix_error(ENOMEM);
+		return NULL;
+	}
+
+	for (i = 0; i < maxthreads; i++)
+		if (wpdk_threads[i] == NULL) {
+			wpdk_threads[i] = pthread;
+			pthread->index = i;
+			break;
+		}
+
+	ReleaseSRWLockExclusive(&wpdk_threads_lock);
+
+	if (i >= maxthreads) {
+		wpdk_posix_error(EMFILE);
+		free(pthread);
+		return NULL;
+	}
+
+	return pthread;
+}
+
+
+static void
+wpdk_set_thread_info(struct thread *pthread, DWORD id, HANDLE h, bool detached)
+{
+	AcquireSRWLockExclusive(&wpdk_threads_lock);
+
+	pthread->id = id;
+	pthread->h = (detached) ? 0 : h;
+
+	if (pthread->h == 0) {
+		wpdk_threads[pthread->index] = NULL;
+		pthread->index = -1;
+	}
+
+	ReleaseSRWLockExclusive(&wpdk_threads_lock);
+
+	if (h == 0) free(pthread);
+}
+
+
+static bool
+wpdk_get_thread_info(DWORD id, HANDLE *phandle, int *pindex)
+{
+	bool rc = false;
+	int i;
+
+	AcquireSRWLockExclusive(&wpdk_threads_lock);
+
+	for (i = 0; wpdk_threads && i < maxthreads; i++)
+		if (wpdk_threads[i] && wpdk_threads[i]->id == id) {
+			*phandle = wpdk_threads[i]->h;
+			*pindex = i;
+			rc = true;
+			break;
+		}
+
+	ReleaseSRWLockExclusive(&wpdk_threads_lock);
+	return rc;
+}
+
+
+static void
+wpdk_thread_starting(struct thread *pthread, struct thread *info)
+{
+	AcquireSRWLockExclusive(&wpdk_threads_lock);
+
+	*info = *pthread;
+	pthread->start = NULL;
+
+	ReleaseSRWLockExclusive(&wpdk_threads_lock);
+
+	if (info->index == -1)
+		free(pthread);
+}
+
+
+static void
+wpdk_thread_done(int index, void *result)
+{
+	DWORD id = GetCurrentThreadId();
+	int i = index;
+
+	AcquireSRWLockExclusive(&wpdk_threads_lock);
+
+	if (i == -1 && wpdk_threads)
+		for (i = 0; i < maxthreads; i++)
+			if (wpdk_threads[i] && wpdk_threads[i]->id == id) break;
+
+	if (0 <= i && i < maxthreads && wpdk_threads)
+		if (wpdk_threads[i] && wpdk_threads[i]->id == id)
+			wpdk_threads[i]->result = result;
+
+	ReleaseSRWLockExclusive(&wpdk_threads_lock);
+}
+
+
+static bool
+wpdk_detach_thread(DWORD id, int index, void **presult)
+{
+	struct thread *pthread = NULL;
+	void *(*start)(void *) = NULL;
+	int i = index;
+	HANDLE h = 0;
+
+	AcquireSRWLockExclusive(&wpdk_threads_lock);
+
+	if (i == -1 && wpdk_threads)
+		for (i = 0; i < maxthreads; i++)
+			if (wpdk_threads[i] && wpdk_threads[i]->id == id) break;
+
+	if (0 <= i && i < maxthreads && wpdk_threads)
+		if (wpdk_threads[i] && wpdk_threads[i]->id == id) {
+			pthread = wpdk_threads[i];
+			pthread->index = -1;
+			wpdk_threads[i] = NULL;
+			start = pthread->start;
+			h = pthread->h;
+			if (presult) *presult = pthread->result;
+		}
+
+	ReleaseSRWLockExclusive(&wpdk_threads_lock);
+
+	if (pthread) {
+		if (h != 0) CloseHandle(h);
+		if (start == NULL) free(pthread);
+	}
+
+	return (pthread != NULL);
+}
 
 
 int
@@ -623,7 +789,10 @@ wpdk_pthread_attr_setstacksize(pthread_attr_t *attr, size_t stacksize)
 {
 	if (!attr) return EINVAL;
 
-	attr->stacksize = stacksize;
+	if (stacksize > UINT_MAX)
+		return EINVAL;
+
+	attr->stacksize = (unsigned int)stacksize;
 	return 0;
 }
 
@@ -631,39 +800,58 @@ wpdk_pthread_attr_setstacksize(pthread_attr_t *attr, size_t stacksize)
 pthread_t
 wpdk_pthread_self()
 {
-	// HACK - pthread_self() is only used to get self id to change name
-	return GetCurrentThread();
+	return GetCurrentThreadId();
+}
+
+
+static unsigned int
+wpdk_start_thread(void *arg)
+{
+	struct thread t;
+	wpdk_thread_starting((struct thread *)arg, &t);
+	wpdk_thread_done(t.index, (t.start)(t.arg));
+	return 0;
 }
 
 
 int
 wpdk_pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_routine)(void *), void *arg)
 {
-	HANDLE hThread;
+	struct thread *pthread;
+	unsigned int id;
+	bool detached;
+	int error;
+	HANDLE h;
 
-	// HACK - pthread_create check implementation
-	// HACK - pthread_create should use beginthreadex if using CRT
-
-	UNREFERENCED_PARAMETER(attr);
-
-#ifdef __GNUC__
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wcast-function-type"
-#endif
-	// HACK - return code from start_routine is DWORD, not 'void *'
-	hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)start_routine, arg, 0, (LPDWORD)thread);
-#ifdef __GNUC__
-#pragma GCC diagnostic pop
-#endif
-
-	if (hThread == NULL) {
-		// HACK - pthread_create error code
+	if (!thread || !start_routine)
 		return EINVAL;
-	}
 
+	wpdk_set_invalid_handler();
+
+	if ((pthread = wpdk_allocate_thread()) == NULL)
+		return errno;
+
+	pthread->start = start_routine;
+	pthread->arg = arg;
+
+	detached = (attr && attr->detachstate == PTHREAD_CREATE_DETACHED);
+
+	h = (HANDLE)_beginthreadex(NULL, (attr ? attr->stacksize : 0),
+					wpdk_start_thread, pthread, CREATE_SUSPENDED, &id);
+
+	error = errno;
+	wpdk_set_thread_info(pthread, id, h, detached);
+
+	if (h == 0) return error;
+
+	ResumeThread(h);
+	if (detached) CloseHandle(h);
+
+	// HACK - pthread_create - DPDK should be setting priority
 	SetPriorityClass(GetCurrentProcess(), REALTIME_PRIORITY_CLASS);
-	SetThreadPriority(hThread, THREAD_PRIORITY_TIME_CRITICAL);
-	*thread = hThread;
+	SetThreadPriority(h, THREAD_PRIORITY_TIME_CRITICAL);
+
+	*thread = id;
 	return 0;
 }
 
@@ -671,53 +859,56 @@ wpdk_pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start
 int
 wpdk_pthread_join(pthread_t thread, void **value_ptr)
 {
-	DWORD rc, code;
+	int index, error;
+	bool detached;
+	HANDLE h;
+	DWORD rc;
 
-	// HACK - pthread_exit - check for errors
+	if (!thread || thread == GetCurrentThreadId())
+		return EINVAL;
 
-	do rc = WaitForSingleObjectEx(thread, INFINITE, TRUE);
+	if (!wpdk_get_thread_info(thread, &h, &index))
+		return EINVAL;
+
+	do rc = WaitForSingleObjectEx(h, INFINITE, TRUE);
 	while (rc != WAIT_OBJECT_0 && rc != WAIT_FAILED);
 
-	if (value_ptr)
-		*value_ptr = (GetExitCodeThread(thread, &code) != 0) ? (void *)(ULONG_PTR)code : 0;
+	error = wpdk_last_error();
+	detached = wpdk_detach_thread(thread, index, value_ptr);
 
-	CloseHandle(thread);
-	return 0;
+	return (rc == WAIT_FAILED) ? error : detached ? 0 : ESRCH;
 }
 
 
 int
 wpdk_pthread_detach(pthread_t thread)
 {
-	// HACK - unimplemented
-	CloseHandle(thread);
-	return EINVAL;
-}
-
-
-int
-wpdk_pthread_cancel(pthread_t thread)
-{
-	// HACK - unimplemented
-	UNREFERENCED_PARAMETER(thread);
-	WPDK_UNIMPLEMENTED();
-	return EINVAL;
+	return wpdk_detach_thread(thread, -1, NULL) ? 0 : EINVAL;
 }
 
 
 void
 wpdk_pthread_exit(void *value_ptr)
 {
-	// HACK - pthread_exit unimplemented
-	// HACK - size of pthread_exit return code
-	ExitThread((DWORD)(ULONG_PTR)value_ptr);
+	wpdk_thread_done(-1, value_ptr);
+	_endthreadex(0);
+}
+
+
+int
+wpdk_pthread_cancel(pthread_t thread)
+{
+	// HACK - pthread_cancel unimplemented
+	UNREFERENCED_PARAMETER(thread);
+	WPDK_UNIMPLEMENTED();
+	return EINVAL;
 }
 
 
 int
 wpdk_pthread_setcancelstate(int state, int *oldstate)
 {
-	// HACK - unimplemented
+	// HACK - pthread_setcancelstate unimplemented
 	if (!oldstate || state < PTHREAD_CANCEL_DISABLE || state > PTHREAD_CANCEL_ENABLE)
 		return EINVAL;
 
@@ -729,7 +920,7 @@ wpdk_pthread_setcancelstate(int state, int *oldstate)
 int
 wpdk_pthread_setcanceltype(int type, int *oldtype)
 {
-	// HACK - unimplemented
+	// HACK - pthread_setcanceltype unimplemented
 	if (!oldtype || type < PTHREAD_CANCEL_DEFERRED || type > PTHREAD_CANCEL_ASYNCHRONOUS)
 		return EINVAL;
 
@@ -741,7 +932,7 @@ wpdk_pthread_setcanceltype(int type, int *oldtype)
 void
 wpdk_pthread_testcancel(void)
 {
-	// HACK - unimplemented
+	// HACK - pthreads_testcancel unimplemented
 	WPDK_UNIMPLEMENTED();
 }
 
@@ -750,14 +941,25 @@ int
 wpdk_pthread_setaffinity_np(pthread_t thread, size_t cpusetsize, const cpuset_t *cpuset)
 {
 	DWORD_PTR affinity;
+	int error;
+	HANDLE h;
 
 	if (!thread || cpusetsize < sizeof(affinity) || !cpuset)
 		return EINVAL;
 
-	affinity = SetThreadAffinityMask(thread, cpuset->_bits[0]);
+	h = OpenThread(THREAD_SET_INFORMATION|THREAD_QUERY_INFORMATION,
+			FALSE, thread);
 
-	// HACK - error code
-	return (affinity != 0) ? 0 : EINVAL;
+	if (h == NULL) {
+		wpdk_last_error();
+		return errno;
+	}
+
+	affinity = SetThreadAffinityMask(h, cpuset->_bits[0]);
+	error = wpdk_last_error();
+
+	CloseHandle(h);
+	return (affinity != 0) ? 0 : error;
 }
 
 
@@ -770,16 +972,27 @@ int
 wpdk_pthread_getaffinity_np(pthread_t thread, size_t cpusetsize, cpuset_t *cpuset)
 {
 	DWORD_PTR affinity, temporary;
+	int error;
+	HANDLE h;
 
 	if (!thread || cpusetsize < sizeof(affinity) || !cpuset)
 		return EINVAL;
 
+	h = OpenThread(THREAD_SET_INFORMATION|THREAD_QUERY_INFORMATION,
+			FALSE, thread);
+
+	if (h == NULL) {
+		wpdk_last_error();
+		return errno;
+	}
+
 	for (temporary = 1; temporary != 0; temporary <<= 1) {
-		affinity = SetThreadAffinityMask(thread, temporary);
+		affinity = SetThreadAffinityMask(h, temporary);
 
 		if (affinity != 0) {
 			/* Reinstate the previous value */
-			SetThreadAffinityMask(thread, affinity);
+			SetThreadAffinityMask(h, affinity);
+			CloseHandle(h);
 
 			memset(cpuset, 0, cpusetsize);
 			cpuset->_bits[0] = affinity;
@@ -787,8 +1000,9 @@ wpdk_pthread_getaffinity_np(pthread_t thread, size_t cpusetsize, cpuset_t *cpuse
 		}
 	}
 
-	// HACK - error code
-	return EINVAL;
+	error = wpdk_last_error();
+	CloseHandle(h);
+	return error;
 }
 
 
