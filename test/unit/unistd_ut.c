@@ -623,7 +623,10 @@ test_lockf(void)
 static void
 test_getuid()
 {
-	CU_ASSERT(getuid() == 0);
+	uid_t uid;
+
+	uid = getuid();
+	CU_ASSERT(uid == 0 || uid == 1000);
 }
 
 

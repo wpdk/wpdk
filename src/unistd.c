@@ -430,7 +430,17 @@ wpdk_lockf(int fildes, int function, off_t size)
 uid_t
 wpdk_getuid()
 {
-	// HACK - not implemented
-	WPDK_UNIMPLEMENTED();
-	return 0;
+	TOKEN_ELEVATION token;
+	uid_t uid = 1000;
+	DWORD size;
+	HANDLE h;
+
+	if (OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &h) != 0) {
+		if (GetTokenInformation(h, TokenElevation, &token, sizeof(token), &size) != 0)
+			if (token.TokenIsElevated) uid = 0;
+
+		CloseHandle(h);
+	}
+
+	return uid;
 }
