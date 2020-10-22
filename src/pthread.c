@@ -58,6 +58,7 @@ struct thread {
 static struct thread **wpdk_threads;
 static SRWLOCK wpdk_threads_lock = SRWLOCK_INIT;
 
+static int hwmthreads = 0;
 static const int maxthreads = 8192;
 
 
@@ -85,6 +86,8 @@ wpdk_allocate_thread()
 		if (wpdk_threads[i] == NULL) {
 			wpdk_threads[i] = pthread;
 			pthread->index = i;
+			if (i >= hwmthreads)
+				hwmthreads = i + 1;
 			break;
 		}
 
@@ -127,7 +130,7 @@ wpdk_get_thread_info(DWORD id, HANDLE *phandle, int *pindex)
 
 	AcquireSRWLockExclusive(&wpdk_threads_lock);
 
-	for (i = 0; wpdk_threads && i < maxthreads; i++)
+	for (i = 0; wpdk_threads && i < hwmthreads; i++)
 		if (wpdk_threads[i] && wpdk_threads[i]->id == id) {
 			*phandle = wpdk_threads[i]->h;
 			*pindex = i;
@@ -164,7 +167,7 @@ wpdk_thread_done(int index, void *result)
 	AcquireSRWLockExclusive(&wpdk_threads_lock);
 
 	if (i == -1 && wpdk_threads)
-		for (i = 0; i < maxthreads; i++)
+		for (i = 0; i < hwmthreads; i++)
 			if (wpdk_threads[i] && wpdk_threads[i]->id == id) break;
 
 	if (0 <= i && i < maxthreads && wpdk_threads)
@@ -186,7 +189,7 @@ wpdk_detach_thread(DWORD id, int index, void **presult)
 	AcquireSRWLockExclusive(&wpdk_threads_lock);
 
 	if (i == -1 && wpdk_threads)
-		for (i = 0; i < maxthreads; i++)
+		for (i = 0; i < hwmthreads; i++)
 			if (wpdk_threads[i] && wpdk_threads[i]->id == id) break;
 
 	if (0 <= i && i < maxthreads && wpdk_threads)
@@ -898,41 +901,52 @@ wpdk_pthread_exit(void *value_ptr)
 int
 wpdk_pthread_cancel(pthread_t thread)
 {
-	// HACK - pthread_cancel unimplemented
-	UNREFERENCED_PARAMETER(thread);
+	if (!thread) return EINVAL;
+
 	WPDK_UNIMPLEMENTED();
-	return EINVAL;
+	return ENOSYS;
 }
 
 
 int
 wpdk_pthread_setcancelstate(int state, int *oldstate)
 {
-	// HACK - pthread_setcancelstate unimplemented
-	if (!oldstate || state < PTHREAD_CANCEL_DISABLE || state > PTHREAD_CANCEL_ENABLE)
-		return EINVAL;
+	if (!oldstate) return EINVAL;
 
-	*oldstate = PTHREAD_CANCEL_DISABLE;
-	return 0;
+	switch (state) {
+		case PTHREAD_CANCEL_ENABLE:
+			WPDK_UNIMPLEMENTED();
+			*oldstate = PTHREAD_CANCEL_DISABLE;
+			return 0;
+
+		case PTHREAD_CANCEL_DISABLE:
+			*oldstate = PTHREAD_CANCEL_DISABLE;
+			return 0;
+	}
+
+	return EINVAL;
 }
 
 
 int
 wpdk_pthread_setcanceltype(int type, int *oldtype)
 {
-	// HACK - pthread_setcanceltype unimplemented
-	if (!oldtype || type < PTHREAD_CANCEL_DEFERRED || type > PTHREAD_CANCEL_ASYNCHRONOUS)
-		return EINVAL;
+	if (!oldtype) return EINVAL;
 
-	*oldtype = PTHREAD_CANCEL_DEFERRED;
-	return 0;
+	switch (type) {
+		case PTHREAD_CANCEL_DEFERRED:
+		case PTHREAD_CANCEL_ASYNCHRONOUS:
+			*oldtype = PTHREAD_CANCEL_DEFERRED;
+			return 0;
+	}
+
+	return EINVAL;
 }
 
 
 void
 wpdk_pthread_testcancel(void)
 {
-	// HACK - pthreads_testcancel unimplemented
 	WPDK_UNIMPLEMENTED();
 }
 

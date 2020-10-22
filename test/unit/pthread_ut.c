@@ -766,7 +766,7 @@ test_create(void)
 	CU_ASSERT(rc == EINVAL);
 
 	/* Check create multiple */
-	for (i = 0; i < sizeof(threadv) / sizeof(threadv[0]); i++) {
+	for (i = 0; i < (int)(sizeof(threadv) / sizeof(threadv[0])); i++) {
 		threadv[i] = 0;
 		rc = pthread_create(&threadv[i], NULL, test_create_async, (void *)(val+i));
 		CU_ASSERT(rc == 0);
@@ -774,7 +774,7 @@ test_create(void)
 	}
 
 	/* Check join multiple */
-	for (i = 0; i < sizeof(threadv) / sizeof(threadv[0]); i++) {
+	for (i = 0; i < (int)(sizeof(threadv) / sizeof(threadv[0])); i++) {
 		result = 0;
 		rc = pthread_join(threadv[i], &result);
 		CU_ASSERT(rc == 0);
@@ -813,7 +813,7 @@ test_join(void)
 	CU_ASSERT(rc == EINVAL);
 
 	/* Check create multiple */
-	for (i = 0; i < sizeof(threadv) / sizeof(threadv[0]); i++) {
+	for (i = 0; i < (int)(sizeof(threadv) / sizeof(threadv[0])); i++) {
 		threadv[i] = 0;
 		rc = pthread_create(&threadv[i], NULL, test_create_async, (void *)(val+i));
 		CU_ASSERT(rc == 0);
@@ -821,7 +821,7 @@ test_join(void)
 	}
 
 	/* Check join multiple reverse order */
-	for (i = sizeof(threadv) / sizeof(threadv[0]) - 1; i >= 0; i--) {
+	for (i = (int)(sizeof(threadv) / sizeof(threadv[0])) - 1; i >= 0; i--) {
 		result = 0;
 		rc = pthread_join(threadv[i], &result);
 		CU_ASSERT(rc == 0);
