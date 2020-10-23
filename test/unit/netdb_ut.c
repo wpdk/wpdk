@@ -88,11 +88,21 @@ test_freeaddrinfo(void)
 static void
 test_gai_strerror(void)
 {
-	const char *msg;
+	const char *msg, *msg2, *msg3;
 
 	/* Check msg is returned */
 	msg = gai_strerror(EAI_AGAIN);
 	CU_ASSERT(*msg != 0);
+
+	/* Check cached msg is returned */
+	msg2 = gai_strerror(EAI_AGAIN);
+	CU_ASSERT(*msg2 != 0);
+
+	/* Check another msg */
+	msg3 = gai_strerror(EAI_SERVICE);
+	CU_ASSERT(*msg3 != 0);
+	CU_ASSERT(strcmp(msg, msg2) == 0);
+	CU_ASSERT(strcmp(msg2, msg3) != 0);
 
 	/* Check success */
 	msg = gai_strerror(0);

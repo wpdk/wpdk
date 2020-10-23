@@ -41,7 +41,7 @@ CHECK_SIZE(pthread_cond_t, CONDITION_VARIABLE);
  *  Default initialisation value to ensure that all mutexes are
  *  initialised identically. Includes a spin count.
  */ 
-static const CRITICAL_SECTION mutex_init = PTHREAD_MUTEX_INITIALIZER;
+static const pthread_mutex_t mutex_init = PTHREAD_MUTEX_INITIALIZER;
 
 static bool spdk_mutex_workarounds = true;
 static SRWLOCK mutex_init_lock = SRWLOCK_INIT;
