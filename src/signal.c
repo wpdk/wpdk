@@ -30,7 +30,7 @@ int wpdk_sigfillset(sigset_t *set)
 	if (!set)
 		return wpdk_posix_error(EINVAL);
 
-	set->bits = (uint32_t)~0;
+	set->bits = (uint32_t)((1 << (NSIG - 1)) - 1);
 	return 0;
 }
 
