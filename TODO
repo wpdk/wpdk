@@ -1,5 +1,3 @@
-// HACK - to do list
-
 Sanity checks for pthreads to make sure init/destroy calls are being used correctly
 
 SPDK
@@ -13,8 +11,6 @@ Check if initialisation segment works with msvc as well as clang
 
 Use #define __wrap_ for names to map to wpdk_ (or change wrap macro definition?)
 Auto-generate wrap.h header files
-
-Watch out for dllimport declarations - they override the static inline definitions and prevent the wrapper being private.
 
 SetThreadDescription - https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-setthreaddescription
 
@@ -35,8 +31,6 @@ ifaddrs https://www.google.co.uk/search?ei=wOdNX5CuEJLHxgOhkZv4Bg&q=windows+sock
 epoll needs to define OUT option as well.
 
 Investigate impact of thread local storage https://github.com/PlushBeaver/tlstest
-
-pthreads - defer initialisation of mutex and condition variable until later (spinlock)
 
 Fix for 32-bit builds
 
