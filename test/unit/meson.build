@@ -15,6 +15,7 @@ sources = [
 	'fatal_ut.c',
 	'fcntl_ut.c',
 	'file_ut.c',
+	'ifaddrs_ut.c',
 	'include_ut.c',
 	'netdb_ut.c',
 	'pthread_ut.c',

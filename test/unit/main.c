@@ -23,6 +23,7 @@ void add_error_tests(void);
 void add_fatal_tests(void);
 void add_fcntl_tests(void);
 void add_file_tests(void);
+void add_ifaddrs_tests(void);
 void add_include_c_tests(void);
 void add_include_cpp_tests(void);
 void add_netdb_tests(void);
@@ -61,6 +62,7 @@ main(int argc, char **argv)
 	add_fcntl_tests();
 	add_file_tests();
 	add_fatal_tests();
+	add_ifaddrs_tests();
 	add_include_c_tests();
 	add_include_cpp_tests();
 	add_netdb_tests();

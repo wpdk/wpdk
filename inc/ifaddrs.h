@@ -36,4 +36,8 @@ void wpdk_freeifaddrs(struct ifaddrs *ifa);
 
 _WPDK_END_C_HEADER
 
+#ifdef _MSC_VER
+#pragma comment(lib, "Iphlpapi")
+#endif
+
 #endif /* _WPDK_IFADDRS_H_ */
