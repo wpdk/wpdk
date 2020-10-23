@@ -49,6 +49,9 @@ ssize_t wpdk_socket_readv(int fildes, const struct iovec *iov, int iovcnt);
 ssize_t wpdk_socket_writev(int fildes, const struct iovec *iov, int iovcnt);
 int wpdk_socket_fcntl(int fildes, int cmd, int arg);
 
+struct ifreq;
+int wpdk_getifflags(struct ifreq *ifr);
+
 #define LOCKFILE_MAX ((INT64_MAX - 1) / 2)
 
 int wpdk_lockfile(int op, int fildes, off_t start, ssize_t nbytes, bool nowait);

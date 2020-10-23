@@ -13,16 +13,36 @@
 
 #include <wpdk/internal.h>
 #include <sys/ioctl.h>
+#include <net/if.h>
 
 
 int
 wpdk_ioctl(int fd, unsigned long request, ...)
 {
-	// HACK - not implemented
-	WPDK_UNIMPLEMENTED();
-	
-	UNREFERENCED_PARAMETER(fd);
-	UNREFERENCED_PARAMETER(request);
+	struct ifreq *ifr;
+	va_list ap;
+
+	switch (request) {
+		case SIOCGIFFLAGS:
+		case SIOCSIFFLAGS:
+
+			if (!wpdk_is_socket(fd))
+				return wpdk_posix_error(EBADF);
+
+			va_start(ap, request);
+			ifr = va_arg(ap, struct ifreq *);
+			va_end(ap);
+
+			if (!ifr)
+				return wpdk_posix_error(EINVAL);
+
+			if (request == SIOCSIFFLAGS) {
+				WPDK_UNIMPLEMENTED();
+				return 0;
+			}
+
+			return wpdk_getifflags(ifr);
+	}
 
 	return wpdk_posix_error(EINVAL);
 }

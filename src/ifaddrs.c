@@ -18,47 +18,82 @@
 #include <iphlpapi.h>
 #include <stdlib.h>
 #include <net/if.h>
+#include <stdio.h>
+#include <stdbool.h>
 
 
-int wpdk_getifaddrs(struct ifaddrs **ifap)
+static IP_ADAPTER_ADDRESSES *
+wpdk_get_adapters()
 {
 	IP_ADAPTER_ADDRESSES *ipa, *buf = NULL;
+	DWORD len = 0;
+	ULONG rc;
+
+	while ((rc = GetAdaptersAddresses(AF_UNSPEC,
+				GAA_FLAG_SKIP_ANYCAST|GAA_FLAG_SKIP_MULTICAST|GAA_FLAG_SKIP_DNS_SERVER,
+				NULL, buf, &len)) != ERROR_SUCCESS) {
+
+		if (rc != ERROR_BUFFER_OVERFLOW) {
+			free(buf);
+			wpdk_windows_error(rc);
+			return NULL;
+		}
+
+		ipa = buf;
+		if ((buf = realloc(buf, len)) == NULL) {
+			free(ipa);
+			wpdk_posix_error(ENOMEM);
+			return NULL;
+		}
+	}
+
+	return buf;
+}
+
+
+static bool
+wpdk_get_if_info(IP_ADAPTER_ADDRESSES *ipa,
+		ADDRESS_FAMILY family, char *name, short *pflags)
+{
+	int index;
+
+	if (family != AF_INET && family != AF_INET6)
+		return false;
+
+	*pflags = 0;
+	if (ipa->OperStatus == IfOperStatusUp) *pflags |= IFF_UP;
+	if (ipa->IfType == IF_TYPE_SOFTWARE_LOOPBACK) *pflags |= IFF_LOOPBACK;
+
+ 	index = (family == AF_INET6) ? ipa->Ipv6IfIndex : ipa->IfIndex;
+
+	sprintf_s(name, IF_NAMESIZE, "%s%d",
+		(*pflags & IFF_LOOPBACK) ? "lo" : "en", index);
+
+	return true;
+}
+
+
+int
+wpdk_getifaddrs(struct ifaddrs **ifap)
+{
 	struct ifaddrs *ifa, *iflist = NULL;
 	IP_ADAPTER_UNICAST_ADDRESS *addr;
-	ADDRESS_FAMILY family;
-	size_t len = 0;
-	DWORD nbytes;
-	int index;
-	ULONG rc;
+	IP_ADAPTER_ADDRESSES *ipa, *buf;
+	char name[IF_NAMESIZE];
+	short flags;
+	size_t len;
 
 	if (!ifap) return EINVAL;
 
 	wpdk_set_invalid_handler();
 
-	while ((rc = GetAdaptersAddresses(AF_UNSPEC,
-				GAA_FLAG_SKIP_ANYCAST|GAA_FLAG_SKIP_MULTICAST|GAA_FLAG_SKIP_DNS_SERVER/*|
-				GAA_FLAG_SKIP_FRIENDLY_NAME*/, NULL, buf, &nbytes)) != ERROR_SUCCESS) {
-
-		if (rc != ERROR_BUFFER_OVERFLOW) {
-			free(buf);
-			return wpdk_windows_error(rc);
-		}
-
-		ipa = buf;
-		len = nbytes;
-	
-		if ((buf = realloc(buf, len)) == NULL) {
-			free(ipa);
-			return wpdk_posix_error(ENOMEM);
-		}
-	}
+	if ((buf = wpdk_get_adapters()) == NULL)
+		return -1;
 
 	for (ipa = buf; ipa; ipa = ipa->Next) {
 		for (addr = ipa->FirstUnicastAddress; addr; addr = addr->Next) {
-			family = addr->Address.lpSockaddr->sa_family;
-			index = (family == AF_INET6) ? ipa->Ipv6IfIndex : ipa->IfIndex;
-
-			if (family != AF_INET && family != AF_INET6)
+			if (!wpdk_get_if_info(ipa, addr->Address.lpSockaddr->sa_family,
+					name, &flags))
 				continue;
 
 			len = sizeof(struct ifaddrs) + addr->Address.iSockaddrLength + IF_NAMESIZE;
@@ -71,14 +106,10 @@ int wpdk_getifaddrs(struct ifaddrs **ifap)
 
 			ifa->ifa_addr = (struct sockaddr *)(ifa + 1);
 			ifa->ifa_name = (char *)ifa->ifa_addr + addr->Address.iSockaddrLength;
-
-			if (ipa->OperStatus == IfOperStatusUp) ifa->ifa_flags |= IFF_UP;
-			if (ipa->IfType == IF_TYPE_SOFTWARE_LOOPBACK) ifa->ifa_flags |= IFF_LOOPBACK;
+			ifa->ifa_flags = flags;
 
 			memcpy(ifa->ifa_addr, addr->Address.lpSockaddr, addr->Address.iSockaddrLength);
-
-			sprintf_s(ifa->ifa_name, IF_NAMESIZE, "%s%d",
-				(ifa->ifa_flags & IFF_LOOPBACK) ? "lo" : "en", index);
+			strcpy(ifa->ifa_name, name);
 
 			ifa->ifa_next = iflist;
 			iflist = ifa;
@@ -92,7 +123,40 @@ int wpdk_getifaddrs(struct ifaddrs **ifap)
 }
 
 
-void wpdk_freeifaddrs(struct ifaddrs *ifa)
+int
+wpdk_getifflags(struct ifreq *ifr)
+{
+	IP_ADAPTER_UNICAST_ADDRESS *addr;
+	IP_ADAPTER_ADDRESSES *ipa, *buf;
+	char name[IF_NAMESIZE];
+	short flags;
+
+	wpdk_set_invalid_handler();
+
+	if ((buf = wpdk_get_adapters()) == NULL)
+		return -1;
+
+	for (ipa = buf; ipa; ipa = ipa->Next) {
+		for (addr = ipa->FirstUnicastAddress; addr; addr = addr->Next) {
+			if (!wpdk_get_if_info(ipa, addr->Address.lpSockaddr->sa_family,
+					name, &flags))
+				continue;
+
+			if (strcmp(ifr->ifr_name, name) == 0) {
+				ifr->ifr_flags = flags;
+				free(buf);
+				return 0;
+			}
+		}
+	}
+
+	free(buf);
+	return wpdk_posix_error(EINVAL);
+}
+
+
+void
+wpdk_freeifaddrs(struct ifaddrs *ifa)
 {
 	struct ifaddrs *next;
 
