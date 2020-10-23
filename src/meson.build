@@ -89,6 +89,6 @@ shared_lib = shared_library('wpdk',
 		objects: objs,
 		c_args: cflags,
 		include_directories: [ global_includes ],
-		link_args: [ def_arg, '-lws2_32', '-lrpcrt4' ],
+		link_args: [ def_arg, link_libs ],
 		link_depends: [ version_map, def_file, mingw_map ],
 		install: true)

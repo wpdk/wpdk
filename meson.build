@@ -18,6 +18,7 @@ cc = meson.get_compiler('c')
 cpp = meson.get_compiler('cpp')
 
 machine_args = []
+link_libs = ['-lws2_32', '-lrpcrt4', '-liphlpapi']
 
 global_includes = include_directories('.', 'inc')
 
@@ -33,13 +34,13 @@ subdir('test/unit')
 
 wpdk_static_dep = declare_dependency(
 	include_directories : global_includes,
-	link_args : [ '-lws2_32', '-lrpcrt4' ],
+	link_args : link_libs,
 	link_with : [ static_lib ]
 )
 
 wpdk_shared_dep = declare_dependency(
 	include_directories : global_includes,
-	link_args : [ '-lws2_32', '-lrpcrt4' ],
+	link_args : link_libs,
 	link_with : [ shared_lib ]
 )
 

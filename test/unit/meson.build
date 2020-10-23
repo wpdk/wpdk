@@ -50,6 +50,6 @@ unit_tests = executable('wpdk_unit',
 		include_directories: [ global_includes ],
 		link_with : [ static_lib ],
 		dependencies : cunit_dep,
-		link_args : [ '-lws2_32', '-lrpcrt4' ],
+		link_args : [ link_libs ],
 		install: true
 )

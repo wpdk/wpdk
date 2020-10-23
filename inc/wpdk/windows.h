@@ -52,7 +52,9 @@
 #define NOMEMMGR
 #define NOMETAFILE
 #define NOMINMAX
+#if defined(__MINGW32__) && !defined(_WPDK_BUILD_LIB_)
 #define NOMSG
+#endif
 #define NOOPENFILE
 #define NOSCROLL
 #define NOSERVICE
