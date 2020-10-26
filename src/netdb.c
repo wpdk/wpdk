@@ -16,6 +16,15 @@
 #include <netdb.h>
 
 
+#ifndef EAI_NOSECURENAME
+#define EAI_NOSECURENAME	11032L
+#endif
+
+#ifndef EAI_IPSECPOLICY
+#define EAI_IPSECPOLICY		11033L
+#endif		
+
+
 struct gai_error {
 	int ecode;
 	const char *message;
