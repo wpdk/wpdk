@@ -27,6 +27,7 @@ void add_ifaddrs_tests(void);
 void add_include_c_tests(void);
 void add_include_cpp_tests(void);
 void add_ioctl_tests(void);
+void add_md5_tests(void);
 void add_netdb_tests(void);
 void add_pthread_tests(void);
 void add_pwd_tests(void);
@@ -68,6 +69,7 @@ main(int argc, char **argv)
 	add_include_c_tests();
 	add_include_cpp_tests();
 	add_ioctl_tests();
+	add_md5_tests();
 	add_netdb_tests();
 	add_pthread_tests();
 	add_pwd_tests();
