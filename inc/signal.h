@@ -29,41 +29,55 @@ _WPDK_BEGIN_C_HEADER
 
 #define SIGHUP		1
 #define SIGQUIT		3
+#define SIGBUS		7
 #define SIGKILL		9
-#define SIGBUS		10
+#define SIGUSR1		10
+#define SIGUSR2		12
 #define SIGPIPE		13
 #define SIGALRM		14
-#define SIGCHLD		20
-#define SIGUSR1		30
-#define SIGUSR2		31
+#define SIGCHLD		17
 
 #define SIG_BLOCK		1
 #define SIG_UNBLOCK		2
 #define SIG_SETMASK		3
 
 #define SA_SIGINFO		1
+#define SA_RESETHAND	2
 
 typedef struct sigset {
 	uint32_t bits;
 } sigset_t;
 
 typedef struct siginfo {
-	int x;
+	int		si_signo;
+	int		si_code;
 } siginfo_t;
 
+typedef struct ucontext {
+	int x;
+} ucontext_t;
+
 struct sigaction {
-	void (*sa_handler)(int);
-	void (*sa_sigaction)(int, siginfo_t *, void *);
+	union {
+		void (*sighandler)(int);
+		void (*sigaction)(int, siginfo_t *, void *);
+	} u;
 	sigset_t sa_mask;
 	int     sa_flags;
 };
 
+#define sa_handler		u.sighandler
+#define sa_sigaction	u.sigaction
+
+typedef void (*sighandler_t)(int);
 
 int wpdk_sigaction(int sig, const struct sigaction *act, struct sigaction *oact);
+sighandler_t wpdk_signal(int sig, sighandler_t handler);
 int wpdk_sigemptyset(sigset_t *set);
 int wpdk_sigfillset(sigset_t *set);
 int wpdk_sigaddset(sigset_t *set, int signo);
 int wpdk_sigdelset(sigset_t *set, int signo);
+int wpdk_sigismember(const sigset_t *set, int signo);
 int wpdk_kill(pid_t pid, int sig);
 
 #undef pthread_sigmask
@@ -71,10 +85,12 @@ int wpdk_pthread_sigmask(int how, const sigset_t *set, sigset_t *oset);
 
 #ifndef _WPDK_BUILD_LIB_
 #define sigaction(sig,act,oact) wpdk_sigaction(sig,act,oact)
+#define signal(sig,handler) wpdk_signal(sig,handler)
 #define sigemptyset(set) wpdk_sigemptyset(set)
 #define sigfillset(set) wpdk_sigfillset(set)
 #define sigaddset(set,sig) wpdk_sigaddset(set,sig)
 #define sigdelset(set,sig) wpdk_sigdelset(set,sig)
+#define sigismember(set,sig) wpdk_sigismember(set,sig)
 #define kill(pid,sig) wpdk_kill(pid,sig)
 #define pthread_sigmask(how,set,oset) wpdk_pthread_sigmask(how,set,oset)
 #endif

@@ -176,6 +176,7 @@ WPDK_0.1 {
 	wpdk_sigdelset;
 	wpdk_sigemptyset;
 	wpdk_sigfillset;
+	wpdk_signal;
 	wpdk_sleep;
 	wpdk_sockatmark;
 	wpdk_socket;
