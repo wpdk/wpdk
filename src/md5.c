@@ -26,6 +26,11 @@ static void (*MD5Final)(MD5_CTX *context);
 static INIT_ONCE wpdk_md5_once = INIT_ONCE_STATIC_INIT;
 
 
+#ifdef __MINGW32__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcast-function-type"
+#endif
+
 static BOOL CALLBACK
 wpdk_md5_initialise(INIT_ONCE *pInit, void *arg, void **pContext)
 {
@@ -50,6 +55,10 @@ wpdk_md5_initialise(INIT_ONCE *pInit, void *arg, void **pContext)
 	*pContext = NULL;
 	return TRUE;
 }
+
+#ifdef __MINGW32__
+#pragma GCC diagnostic pop
+#endif
 
 
 int
