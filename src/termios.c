@@ -13,28 +13,42 @@
 
 #include <wpdk/internal.h>
 #include <termios.h>
+#include <unistd.h>
 
 
 int wpdk_tcsetattr(int fildes, int optional_actions, const struct termios *termios_p)
 {
-	// HACK - implementation
+	if (!termios_p)
+		return wpdk_posix_error(EINVAL);
+
+	if (!wpdk_isatty(fildes))
+		return -1;
+
+	switch (optional_actions) {
+		case TCSANOW:
+		case TCSADRAIN:
+		case TCSAFLUSH:
+			break;
+
+		default:
+			return wpdk_posix_error(EINVAL);
+	}
+
 	WPDK_UNIMPLEMENTED();
-
-	UNREFERENCED_PARAMETER(fildes);
-	UNREFERENCED_PARAMETER(optional_actions);
-	UNREFERENCED_PARAMETER(termios_p);
-
-	return wpdk_posix_error(EINVAL);
+	return 0;
 }
 
 
 int wpdk_tcgetattr(int fildes, struct termios *termios_p)
 {
-	// HACK - implementation
+	if (!termios_p)
+		return wpdk_posix_error(EINVAL);
+
+	if (!wpdk_isatty(fildes))
+		return -1;
+
+	memset(termios_p, 0, sizeof(struct termios));
+
 	WPDK_UNIMPLEMENTED();
-
-	UNREFERENCED_PARAMETER(fildes);
-	UNREFERENCED_PARAMETER(termios_p);
-
-	return wpdk_posix_error(EINVAL);
+	return 0;
 }

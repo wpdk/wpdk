@@ -30,6 +30,7 @@ sources = [
 	'stdlib_ut.c',
 	'string_ut.c',
 	'strings_ut.c',
+	'termios_ut.c',
 	'time_ut.c',
 	'uio_ut.c',
 	'uuid_ut.c',

@@ -39,6 +39,7 @@ void add_stdio_tests(void);
 void add_stdlib_tests(void);
 void add_string_tests(void);
 void add_strings_tests(void);
+void add_termios_tests(void);
 void add_time_tests(void);
 void add_uio_tests(void);
 void add_uuid_tests(void);
@@ -81,6 +82,7 @@ main(int argc, char **argv)
 	add_stdlib_tests();
 	add_string_tests();
 	add_strings_tests();
+	add_termios_tests();
 	add_time_tests();
 	add_uio_tests();
 	add_uuid_tests();
