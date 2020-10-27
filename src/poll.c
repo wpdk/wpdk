@@ -12,13 +12,12 @@
  */
 
 #include <wpdk/internal.h>
+#include <sys/socket.h>
 #include <poll.h>
 
 
-// HACK struct pollfd is defined in terms of SOCKET
-// HACK by system header - need to revisit - posix is int
-
-int wpdk_poll(struct pollfd fds[], nfds_t nfds, int timeout)
+int
+wpdk_poll(struct pollfd fds[], nfds_t nfds, int timeout)
 {
 	fd_set readfds, writefds, exceptfds;
 	struct timeval delay = { 0, 0 };
@@ -39,9 +38,9 @@ int wpdk_poll(struct pollfd fds[], nfds_t nfds, int timeout)
 
 	for (i = 0; i < nfds && i < FD_SETSIZE; i++) {
 		fds[i].revents = 0;
-		if ((int)fds[i].fd < 0) continue;
+		if (fds[i].fd < 0) continue;
 
-		socket = wpdk_get_socket((int)fds[i].fd);
+		socket = wpdk_get_socket(fds[i].fd);
 
 		if (socket == INVALID_SOCKET) {
 			fds[i].revents |= POLLNVAL;
@@ -70,9 +69,9 @@ int wpdk_poll(struct pollfd fds[], nfds_t nfds, int timeout)
 		return wpdk_last_wsa_error();
 
 	for (n = i = 0; i < nfds && i < FD_SETSIZE; i++) {
-		if ((int)fds[i].fd < 0) continue;
+		if (fds[i].fd < 0) continue;
 
-		socket = wpdk_get_socket((int)fds[i].fd);
+		socket = wpdk_get_socket(fds[i].fd);
 
 		if (socket != INVALID_SOCKET) {
 			if (FD_ISSET(socket, &readfds))

@@ -23,7 +23,9 @@
 #define INCL_WINSOCK_API_PROTOTYPES 0
 #endif
 
+#define pollfd WSApollfd
 #include <winsock2.h>
+#undef pollfd
 
 /*
  * 	ws2tcpip.h contains inline definitions for several functions that are
