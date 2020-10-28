@@ -32,6 +32,7 @@ void add_netdb_tests(void);
 void add_pthread_tests(void);
 void add_pwd_tests(void);
 void add_resource_tests(void);
+void add_select_tests(void);
 void add_semaphore_tests(void);
 void add_signal_tests(void);
 void add_stat_tests(void);
@@ -75,6 +76,7 @@ main(int argc, char **argv)
 	add_pthread_tests();
 	add_pwd_tests();
 	add_resource_tests();
+	add_select_tests();
 	add_semaphore_tests();
 	add_signal_tests();
 	add_stat_tests();

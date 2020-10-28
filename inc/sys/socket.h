@@ -23,11 +23,25 @@
 #define INCL_WINSOCK_API_PROTOTYPES 0
 #endif
 
+#ifndef _WPDK_BUILD_LIB_
+#pragma push_macro("FD_ZERO")
+#pragma push_macro("FD_CLR")
+#pragma push_macro("FD_SET")
+#pragma push_macro("FD_ISSET")
+#endif
+
 #define pollfd WSApollfd
 #define timeval WSAtimeval
 #include <winsock2.h>
 #undef pollfd
 #undef timeval
+
+#ifndef _WPDK_BUILD_LIB_
+#pragma pop_macro("FD_ZERO")
+#pragma pop_macro("FD_CLR")
+#pragma pop_macro("FD_SET")
+#pragma pop_macro("FD_ISSET")
+#endif
 
 /*
  * 	ws2tcpip.h contains inline definitions for several functions that are

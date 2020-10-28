@@ -26,9 +26,17 @@ struct timeval {
 
 int wpdk_select(int nfds, fd_set *readfds, fd_set *writefds,
 		fd_set *exceptfds, struct timeval *timeout);
+void wpdk_fd_zero(fd_set *set);
+void wpdk_fd_clr(int fd, fd_set *set);
+void wpdk_fd_set(int fd, fd_set *set);
+int wpdk_fd_isset(int fd, fd_set *set);
 
 #ifndef _WPDK_BUILD_LIB_
 #define select(nfds,rd,wr,ex,to) wpdk_select(nfds,rd,wr,ex,to)
+#define FD_ZERO(set) wpdk_fd_zero(set)
+#define FD_CLR(fd,set) wpdk_fd_clr(fd,set)
+#define FD_SET(fd,set) wpdk_fd_set(fd,set)
+#define FD_ISSET(fd,set) wpdk_fd_isset(fd,set)
 #endif
 
 _WPDK_END_C_HEADER

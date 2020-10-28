@@ -15,8 +15,6 @@
 #include <sys/select.h>
 
 
-// HACK - fd_set should contain SOCKETs
-
 int
 wpdk_select(int nfds, fd_set *readfds, fd_set *writefds,
 		fd_set *exceptfds, struct timeval *timeout)
@@ -37,4 +35,43 @@ wpdk_select(int nfds, fd_set *readfds, fd_set *writefds,
 		return wpdk_last_wsa_error();
 
 	return rc;
+}
+
+
+void
+wpdk_fd_zero(fd_set *set)
+{
+	FD_ZERO(set);
+}
+
+
+void
+wpdk_fd_set(int fd, fd_set *set)
+{
+	SOCKET s = wpdk_get_socket(fd);
+
+	if (s != INVALID_SOCKET)
+		FD_SET(s, set);
+}
+
+
+void
+wpdk_fd_clr(int fd, fd_set *set)
+{
+	SOCKET s = wpdk_get_socket(fd);
+
+	if (s != INVALID_SOCKET)
+		FD_CLR(s, set);
+}
+
+
+int
+wpdk_fd_isset(int fd, fd_set *set)
+{
+	SOCKET s = wpdk_get_socket(fd);
+
+	if (s != INVALID_SOCKET)
+		return FD_ISSET(s, set);
+
+	return 0;
 }

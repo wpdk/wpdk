@@ -23,6 +23,7 @@ sources = [
 	'pthread_ut.c',
 	'pwd_ut.c',
 	'resource_ut.c',
+	'select_ut.c',
 	'semaphore_ut.c',
 	'signal_ut.c',
 	'stat_ut.c',
