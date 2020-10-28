@@ -60,7 +60,8 @@ wpdk_setrlimit(int resource, const struct rlimit *rlp)
 }
 
 
-int wpdk_getrusage(int who, struct rusage *usage)
+int
+wpdk_getrusage(int who, struct rusage *usage)
 {
 	FILETIME creation, exit, system, user;
 	ULARGE_INTEGER v;

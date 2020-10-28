@@ -16,7 +16,8 @@
 #include <stdlib.h>
 
 
-void wpdk_warning(const char *file,
+void
+wpdk_warning(const char *file,
 		int line, const char *function, const char *fmt, ...)
 {
 	WPDK_UNIMPLEMENTED();

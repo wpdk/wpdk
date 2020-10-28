@@ -15,7 +15,8 @@
 #include <sys/wait.h>
 
 
-pid_t wpdk_wait(int *stat_loc)
+pid_t
+wpdk_wait(int *stat_loc)
 {
 	WPDK_UNIMPLEMENTED();
 
@@ -25,7 +26,8 @@ pid_t wpdk_wait(int *stat_loc)
 }
 
 
-pid_t wpdk_waitpid(pid_t pid, int *stat_loc, int options)
+pid_t
+wpdk_waitpid(pid_t pid, int *stat_loc, int options)
 {
 	WPDK_UNIMPLEMENTED();
 

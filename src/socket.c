@@ -83,7 +83,7 @@ wpdk_socket_cleanup()
 }
 
 
-int
+static int
 wpdk_allocate_socket(SOCKET s, int domain)
 {
 	int i;

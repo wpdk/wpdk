@@ -39,7 +39,8 @@ static const int epollbase = 0x20000;
 // HACK - need to stop polling on close socket
 
 
-int wpdk_is_epoll(int fd)
+int
+wpdk_is_epoll(int fd)
 {
 	return (epollbase <= fd && fd < epollbase + maxepolls);
 }
@@ -94,7 +95,8 @@ wpdk_allocate_epoll()
 }
 
 
-int wpdk_epoll_create1(int flags)
+int
+wpdk_epoll_create1(int flags)
 {
 	int id = wpdk_allocate_epoll();
 
@@ -106,7 +108,8 @@ int wpdk_epoll_create1(int flags)
 }
 
 
-int wpdk_epoll_ctl(int epfd, int op, int fd, struct epoll_event *event)
+int
+wpdk_epoll_ctl(int epfd, int op, int fd, struct epoll_event *event)
 {
 	SOCKET socket = wpdk_get_socket(fd); 
 	int i, id = wpdk_get_epoll(epfd);
@@ -160,7 +163,8 @@ int wpdk_epoll_ctl(int epfd, int op, int fd, struct epoll_event *event)
 }
 
 
-int wpdk_epoll_wait(int epfd, struct epoll_event *events, int maxevents, int timeout)
+int
+wpdk_epoll_wait(int epfd, struct epoll_event *events, int maxevents, int timeout)
 {
 	struct WSAtimeval delay = { 0, 0 };
 	int id = wpdk_get_epoll(epfd);
@@ -232,7 +236,8 @@ int wpdk_epoll_wait(int epfd, struct epoll_event *events, int maxevents, int tim
 }
 
 
-int wpdk_close_epoll(int fd)
+int
+wpdk_close_epoll(int fd)
 {
 	int id = wpdk_get_epoll(fd);
 	struct epoll *ep;

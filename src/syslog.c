@@ -15,7 +15,8 @@
 #include <syslog.h>
 
 
-void wpdk_openlog(const char *ident, int option, int facility)
+void
+wpdk_openlog(const char *ident, int option, int facility)
 {
 	WPDK_UNIMPLEMENTED();
 
@@ -25,7 +26,8 @@ void wpdk_openlog(const char *ident, int option, int facility)
 }
 
 
-void wpdk_syslog(int priority, const char *format, ...)
+void
+wpdk_syslog(int priority, const char *format, ...)
 {
 	WPDK_UNIMPLEMENTED();
 
@@ -34,7 +36,8 @@ void wpdk_syslog(int priority, const char *format, ...)
 }
 
 
-void wpdk_closelog()
+void
+wpdk_closelog()
 {
 	WPDK_UNIMPLEMENTED();
 }

@@ -16,7 +16,8 @@
 #include <unistd.h>
 
 
-int wpdk_tcsetattr(int fildes, int optional_actions, const struct termios *termios_p)
+int
+wpdk_tcsetattr(int fildes, int optional_actions, const struct termios *termios_p)
 {
 	if (!termios_p)
 		return wpdk_posix_error(EINVAL);
@@ -39,7 +40,8 @@ int wpdk_tcsetattr(int fildes, int optional_actions, const struct termios *termi
 }
 
 
-int wpdk_tcgetattr(int fildes, struct termios *termios_p)
+int
+wpdk_tcgetattr(int fildes, struct termios *termios_p)
 {
 	if (!termios_p)
 		return wpdk_posix_error(EINVAL);

@@ -48,7 +48,8 @@ static struct gai_error gai_errors[] = {
 static SRWLOCK gai_lock = SRWLOCK_INIT;
 
 
-int wpdk_getaddrinfo(const char *node, const char *service,
+int
+wpdk_getaddrinfo(const char *node, const char *service,
 					 const struct addrinfo *hints, struct addrinfo **res)
 {
 	if (!wpdk_socket_startup()) {
@@ -67,7 +68,8 @@ wpdk_freeaddrinfo(struct addrinfo *ai)
 }
 
 
-const char *wpdk_gai_strerror(int ecode)
+const char *
+wpdk_gai_strerror(int ecode)
 {
 	struct gai_error *gai;
 

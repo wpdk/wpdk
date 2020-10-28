@@ -108,7 +108,8 @@ wpdk_io_destroy(io_context_t ctx_id)
 }
 
 
-static int wpdk_aio_increment_iocount (struct io_header *hdr)
+static int
+wpdk_aio_increment_iocount(struct io_header *hdr)
 {
 	long count;
 
@@ -124,13 +125,15 @@ static int wpdk_aio_increment_iocount (struct io_header *hdr)
 }
 
 
-static void wpdk_aio_decrement_iocount (struct io_header *hdr)
+static void
+wpdk_aio_decrement_iocount(struct io_header *hdr)
 {
 	InterlockedDecrement(&hdr->iocount);
 }
 
 
-static struct io_task *wpdk_aio_allocate(io_context_t ctx_id, struct iocb *iocb, int iovcnt)
+static struct io_task *
+wpdk_aio_allocate(io_context_t ctx_id, struct iocb *iocb, int iovcnt)
 {
 	struct io_header *hdr = (struct io_header *)ctx_id;
 	struct io_task *task;
@@ -163,7 +166,8 @@ static struct io_task *wpdk_aio_allocate(io_context_t ctx_id, struct iocb *iocb,
 }
 
 
-static void wpdk_aio_free(struct io_task *task)
+static void
+wpdk_aio_free(struct io_task *task)
 {
 	if (task) {
 		wpdk_aio_decrement_iocount(task->hdr);
@@ -172,7 +176,8 @@ static void wpdk_aio_free(struct io_task *task)
 }
 
 
-static void wpdk_aio_task_done (struct io_task *task, long long res)
+static void
+wpdk_aio_task_done(struct io_task *task, long long res)
 {
 	struct io_header *hdr;
 	struct io_event *next;
@@ -190,7 +195,8 @@ static void wpdk_aio_task_done (struct io_task *task, long long res)
 }
 
 
-static long wpdk_aio_iov_done (struct io_task *task, long count)
+static long
+wpdk_aio_iov_done(struct io_task *task, long count)
 {
 	long long result = 0;
 	int i;
@@ -221,7 +227,8 @@ static long wpdk_aio_iov_done (struct io_task *task, long count)
 }
 
 
-static void wpdk_aio_done (struct io_task *io, long long res)
+static void
+wpdk_aio_done(struct io_task *io, long long res)
 {
 	if (io->type == &io->iov) {
 		// Record that the transfer was shorter than requested
@@ -237,7 +244,8 @@ static void wpdk_aio_done (struct io_task *io, long long res)
 }
 
 
-static int wpdk_aio_iov_abort (struct io_task *io)
+static int
+wpdk_aio_iov_abort(struct io_task *io)
 {
 	int rc = wpdk_convert_to_posix(GetLastError());
 	struct io_task *task = io->task;
@@ -256,7 +264,8 @@ static int wpdk_aio_iov_abort (struct io_task *io)
 }
 
 
-static int wpdk_aio_abort (struct io_task *task)
+static int
+wpdk_aio_abort(struct io_task *task)
 {
 	int rc = wpdk_convert_to_posix(GetLastError());
 
@@ -265,7 +274,8 @@ static int wpdk_aio_abort (struct io_task *task)
 }
 
 
-static int wpdk_aio_read (HANDLE h, io_context_t ctx_id, struct iocb *iocb, void *buf, size_t len)
+static int
+wpdk_aio_read(HANDLE h, io_context_t ctx_id, struct iocb *iocb, void *buf, size_t len)
 {
 	struct io_task *task = wpdk_aio_allocate(ctx_id, iocb, 1);
 	LARGE_INTEGER offset;
@@ -289,7 +299,8 @@ static int wpdk_aio_read (HANDLE h, io_context_t ctx_id, struct iocb *iocb, void
 }
 
 
-static int wpdk_aio_write (HANDLE h, io_context_t ctx_id, struct iocb *iocb, void *buf, size_t len)
+static int
+wpdk_aio_write(HANDLE h, io_context_t ctx_id, struct iocb *iocb, void *buf, size_t len)
 {
 	struct io_task *task = wpdk_aio_allocate(ctx_id, iocb, 1);
 	LARGE_INTEGER offset;
@@ -313,7 +324,8 @@ static int wpdk_aio_write (HANDLE h, io_context_t ctx_id, struct iocb *iocb, voi
 }
 
 
-static int wpdk_aio_readv (HANDLE h, io_context_t ctx_id, struct iocb *iocb, struct iovec *iov, int iovcnt)
+static int
+wpdk_aio_readv(HANDLE h, io_context_t ctx_id, struct iocb *iocb, struct iovec *iov, int iovcnt)
 {
 	struct io_task *task = wpdk_aio_allocate(ctx_id, iocb, iovcnt);
 	LARGE_INTEGER offset;
@@ -355,7 +367,8 @@ static int wpdk_aio_readv (HANDLE h, io_context_t ctx_id, struct iocb *iocb, str
 }
 
 
-static int wpdk_aio_writev (HANDLE h, io_context_t ctx_id, struct iocb *iocb, struct iovec *iov, int iovcnt)
+static int
+wpdk_aio_writev(HANDLE h, io_context_t ctx_id, struct iocb *iocb, struct iovec *iov, int iovcnt)
 {
 	struct io_task *task = wpdk_aio_allocate(ctx_id, iocb, iovcnt);
 	LARGE_INTEGER offset;
@@ -397,7 +410,8 @@ static int wpdk_aio_writev (HANDLE h, io_context_t ctx_id, struct iocb *iocb, st
 }
 
 
-static int wpdk_aio_validate_iovec (struct iovec *iov, size_t iovcnt)
+static int
+wpdk_aio_validate_iovec (struct iovec *iov, size_t iovcnt)
 {
 	ssize_t length = 0;
 	int i;
