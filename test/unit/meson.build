@@ -56,3 +56,5 @@ unit_tests = executable('wpdk_unit',
 		link_args : [ link_libs ],
 		install: true
 )
+
+test('WPDK Unit Tests', unit_tests)
