@@ -25,6 +25,7 @@ typedef unsigned short mode_t;
 typedef int64_t pid_t;
 typedef long long ssize_t;
 typedef uint32_t useconds_t;
+typedef int32_t suseconds_t;
 typedef int64_t rlim_t;
 typedef _dev_t dev_t;
 typedef _ino_t ino_t;

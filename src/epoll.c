@@ -162,7 +162,7 @@ int wpdk_epoll_ctl(int epfd, int op, int fd, struct epoll_event *event)
 
 int wpdk_epoll_wait(int epfd, struct epoll_event *events, int maxevents, int timeout)
 {
-	struct timeval delay = { 0, 0 };
+	struct WSAtimeval delay = { 0, 0 };
 	int id = wpdk_get_epoll(epfd);
 	fd_set readfds, exceptfds;
 	int i, n, rc, rd, ex;

@@ -20,7 +20,7 @@ int
 wpdk_poll(struct pollfd fds[], nfds_t nfds, int timeout)
 {
 	fd_set readfds, writefds, exceptfds;
-	struct timeval delay = { 0, 0 };
+	struct WSAtimeval delay = { 0, 0 };
 	int worktodo = 0;
 	SOCKET socket;
 	int n, rc;

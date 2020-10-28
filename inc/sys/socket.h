@@ -24,8 +24,10 @@
 #endif
 
 #define pollfd WSApollfd
+#define timeval WSAtimeval
 #include <winsock2.h>
 #undef pollfd
+#undef timeval
 
 /*
  * 	ws2tcpip.h contains inline definitions for several functions that are
@@ -38,6 +40,7 @@
 #define setsockopt(a,b,c,d,e) ((a),(b),(c),(d),(e),0)
 #define getsockopt(a,b,c,d,e) ((a),(b),(c),(d),(e),0)
 #endif
+#define timeval WSAtimeval
 
 #include <ws2tcpip.h>
 #ifdef __MINGW32__
@@ -45,6 +48,7 @@
 #include <mswsock.h>
 #endif
 
+#undef timeval
 #ifndef _WPDK_BUILD_LIB_
 #undef WSASetLastError
 #undef WSAIoctl

@@ -15,12 +15,22 @@
 #include <sys/select.h>
 
 
+// HACK - fd_set should contain SOCKETs
+
 int wpdk_select(int nfds, fd_set *readfds, fd_set *writefds,
 		fd_set *exceptfds, struct timeval *timeout)
 {
+	struct WSAtimeval delay;
 	int rc;
 
-	rc = select(nfds, readfds, writefds, exceptfds, timeout);
+	if (timeout) {
+		delay.tv_sec = (timeout->tv_sec > LONG_MAX) ?
+						LONG_MAX : (long)timeout->tv_sec;
+		delay.tv_usec = timeout->tv_usec;
+	}
+
+	rc = select(nfds, readfds, writefds, exceptfds,
+		(timeout ? &delay : NULL));
 
 	if (rc == SOCKET_ERROR)
 		return wpdk_last_wsa_error();
