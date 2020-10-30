@@ -22,6 +22,10 @@ WPDK_0.1 {
 	wpdk_epoll_ctl;
 	wpdk_epoll_wait;
 	wpdk_fcntl;
+	wpdk_fd_clr;
+	wpdk_fd_isset;
+	wpdk_fd_set;
+	wpdk_fd_zero;
 	wpdk_fdopen;
 	wpdk_fileno;
 	wpdk_flock;
