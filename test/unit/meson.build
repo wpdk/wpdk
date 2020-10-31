@@ -26,6 +26,7 @@ sources = [
 	'select_ut.c',
 	'semaphore_ut.c',
 	'signal_ut.c',
+	'socket_ut.c',
 	'stat_ut.c',
 	'stdio_ut.c',
 	'stdlib_ut.c',

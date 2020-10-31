@@ -35,6 +35,7 @@ void add_resource_tests(void);
 void add_select_tests(void);
 void add_semaphore_tests(void);
 void add_signal_tests(void);
+void add_socket_tests(void);
 void add_stat_tests(void);
 void add_stdio_tests(void);
 void add_stdlib_tests(void);
@@ -79,6 +80,7 @@ main(int argc, char **argv)
 	add_select_tests();
 	add_semaphore_tests();
 	add_signal_tests();
+	add_socket_tests();
 	add_stat_tests();
 	add_stdio_tests();
 	add_stdlib_tests();
