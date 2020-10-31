@@ -33,6 +33,9 @@ long int wpdk_random(void);
 void wpdk_srandom(unsigned int seed);
 int wpdk_rand_r(unsigned int *seedp);
 void *wpdk_calloc(size_t nelem, size_t elsize);
+void wpdk_free(void *ptr);
+void *wpdk_malloc(size_t size);
+void *wpdk_realloc(void *ptr, size_t size);
 int wpdk_rand(void);
 void wpdk_srand(unsigned seed);
 long wpdk_strtol(const char *str, char **endptr, int base);
@@ -51,6 +54,9 @@ long long wpdk_strtoll(const char *str, char **endptr, int base);
 
 #if !defined(__MINGW32__) || !defined(_INC_STDLIB_S)
 #define calloc(nelem,elsize) wpdk_calloc(nelem, elsize)
+#define free(ptr) wpdk_free(ptr)
+#define malloc(size) wpdk_malloc(size)
+#define realloc(ptr,size) wpdk_realloc(ptr,size)
 #endif
 #endif
 

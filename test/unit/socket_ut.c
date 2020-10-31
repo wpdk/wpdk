@@ -79,7 +79,7 @@ server_thread(void *arg)
 		/* Receive data */
 		inbytes = recv(fd, buf, sizeof(buf), 0);
 
-		if (inbytes == -1) {
+		if (inbytes == (size_t)-1) {
 			fprintf(stderr, "server: recv failed (%s)\n", strerror(errno));
 			return 0;
 		}

@@ -32,6 +32,7 @@ WPDK_0.1 {
 	wpdk_fnmatch;
 	wpdk_fopen;
 	wpdk_fork;
+	wpdk_free;
 	wpdk_freeaddrinfo;
 	wpdk_freeifaddrs;
 	wpdk_fstat64;
@@ -70,6 +71,7 @@ WPDK_0.1 {
 	wpdk_listen;
 	wpdk_lockf;
 	wpdk_lseek;
+	wpdk_malloc;
 	wpdk_mkdir;
 	wpdk_mknod;
 	wpdk_mkstemp;
@@ -152,6 +154,7 @@ WPDK_0.1 {
 	wpdk_read;
 	wpdk_readdir;
 	wpdk_readv;
+	wpdk_realloc;
 	wpdk_recv;
 	wpdk_recvfrom;
 	wpdk_recvmsg;

@@ -161,6 +161,112 @@ test_strtoll(void)
 }
 
 
+static void
+test_malloc()
+{
+	char *cp;
+
+	/* Check malloc */
+	cp = malloc(100);
+	CU_ASSERT(cp != NULL);
+
+	/* Check alignment */
+	CU_ASSERT(((ULONG_PTR)cp & 0xf) == 0);
+
+	/* Check free */
+	memset(cp, 0xff, 100);
+	free(cp);
+}
+
+
+static void
+test_calloc()
+{
+	static char buf[100];
+	char *cp;
+
+	/* Check malloc */
+	cp = calloc(4, sizeof(buf) / 4);
+	CU_ASSERT(cp != NULL);
+	CU_ASSERT(memcmp(cp, buf, sizeof(buf)) == 0);
+
+	/* Check alignment */
+	CU_ASSERT(((ULONG_PTR)cp & 0xf) == 0);
+
+	/* Check free */
+	memset(cp, 0xff, sizeof(buf));
+	free(cp);
+}
+
+
+static void
+test_realloc()
+{
+	char buf[100];
+	char *cp;
+
+	/* Check malloc */
+	cp = malloc(sizeof(buf));
+	CU_ASSERT(cp != NULL);
+
+	/* Check alignment */
+	CU_ASSERT(((ULONG_PTR)cp & 0xf) == 0);
+
+	/* Check realloc */
+	memset(cp, 1, sizeof(buf));
+	cp = realloc(cp, sizeof(buf) * 2);
+	CU_ASSERT(cp != NULL);
+
+	memset(buf, 1, sizeof(buf));
+	CU_ASSERT(memcmp(cp, buf, sizeof(buf)) == 0);
+
+	/* Check free */
+	memset(cp, 0xff, sizeof(buf) * 2);
+	free(cp);
+}
+
+
+static void
+test_posix_memalign()
+{
+	char *cp;
+	int rc;
+
+	/* Check malloc */
+	rc = posix_memalign(&cp, 256, 100);
+	CU_ASSERT(rc == 0);
+	CU_ASSERT(cp != NULL);
+
+	/* Check alignment */
+	CU_ASSERT(((ULONG_PTR)cp & 255) == 0);
+
+	/* Check free */
+	memset(cp, 0xff, 100);
+	free(cp);
+}
+
+
+static void
+test_free()
+{
+	char *cp;
+
+	/* Check malloc */
+	cp = malloc(100);
+	CU_ASSERT(cp != NULL);
+
+	/* Check alignment */
+	CU_ASSERT(((ULONG_PTR)cp & 0xf) == 0);
+
+	/* Check free */
+	memset(cp, 0xff, 100);
+	free(cp);
+
+	/* Check null free */
+	free(NULL);
+}
+
+
 void add_stdlib_tests()
 {
 	CU_pSuite suite = NULL;
@@ -173,4 +279,9 @@ void add_stdlib_tests()
 	CU_ADD_TEST(suite, test_random);
 	CU_ADD_TEST(suite, test_strtol);
 	CU_ADD_TEST(suite, test_strtoll);
+	CU_ADD_TEST(suite, test_malloc);
+	CU_ADD_TEST(suite, test_calloc);
+	CU_ADD_TEST(suite, test_realloc);
+	CU_ADD_TEST(suite, test_posix_memalign);
+	CU_ADD_TEST(suite, test_free);
 }

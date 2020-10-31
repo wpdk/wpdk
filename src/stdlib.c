@@ -19,6 +19,9 @@
 #include <io.h>
 
 
+static const int default_alignment = 16;
+
+
 int
 wpdk_mkstemp(char *template)
 {
@@ -70,21 +73,64 @@ wpdk_mkstemp(char *template)
 }
 
 
+/*
+ *  Note: Memory allocated within the context of a shared library needs
+ *  to be freed by the same context. Ensure that all calls that allocate
+ *  or free memory are handled, including functions such as strdup().
+ */
+
+void *
+wpdk_calloc(size_t nelem, size_t elsize)
+{
+	char *cp;
+	
+	wpdk_set_invalid_handler();
+
+	cp = _aligned_malloc(nelem * elsize, default_alignment);
+
+	if (cp) memset(cp, 0, nelem * elsize);
+	return cp;
+}
+
+
+void
+wpdk_free(void *ptr)
+{
+	_aligned_free(ptr);
+}
+
+
+void *
+wpdk_malloc(size_t size)
+{
+	wpdk_set_invalid_handler();
+
+	return _aligned_malloc(size, default_alignment);
+}
+
+
+void *
+wpdk_realloc(void *ptr, size_t size)
+{
+	wpdk_set_invalid_handler();
+
+	return _aligned_realloc(ptr, size, default_alignment);
+}
+
+
 int
 wpdk_posix_memalign(void **memptr, size_t alignment, size_t size)
 {
-	// HACK - not aligned - just basic malloc for now
-	WPDK_UNIMPLEMENTED();
-
-	UNREFERENCED_PARAMETER(alignment);
+	wpdk_set_invalid_handler();
 
 	if (!memptr || !size)
 		return EINVAL;
 
-	*memptr = malloc(size);
+	*memptr = _aligned_malloc(size, alignment);
 
 	if (!*memptr)
 		return ENOMEM;
+
 	return 0;
 }
 
@@ -152,11 +198,4 @@ wpdk_strtoll(const char *str, char **endptr, int base)
 {
 	wpdk_set_invalid_handler();
 	return strtoll(str, endptr, base);
-}
-
-
-void *
-wpdk_calloc(size_t nelem, size_t elsize)
-{
-	return calloc(nelem, elsize);
 }

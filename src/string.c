@@ -12,6 +12,7 @@
  */
 
 #include <wpdk/internal.h>
+#include <stdlib.h>
 #include <string.h>
 
 #undef strerror_s
@@ -63,5 +64,12 @@ wpdk_strerror_r(int errnum, char *buf, size_t buflen)
 char *
 wpdk_strdup(const char *s)
 {
-	return _strdup(s);
+	size_t len;
+	char *cp;
+
+	len = strlen(s) + 1;
+	cp = wpdk_malloc(len);
+
+	if (cp) memcpy(cp, s, len);
+	return cp;
 }
