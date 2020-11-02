@@ -57,6 +57,7 @@ WPDK_0.1 {
 	wpdk_htonl;
 	wpdk_htons;
 	wpdk_inet_addr;
+	wpdk_inet_aton;
 	wpdk_inet_ntoa;
 	wpdk_inet_ntop;
 	wpdk_inet_pton;

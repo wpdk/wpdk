@@ -58,6 +58,13 @@ wpdk_inet_ntoa(struct in_addr in)
 }
 
 
+int
+wpdk_inet_aton(const char *cp, struct in_addr *inp)
+{
+	return wpdk_inet_pton(AF_INET, cp, inp);
+}
+
+
 const char *
 wpdk_inet_ntop(int af, const void *src, char *dst, socklen_t size)
 {

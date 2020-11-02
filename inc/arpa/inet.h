@@ -25,6 +25,7 @@ uint16_t wpdk_htons(uint16_t hostshort);
 uint32_t wpdk_ntohl(uint32_t netlong);
 uint16_t wpdk_ntohs(uint16_t netshort);
 in_addr_t wpdk_inet_addr(const char *cp);
+int wpdk_inet_aton(const char *cp, struct in_addr *inp);
 char *wpdk_inet_ntoa(struct in_addr in);
 const char *wpdk_inet_ntop(int af, const void *src, char *dst, socklen_t size);
 int wpdk_inet_pton(int af, const char *src, void *dst);
@@ -35,6 +36,7 @@ int wpdk_inet_pton(int af, const char *src, void *dst);
 #define ntohl(netlong) wpdk_ntohl(netlong)
 #define ntohs(netshort) wpdk_ntohs(netshort)
 #define inet_addr(cp) wpdk_inet_addr(cp)
+#define inet_aton(cp,inp) wpdk_inet_aton(cp,inp)
 #define inet_ntoa(in) wpdk_inet_ntoa(in)
 #define inet_ntop(af,src,dst,size) wpdk_inet_ntop(af,src,dst,size)
 #define inet_pton(af,src,dst) wpdk_inet_pton(af,src,dst)

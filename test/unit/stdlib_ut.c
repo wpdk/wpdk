@@ -229,7 +229,7 @@ test_realloc()
 static void
 test_posix_memalign()
 {
-	char *cp;
+	void *cp;
 	int rc;
 
 	/* Check malloc */

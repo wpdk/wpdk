@@ -14,6 +14,8 @@
 #include <wpdk/internal.h>
 #include <sys/select.h>
 #include <sys/socket.h>
+#include <sys/stat.h>
+#include <arpa/inet.h>
 #include <sys/un.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -166,6 +168,96 @@ stop_server(struct server *s)
 
 
 static void
+test_socket(void)
+{
+	int rc, fd;
+
+	/* Check invalid domain */
+	fd = socket(-1, SOCK_STREAM, 0);
+	CU_ASSERT(fd == -1 && errno == EAFNOSUPPORT);
+
+	/* Check UNIX domain */
+	fd = socket(AF_UNIX, SOCK_STREAM, 0);
+	CU_ASSERT(fd != -1);
+	rc = close(fd);
+	CU_ASSERT(rc == 0);
+
+	/* Check INET domain */
+	fd = socket(AF_INET, SOCK_STREAM, 0);
+	CU_ASSERT(fd != -1);
+	rc = close(fd);
+	CU_ASSERT(rc == 0);
+}
+
+
+static void
+test_bind(void)
+{
+	const char *path = "testsocket";
+	struct sockaddr_un un;
+	struct sockaddr_in in;
+	int rc, fd, fd2;
+
+	unlink(path);
+
+	/* Open socket */
+	fd = socket(AF_UNIX, SOCK_STREAM, 0);
+	CU_ASSERT(fd != -1);
+
+	/* Check invalid family */
+	un.sun_family = (ADDRESS_FAMILY)-1;
+	strncpy(un.sun_path, path, sizeof(un.sun_path));
+	rc = bind(fd, (struct sockaddr *)&un, sizeof(un));
+	CU_ASSERT(rc == -1 && errno == EAFNOSUPPORT);
+
+	/* Bind socket */
+	un.sun_family = AF_UNIX;
+	strncpy(un.sun_path, path, sizeof(un.sun_path));
+	rc = bind(fd, (struct sockaddr *)&un, sizeof(un));
+	CU_ASSERT(rc == 0);
+
+	/* Check socket exists */
+	rc = mknod(path, S_IFREG|S_IRWXU|S_IRWXG|S_IRWXO, 0);
+	CU_ASSERT(rc == -1);
+
+	/* Open second socket */
+	fd2 = socket(AF_UNIX, SOCK_STREAM, 0);
+	CU_ASSERT(fd2 != -1);
+
+	/* Check invalid bind */
+	un.sun_family = AF_UNIX;
+	strncpy(un.sun_path, path, sizeof(un.sun_path));
+	rc = bind(fd, (struct sockaddr *)&un, sizeof(un));
+	CU_ASSERT(rc == -1);
+
+	rc = close(fd);
+	CU_ASSERT(rc == 0);
+
+	rc = close(fd2);
+	CU_ASSERT(rc == 0);
+
+	/* Open INET socket */
+	fd = socket(AF_INET, SOCK_STREAM, 0);
+	CU_ASSERT(fd != -1);
+
+	/* Setup address */
+	in.sin_family = AF_INET;
+	in.sin_port = 0;
+	rc = inet_pton(AF_INET, "127.0.0.1", &in.sin_addr);
+	CU_ASSERT(rc == 1);
+
+	/* Bind socket */
+	rc = bind(fd, (struct sockaddr *)&in, sizeof(in));
+	CU_ASSERT(rc == 0);
+
+	rc = close(fd);
+	CU_ASSERT(rc == 0);
+
+	unlink(path);
+}
+
+
+static void
 test_send(void)
 {
 	struct server s;
@@ -193,5 +285,7 @@ void add_socket_tests()
 
 	suite = CU_add_suite("socket", null_init, null_clean);
 
+	CU_ADD_TEST(suite, test_socket);
+	CU_ADD_TEST(suite, test_bind);
 	CU_ADD_TEST(suite, test_send);
 }
