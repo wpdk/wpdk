@@ -54,7 +54,7 @@ long long wpdk_strtoll(const char *str, char **endptr, int base);
 
 #if !defined(__MINGW32__) || !defined(_INC_STDLIB_S)
 #define calloc(nelem,elsize) wpdk_calloc(nelem, elsize)
-#define free(ptr) wpdk_free(ptr)
+#define free wpdk_free
 #define malloc(size) wpdk_malloc(size)
 #define realloc(ptr,size) wpdk_realloc(ptr,size)
 #endif

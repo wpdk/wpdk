@@ -18,7 +18,7 @@ _WPDK_INCLUDE_NEXT_
 
 #if !defined(_WPDK_BUILD_LIB_) && !defined(_GLIBCXX_INCLUDE_NEXT_C_HEADERS)
 #define calloc(nelem,elsize) wpdk_calloc(nelem, elsize)
-#define free(ptr) wpdk_free(ptr)
+#define free wpdk_free
 #define malloc(size) wpdk_malloc(size)
 #define realloc(ptr,size) wpdk_realloc(ptr,size)
 #endif
