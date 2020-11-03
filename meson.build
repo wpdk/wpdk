@@ -22,15 +22,17 @@ link_libs = ['-lws2_32', '-lrpcrt4', '-liphlpapi']
 
 global_includes = include_directories('.', 'inc')
 
-cunit = subproject('CUnit')
-cunit_dep = cunit.get_variable('cunit_dep')
-
 subdir('scripts')
 subdir('config')
 
 subdir('inc')
 subdir('src')
-subdir('test/unit')
+
+if not meson.is_subproject()
+	cunit = subproject('CUnit')
+	cunit_dep = cunit.get_variable('cunit_dep')
+	subdir('test/unit')
+endif
 
 wpdk_static_dep = declare_dependency(
 	include_directories : global_includes,
