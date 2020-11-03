@@ -69,7 +69,9 @@ int wpdk_fcntl(int fildes, int cmd, ...);
 int wpdk_open(const char *pathname, int flags, ...);
 
 #ifndef _WPDK_BUILD_LIB_
-#define open(path,...)		wpdk_open(path,__VA_ARGS__)
+/* Match DPDK ret_os.h to avoid macro redefinition errors later */
+#define open _open
+#define _open(path,...)		wpdk_open(path,__VA_ARGS__)
 #define fcntl(fildes,...)	wpdk_fcntl(fildes,__VA_ARGS__)
 #endif
 
