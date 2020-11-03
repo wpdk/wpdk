@@ -1,10 +1,10 @@
 @echo off
 
-copy %DESTDIR%\lib\libcunit.a %DESTDIR%\lib\cunit.lib >nul:
+cd %MESON_INSTALL_DESTDIR_PREFIX%
 
-copy %DESTDIR%\lib\libcrypto.a %DESTDIR%\lib\crypto.lib >nul:
-copy %DESTDIR%\lib\libnuma.a %DESTDIR%\lib\numa.lib >nul:
-copy %DESTDIR%\lib\libpthread.a %DESTDIR%\lib\pthread.lib >nul:
-copy %DESTDIR%\lib\librt.a %DESTDIR%\lib\rt.lib >nul:
-copy %DESTDIR%\lib\libuuid.a %DESTDIR%\lib\uuid.lib >nul:
-rem copy %DESTDIR%\lib\libwpdk.a %DESTDIR%\lib\wpdk.lib >nul:
+if exist lib\libcunit.a copy lib\libcunit.a lib\cunit.lib
+copy lib\libcrypto.a lib\crypto.lib
+copy lib\libnuma.a lib\numa.lib
+copy lib\libpthread.a lib\pthread.lib
+copy lib\librt.a lib\rt.lib
+copy lib\libuuid.a lib\uuid.lib
