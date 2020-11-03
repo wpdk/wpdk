@@ -17,7 +17,7 @@
 _WPDK_INCLUDE_NEXT_
 #include_next <limits.h>
 #else
-#include <../km/crt/limits.h>
+#include <../include/limits.h>
 #endif
 
 #ifndef _WPDK_LIMITS_H_
