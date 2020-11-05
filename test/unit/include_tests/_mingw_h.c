@@ -23,8 +23,9 @@
 #define include_c__mingw_h include_cpp__mingw_h
 #endif
 
-
 void
 include_c__mingw_h(void)
 {
 }
+
+#include "include_ut.h"

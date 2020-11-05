@@ -19,9 +19,10 @@
 #define include_c_semaphore_h include_cpp_semaphore_h
 #endif
 
-
 void
 include_c_semaphore_h(void)
 {
 	CU_ASSERT(sizeof(sem_t) != 0);
 }
+
+#include "include_ut.h"

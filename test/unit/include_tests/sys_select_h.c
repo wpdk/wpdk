@@ -19,9 +19,10 @@
 #define include_c_sys_select_h include_cpp_sys_select_h
 #endif
 
-
 void
 include_c_sys_select_h(void)
 {
 	CU_ASSERT(sizeof(struct timeval) != 0);
 }
+
+#include "include_ut.h"

@@ -19,8 +19,9 @@
 #define include_c_strings_h include_cpp_strings_h
 #endif
 
-
 void
 include_c_strings_h(void)
 {
 }
+
+#include "include_ut.h"

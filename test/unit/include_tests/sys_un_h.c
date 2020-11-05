@@ -19,9 +19,10 @@
 #define include_c_sys_un_h include_cpp_sys_un_h
 #endif
 
-
 void
 include_c_sys_un_h(void)
 {
 	CU_ASSERT(sizeof(struct sockaddr_un) != 0);
 }
+
+#include "include_ut.h"

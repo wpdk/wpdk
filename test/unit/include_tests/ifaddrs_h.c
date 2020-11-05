@@ -19,9 +19,10 @@
 #define include_c_ifaddrs_h include_cpp_ifaddrs_h
 #endif
 
-
 void
 include_c_ifaddrs_h(void)
 {
 	CU_ASSERT(sizeof(struct ifaddrs) != 0);
 }
+
+#include "include_ut.h"

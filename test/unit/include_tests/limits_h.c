@@ -19,9 +19,10 @@
 #define include_c_limits_h include_cpp_limits_h
 #endif
 
-
 void
 include_c_limits_h(void)
 {
 	CU_ASSERT(PATH_MAX != 0);
 }
+
+#include "include_ut.h"

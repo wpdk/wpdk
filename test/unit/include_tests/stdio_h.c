@@ -19,9 +19,10 @@
 #define include_c_stdio_h include_cpp_stdio_h
 #endif
 
-
 void
 include_c_stdio_h(void)
 {
 	CU_ASSERT(sizeof(FILE *) != 0);
 }
+
+#include "include_ut.h"

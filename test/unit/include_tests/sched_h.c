@@ -19,9 +19,10 @@
 #define include_c_sched_h include_cpp_sched_h
 #endif
 
-
 void
 include_c_sched_h(void)
 {
 	CU_ASSERT(sizeof(cpuset_t) != 0);
 }
+
+#include "include_ut.h"

@@ -19,8 +19,9 @@
 #define include_c_fnmatch_h include_cpp_fnmatch_h
 #endif
 
-
 void
 include_c_fnmatch_h(void)
 {
 }
+
+#include "include_ut.h"

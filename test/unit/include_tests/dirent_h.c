@@ -19,8 +19,9 @@
 #define include_c_dirent_h include_cpp_dirent_h
 #endif
 
-
 void
 include_c_dirent_h(void)
 {
 }
+
+#include "include_ut.h"

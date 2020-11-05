@@ -19,9 +19,10 @@
 #define include_c_sys_uio_h include_cpp_sys_uio_h
 #endif
 
-
 void
 include_c_sys_uio_h(void)
 {
 	CU_ASSERT(sizeof(struct iovec) != 0);
 }
+
+#include "include_ut.h"

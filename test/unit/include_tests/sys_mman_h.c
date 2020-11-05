@@ -19,9 +19,10 @@
 #define include_c_sys_mman_h include_cpp_sys_mman_h
 #endif
 
-
 void
 include_c_sys_mman_h(void)
 {
 	CU_ASSERT(MAP_SHARED != -1);
 }
+
+#include "include_ut.h"

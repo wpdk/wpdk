@@ -19,8 +19,9 @@
 #define include_c_netinet_ip6_h include_cpp_netinet_ip6_h
 #endif
 
-
 void
 include_c_netinet_ip6_h(void)
 {
 }
+
+#include "include_ut.h"

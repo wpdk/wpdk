@@ -16,13 +16,9 @@
 
 #include <wpdk/header.h>
 #include <sys/socket.h>
+#include <_timeval.h>
 
 _WPDK_BEGIN_C_HEADER
-
-struct timeval {
-	time_t tv_sec;
-	suseconds_t tv_usec;
-};
 
 int wpdk_select(int nfds, fd_set *readfds, fd_set *writefds,
 		fd_set *exceptfds, struct timeval *timeout);

@@ -19,9 +19,10 @@
 #define include_c_poll_h include_cpp_poll_h
 #endif
 
-
 void
 include_c_poll_h(void)
 {
 	CU_ASSERT(sizeof(struct pollfd) != 0);
 }
+
+#include "include_ut.h"

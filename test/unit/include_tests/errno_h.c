@@ -19,9 +19,10 @@
 #define include_c_errno_h include_cpp_errno_h
 #endif
 
-
 void
 include_c_errno_h(void)
 {
 	CU_ASSERT(_WPDK_BASE_ERRNO == ESHUTDOWN);
 }
+
+#include "include_ut.h"

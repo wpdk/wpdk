@@ -19,9 +19,10 @@
 #define include_c_termios_h include_cpp_termios_h
 #endif
 
-
 void
 include_c_termios_h(void)
 {
 	CU_ASSERT(sizeof(struct termios) != 0)	;
 }
+
+#include "include_ut.h"

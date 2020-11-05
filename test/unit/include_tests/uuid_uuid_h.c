@@ -19,8 +19,9 @@
 #define include_c_uuid_uuid_h include_cpp_uuid_uuid_h
 #endif
 
-
 void
 include_c_uuid_uuid_h(void)
 {
 }
+
+#include "include_ut.h"

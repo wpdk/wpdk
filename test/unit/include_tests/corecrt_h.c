@@ -23,9 +23,10 @@
 #define include_c_corecrt_h include_cpp_corecrt_h
 #endif
 
-
 void
 include_c_corecrt_h(void)
 {
 	CU_ASSERT(sizeof(errno_t) != 0);
 }
+
+#include "include_ut.h"

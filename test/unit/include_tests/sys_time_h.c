@@ -19,9 +19,10 @@
 #define include_c_sys_time_h include_cpp_sys_time_h
 #endif
 
-
 void
 include_c_sys_time_h(void)
 {
 	CU_ASSERT(sizeof(struct tm) != 0);
 }
+
+#include "include_ut.h"

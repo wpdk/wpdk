@@ -11,18 +11,17 @@
  *  at https://www.kernel.org/doc/man-pages/
  */
 
-#include <net/if.h>
+#include <_timeval.h>
 
 #include <CUnit/Basic.h>
 
 #ifdef __cplusplus
-#define include_c_net_if_h include_cpp_net_if_h
+#define include_c__timeval_h include_cpp__timeval_h
 #endif
 
 void
-include_c_net_if_h(void)
+include_c__timeval_h(void)
 {
-	CU_ASSERT(IF_NAMESIZE != 0);
 }
 
 #include "include_ut.h"

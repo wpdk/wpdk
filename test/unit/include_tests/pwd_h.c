@@ -19,9 +19,10 @@
 #define include_c_pwd_h include_cpp_pwd_h
 #endif
 
-
 void
 include_c_pwd_h(void)
 {
 	CU_ASSERT(sizeof(struct passwd) != 0);
 }
+
+#include "include_ut.h"

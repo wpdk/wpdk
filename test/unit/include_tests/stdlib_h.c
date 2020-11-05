@@ -19,9 +19,10 @@
 #define include_c_stdlib_h include_cpp_stdlib_h
 #endif
 
-
 void
 include_c_stdlib_h(void)
 {
 	CU_ASSERT(sizeof(div_t) != 0);
 }
+
+#include "include_ut.h"

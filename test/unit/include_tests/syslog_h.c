@@ -19,8 +19,9 @@
 #define include_c_syslog_h include_cpp_syslog_h
 #endif
 
-
 void
 include_c_syslog_h(void)
 {
 }
+
+#include "include_ut.h"

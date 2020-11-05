@@ -19,8 +19,9 @@
 #define include_c_getopt_h include_cpp_getopt_h
 #endif
 
-
 void
 include_c_getopt_h(void)
 {
 }
+
+#include "include_ut.h"

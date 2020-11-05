@@ -19,9 +19,10 @@
 #define include_c_netinet_ip_h include_cpp_netinet_ip_h
 #endif
 
-
 void
 include_c_netinet_ip_h(void)
 {
 	CU_ASSERT(IPVERSION == 4);
 }
+
+#include "include_ut.h"

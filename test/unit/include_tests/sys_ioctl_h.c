@@ -19,8 +19,9 @@
 #define include_c_sys_ioctl_h include_cpp_sys_ioctl_h
 #endif
 
-
 void
 include_c_sys_ioctl_h(void)
 {
 }
+
+#include "include_ut.h"

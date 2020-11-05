@@ -4,6 +4,7 @@
 
 c_files = [
 	'_mingw_h.c',
+	'_timeval_h.c',
 	'arpa_inet_h.c',
 	'net_if_h.c',
 	'netinet_in_h.c',
@@ -52,6 +53,7 @@ c_files = [
 	'strings_h.c',
 	'syslog_h.c',
 	'termios_h.c',
+	'time_h.c',
 	'unistd_h.c',
 	'uuid_uuid_h.c',
 ]

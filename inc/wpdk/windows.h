@@ -51,7 +51,7 @@
 #define NOMB
 #define NOMEMMGR
 #define NOMETAFILE
-#define NOMINMAX
+#define NOMINMAX 1
 #if defined(__MINGW32__) && !defined(_WPDK_BUILD_LIB_)
 #define NOMSG
 #endif

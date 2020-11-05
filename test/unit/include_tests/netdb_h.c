@@ -19,7 +19,6 @@
 #define include_c_netdb_h include_cpp_netdb_h
 #endif
 
-
 void
 include_c_netdb_h(void)
 {
@@ -28,3 +27,5 @@ include_c_netdb_h(void)
 	CU_ASSERT(sizeof(struct protoent) != 0);
 	CU_ASSERT(sizeof(struct servent) != 0);
 }
+
+#include "include_ut.h"

@@ -16,7 +16,7 @@
 
 #include <wpdk/header.h>
 #include <wpdk/types.h>
-#include <sys/select.h>
+#include <_timeval.h>
 #include <time.h>
 
 _WPDK_BEGIN_C_HEADER

@@ -19,9 +19,10 @@
 #define include_c_sys_resource_h include_cpp_sys_resource_h
 #endif
 
-
 void
 include_c_sys_resource_h(void)
 {
 	CU_ASSERT(sizeof(rlim_t) != 0);
 }
+
+#include "include_ut.h"

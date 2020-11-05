@@ -25,3 +25,5 @@ include_c_arpa_inet_h(void)
 	CU_ASSERT(sizeof(in_port_t) != 0);
 	CU_ASSERT(sizeof(in_addr_t) != 0);
 }
+
+#include "include_ut.h"

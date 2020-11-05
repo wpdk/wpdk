@@ -19,9 +19,10 @@
 #define include_c_signal_h include_cpp_signal_h
 #endif
 
-
 void
 include_c_signal_h(void)
 {
 	CU_ASSERT(sizeof(sigset_t) != 0);
 }
+
+#include "include_ut.h"

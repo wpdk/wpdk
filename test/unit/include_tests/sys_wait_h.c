@@ -19,8 +19,9 @@
 #define include_c_sys_wait_h include_cpp_sys_wait_h
 #endif
 
-
 void
 include_c_sys_wait_h(void)
 {
 }
+
+#include "include_ut.h"

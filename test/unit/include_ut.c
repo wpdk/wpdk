@@ -12,58 +12,7 @@
  */
 
 #include <wpdk/internal.h>
-#include <sys/cdefs.h>
-#include <sys/epoll.h>
-#include <sys/file.h>
-#include <sys/ioctl.h>
-#include <sys/mman.h>
-#include <sys/queue.h>
-#include <sys/resource.h>
-#include <sys/select.h>
-#include <sys/socket.h>
-#include <sys/stat.h>
-#include <sys/time.h>
-#include <sys/uio.h>
-#include <sys/un.h>
-#include <sys/user.h>
-#include <sys/wait.h>
-#include <arpa/inet.h>
-#include <net/if.h>
-#include <netinet/in.h>
-#include <netinet/ip.h>
-#include <netinet/ip6.h>
-#include <netinet/tcp.h>
-#include <openssl/md5.h>
-#include <uuid/uuid.h>
-#include <dirent.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <fnmatch.h>
-#include <getopt.h>
-#include <ifaddrs.h>
-#include <inaddr.h>
-#include <libaio.h>
-#include <limits.h>
-#include <netdb.h>
-#include <poll.h>
-#include <pthread.h>
-#include <pwd.h>
-#include <regex.h>
-#include <sched.h>
-#include <semaphore.h>
-#include <setjmp.h>
-#include <signal.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <strings.h>
-#include <syslog.h>
-#include <termios.h>
-#include <unistd.h>
-
-// Check setupapi.h (DPDK)
-#include <windows.h>
-#include <setupapi.h>
+#include "include_ut.h"
 
 #include <CUnit/Basic.h>
 
@@ -82,6 +31,7 @@
 
 
 DEF_TEST(_mingw_h);
+DEF_TEST(_timeval_h);
 DEF_TEST(arpa_inet_h);
 DEF_TEST(net_if_h);
 DEF_TEST(netinet_in_h);
@@ -129,6 +79,7 @@ DEF_TEST(string_h);
 DEF_TEST(strings_h);
 DEF_TEST(syslog_h);
 DEF_TEST(termios_h);
+DEF_TEST(time_h);
 DEF_TEST(unistd_h);
 DEF_TEST(uuid_uuid_h);
 
@@ -161,6 +112,7 @@ ADD_TESTS()
 
 	CU_ADD_TEST(suite, include_all);
 	ADD_TEST(_mingw_h);
+	ADD_TEST(_timeval_h);
 	ADD_TEST(arpa_inet_h);
 	ADD_TEST(net_if_h);
 	ADD_TEST(netinet_in_h);
@@ -208,6 +160,7 @@ ADD_TESTS()
 	ADD_TEST(strings_h);
 	ADD_TEST(syslog_h);
 	ADD_TEST(termios_h);
+	ADD_TEST(time_h);
 	ADD_TEST(unistd_h);
 	ADD_TEST(uuid_uuid_h);
 }

@@ -19,9 +19,10 @@
 #define include_c_pthread_h include_cpp_pthread_h
 #endif
 
-
 void
 include_c_pthread_h(void)
 {
 	CU_ASSERT(sizeof(pthread_t) != 0);
 }
+
+#include "include_ut.h"

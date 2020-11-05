@@ -19,9 +19,10 @@
 #define include_c_sys_stat_h include_cpp_sys_stat_h
 #endif
 
-
 void
 include_c_sys_stat_h(void)
 {
 	CU_ASSERT(sizeof(struct stat) != 0);
 }
+
+#include "include_ut.h"

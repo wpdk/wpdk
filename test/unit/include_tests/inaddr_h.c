@@ -19,7 +19,6 @@
 #define include_c_inaddr_h include_cpp_inaddr_h
 #endif
 
-
 void
 include_c_inaddr_h(void)
 {
@@ -28,3 +27,5 @@ include_c_inaddr_h(void)
 	CU_ASSERT(sizeof(struct in_addr) != 0);
 	CU_ASSERT(sizeof(in.s_addr) != 0);
 }
+
+#include "include_ut.h"

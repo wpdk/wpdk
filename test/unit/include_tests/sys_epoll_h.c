@@ -19,9 +19,10 @@
 #define include_c_sys_epoll_h include_cpp_sys_epoll_h
 #endif
 
-
 void
 include_c_sys_epoll_h(void)
 {
 	CU_ASSERT(sizeof(struct epoll_event) != 0);
 }
+
+#include "include_ut.h"

@@ -19,7 +19,6 @@
 #define include_c_netinet_in_h include_cpp_netinet_in_h
 #endif
 
-
 void
 include_c_netinet_in_h(void)
 {
@@ -28,3 +27,5 @@ include_c_netinet_in_h(void)
 	CU_ASSERT(sizeof(struct in_addr) != 0);
 	CU_ASSERT(sizeof(struct sockaddr_in) != 0);
 }
+
+#include "include_ut.h"

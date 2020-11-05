@@ -19,8 +19,9 @@
 #define include_c_regex_h include_cpp_regex_h
 #endif
 
-
 void
 include_c_regex_h(void)
 {
 }
+
+#include "include_ut.h"

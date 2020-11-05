@@ -23,7 +23,6 @@
 #pragma warning(disable : 4611)
 #endif
 
-
 void
 include_c_setjmp_h(void)
 {
@@ -32,3 +31,5 @@ include_c_setjmp_h(void)
 
 	CU_ASSERT(sizeof(sigjmp_buf) == sizeof(jmp_buf));
 }
+
+#include "include_ut.h"

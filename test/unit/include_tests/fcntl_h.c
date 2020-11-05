@@ -19,9 +19,10 @@
 #define include_c_fcntl_h include_cpp_fcntl_h
 #endif
 
-
 void
 include_c_fcntl_h(void)
 {
 	CU_ASSERT(sizeof(struct flock) != 0);
 }
+
+#include "include_ut.h"

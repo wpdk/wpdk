@@ -3,7 +3,7 @@
  *
  *  Copyright (c) 2020, MayaData Inc. All rights reserved.
  *  Copyright (c) 2020, DataCore Software Corporation. All rights reserved.
- * 
+ *
  *  POSIX details are based on the Open Group Base Specification Issue 7,
  *  2018 edition at https://pubs.opengroup.org/onlinepubs/9699919799/
  * 
@@ -11,18 +11,27 @@
  *  at https://www.kernel.org/doc/man-pages/
  */
 
-#include <net/if.h>
+#include <wpdk/header.h>
 
-#include <CUnit/Basic.h>
-
-#ifdef __cplusplus
-#define include_c_net_if_h include_cpp_net_if_h
+#ifdef __MINGW32__
+_WPDK_INCLUDE_NEXT_
+#include_next <_timeval.h>
 #endif
 
-void
-include_c_net_if_h(void)
-{
-	CU_ASSERT(IF_NAMESIZE != 0);
-}
+#ifndef _WPDK__TIMEVAL_H_
+#define _WPDK__TIMEVAL_H_
 
-#include "include_ut.h"
+_WPDK_BEGIN_C_HEADER
+
+#ifdef __MINGW32__
+#define WSAtimeval timeval
+#else
+struct timeval {
+	long tv_sec;
+	long tv_usec;
+};
+#endif
+
+_WPDK_END_C_HEADER
+
+#endif /* _WPDK__TIMEVAL_H_ */

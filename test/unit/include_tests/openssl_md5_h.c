@@ -19,9 +19,10 @@
 #define include_c_openssl_md5_h include_cpp_openssl_md5_h
 #endif
 
-
 void
 include_c_openssl_md5_h(void)
 {
 	CU_ASSERT(sizeof(MD5_CTX) != 0);
 }
+
+#include "include_ut.h"

@@ -19,9 +19,10 @@
 #define include_c_sys_socket_h include_cpp_sys_socket_h
 #endif
 
-
 void
 include_c_sys_socket_h(void)
 {
 	CU_ASSERT(sizeof(struct sockaddr) != 0);
 }
+
+#include "include_ut.h"
