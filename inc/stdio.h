@@ -50,8 +50,15 @@ int dprintf(int fd, const char *format, ...)
 #define fileno(fp) wpdk_fileno(fp)
 #define fdopen(fildes,mode) wpdk_fdopen(fildes,mode)
 #define fopen(filename,mode) wpdk_fopen(filename,mode)
-#define getline(ptr,n,stream) wpdk_getline(ptr,n,stream)
-#define getdelim(ptr,n,delim,stream) wpdk_getdelim(ptr,n,delim,stream)
+
+static inline ssize_t getline(char **lineptr, size_t *n, FILE *stream) {
+	return wpdk_getline(lineptr, n, stream);
+}
+
+static inline ssize_t getdelim(char **lineptr, size_t *n, int delim, FILE *stream) {
+	return wpdk_getdelim(lineptr, n, delim, stream);
+}
+
 #define vdprintf(fd,fmt,...) wpdk_vdprintf(fd,fmt,__VA_ARGS__)
 #endif
 
