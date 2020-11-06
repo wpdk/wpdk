@@ -17,6 +17,9 @@ project('WPDK', 'C', 'CPP',
 cc = meson.get_compiler('c')
 cpp = meson.get_compiler('cpp')
 
+cunit = subproject('CUnit')
+cunit_dep = cunit.get_variable('cunit_dep')
+
 machine_args = []
 link_libs = ['-lws2_32', '-lrpcrt4', '-liphlpapi']
 
@@ -29,8 +32,6 @@ subdir('inc')
 subdir('src')
 
 if not meson.is_subproject()
-	cunit = subproject('CUnit')
-	cunit_dep = cunit.get_variable('cunit_dep')
 	subdir('test/unit')
 endif
 
