@@ -6,6 +6,7 @@ include_prefix = 'wpdk/'
 
 install_headers(
 	'_mingw.h',
+	'_timeval.h',
 	'corecrt.h',
 	'dirent.h',
 	'errno.h',
