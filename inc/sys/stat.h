@@ -28,7 +28,7 @@ _WPDK_INCLUDE_NEXT_
 
 _WPDK_BEGIN_C_HEADER
 
-#ifndef __MINGW32__
+#if !defined(__MINGW32__) || !defined(_FILE_OFFSET_BITS)
 #define stat	_stat64
 #define fstat	_fstat64
 #endif
