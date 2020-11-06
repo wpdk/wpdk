@@ -190,8 +190,10 @@ wpdk_strtol(const char *str, char **endptr, int base)
 {
 	wpdk_set_invalid_handler();
 
-	if (base == 1 || base > 36)
-		return -EINVAL;
+	if (base == 1 || base > 36) {
+		wpdk_posix_error(EINVAL);
+		return 0;
+	}
 
 	return strtol(str, endptr, base);
 }
@@ -202,8 +204,10 @@ wpdk_strtoll(const char *str, char **endptr, int base)
 {
 	wpdk_set_invalid_handler();
 
-	if (base == 1 || base > 36)
-		return -EINVAL;
+	if (base == 1 || base > 36) {
+		wpdk_posix_error(EINVAL);
+		return 0;
+	}
 
 	return strtoll(str, endptr, base);
 }

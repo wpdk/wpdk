@@ -151,11 +151,11 @@ test_strtol(void)
 
 	/* Check base 1 */
 	val = strtol("903456", NULL, 1);
-	CU_ASSERT(val == -EINVAL);
+	CU_ASSERT(val == 0 && errno == EINVAL);
 
 	/* Check invalid base */
 	val = strtol("903456", NULL, 37);
-	CU_ASSERT(val == -EINVAL);
+	CU_ASSERT(val == 0 && errno == EINVAL);
 }
 
 
@@ -169,11 +169,11 @@ test_strtoll(void)
 
 	/* Check base 1 */
 	val = strtoll("90345610078", NULL, 1);
-	CU_ASSERT(val == -EINVAL);
+	CU_ASSERT(val == 0 && errno == EINVAL);
 
 	/* Check invalid base */
 	val = strtoll("90345610078", NULL, 37);
-	CU_ASSERT(val == -EINVAL);
+	CU_ASSERT(val == 0 && errno == EINVAL);
 }
 
 
