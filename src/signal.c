@@ -14,6 +14,7 @@
 #include <wpdk/internal.h>
 #include <stdlib.h>
 #include <signal.h>
+#include <unistd.h>
 
 
 static struct sigaction wpdk_signals[NSIG];
@@ -218,8 +219,8 @@ wpdk_kill(pid_t pid, int sig)
 {
 	wpdk_set_invalid_handler();
 
-	if ((pid > 0 && pid != GetCurrentProcessId()) ||
-			(pid < -1 && (-pid) != GetCurrentProcessId())) {
+	if ((pid > 0 && pid != wpdk_getpid()) ||
+			(pid < -1 && (-pid) != wpdk_getpid())) {
 		WPDK_UNIMPLEMENTED();
 		return wpdk_posix_error(ENOSYS);
 	}

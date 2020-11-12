@@ -34,14 +34,6 @@ if cc.get_id() != 'msvc'
 	machine_args = '-march=' + machine
 endif
 
-# VirtualAlloc2() is available since Windows 10 / Server 2016.
-add_project_arguments('-D_WIN32_WINNT=0x0A00', language: 'c')
-
-# Use MinGW-w64 stdio, because DPDK assumes ANSI-compliant formatting.
-if cc.get_id() == 'gcc'
-	add_project_arguments('-D__USE_MINGW_ANSI_STDIO', language: 'c')
-endif
-
 if get_option('b_lto')
 	if cc.has_argument('-ffat-lto-objects')
 		add_project_arguments('-ffat-lto-objects', language: 'c')

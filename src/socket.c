@@ -185,9 +185,10 @@ wpdk_accept(int socket, struct sockaddr *address, socklen_t *address_len)
 int
 wpdk_bind(int socket, const struct sockaddr *address, socklen_t address_len)
 {
-	struct sockaddr_un un, *addr = (struct sockaddr_un *)address;
+	const struct sockaddr_un *addr = (const struct sockaddr_un *)address;
 	SOCKET s = wpdk_get_socket(socket);
 	socklen_t len = address_len;
+	struct sockaddr_un un;
 	int rc;
 
 	if (s == INVALID_SOCKET)
@@ -218,9 +219,10 @@ wpdk_bind(int socket, const struct sockaddr *address, socklen_t address_len)
 int
 wpdk_connect(int socket, const struct sockaddr *address, socklen_t address_len)
 {
-	struct sockaddr_un un, *addr = (struct sockaddr_un *)address;
+	const struct sockaddr_un *addr = (const struct sockaddr_un *)address;
 	SOCKET s = wpdk_get_socket(socket);
 	socklen_t len = address_len;
+	struct sockaddr_un un;
 	int rc;
 
 	if (s == INVALID_SOCKET)

@@ -25,6 +25,22 @@ link_libs = ['-lws2_32', '-lrpcrt4', '-liphlpapi']
 
 global_includes = include_directories('.', 'inc')
 
+warnings = [
+	'-Wdeprecated',
+	'-Wformat',
+	'-Wformat-security',
+	'-Wnested-externs',
+	'-Wpointer-arith',
+	'-Wsign-compare',
+	'-Wundef',
+]
+
+foreach warning : warnings
+	if cc.has_argument(warning)
+		add_project_arguments(warning, language: 'c')
+	endif
+endforeach
+
 subdir('scripts')
 subdir('config')
 

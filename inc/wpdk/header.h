@@ -28,6 +28,9 @@
 
 #ifdef __MINGW32__
 #define NO_OLDNAMES
+#ifndef __USE_MINGW_ANSI_STDIO
+#define __USE_MINGW_ANSI_STDIO	1
+#endif
 #endif
 
 #if defined(__GNUC__) || defined(__clang__)

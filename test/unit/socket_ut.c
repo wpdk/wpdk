@@ -92,7 +92,7 @@ server_thread(void *arg)
 		outbytes = send(fd, buf, inbytes, 0);
 
 		if (outbytes != inbytes) {
-			fprintf(stderr, "server: send failed (outbytes %lld, %s)\n",
+			fprintf(stderr, "server: send failed (outbytes %zd, %s)\n",
 				outbytes, strerror(errno));
 			return 0;
 		}

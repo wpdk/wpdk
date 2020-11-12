@@ -279,6 +279,20 @@ test_vdprintf(void)
 }
 
 
+static void
+test_sprintf(void)
+{
+	char s[200];
+	int rc;
+
+	/* Check %z is supported */
+	rc = sprintf(s, "%zd", sizeof(s));
+	CU_ASSERT(rc == 3);
+	CU_ASSERT(strlen(s) == 3);
+	CU_ASSERT(strcmp(s, "200") == 0);
+}
+
+
 void
 add_stdio_tests()
 {
@@ -292,4 +306,5 @@ add_stdio_tests()
 	CU_ADD_TEST(suite, test_fdopen);
 	CU_ADD_TEST(suite, test_fileno);
 	CU_ADD_TEST(suite, test_vdprintf);
+	CU_ADD_TEST(suite, test_sprintf);
 }

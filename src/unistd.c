@@ -24,7 +24,16 @@
 pid_t
 wpdk_getpid()
 {
-	return GetCurrentProcessId();
+	DWORD pid = GetCurrentProcessId();
+
+	/*
+	 *  SPDK assumes that pid_t is an int. If the process id
+	 *  is greater than INT_MAX then treat it as a fatal error.
+	 */
+	if (pid > INT_MAX)
+		WPDK_FATAL_ERROR("Unable to create uuid");
+
+	return (int)pid;
 }
 
 
