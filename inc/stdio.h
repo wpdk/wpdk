@@ -20,6 +20,15 @@ _WPDK_INCLUDE_NEXT_
 #include <../ucrt/stdio.h>
 #endif
 
+/*
+ *  Redefine the format(printf,,) attribute to match the
+ *  stdio implementation in use.
+ */
+#ifdef __MINGW32__
+#define __printf__ __MINGW_PRINTF_FORMAT
+#define format(x,a,b) __format__(__printf__,a,b)
+#endif
+
 #ifndef _WPDK_STDIO_H_
 #define _WPDK_STDIO_H_
 

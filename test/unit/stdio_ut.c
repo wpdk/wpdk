@@ -13,6 +13,7 @@
 
 #include <wpdk/internal.h>
 #include <sys/stat.h>
+#include <inttypes.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdio.h>
@@ -283,6 +284,7 @@ static void
 test_sprintf(void)
 {
 	char s[200];
+	int64_t v;
 	int rc;
 
 	/* Check %z is supported */
@@ -290,6 +292,13 @@ test_sprintf(void)
 	CU_ASSERT(rc == 3);
 	CU_ASSERT(strlen(s) == 3);
 	CU_ASSERT(strcmp(s, "200") == 0);
+
+	/* Check PRId64 is supported */
+	v = 999;
+	rc = sprintf(s, "%" PRId64, v);
+	CU_ASSERT(rc == 3);
+	CU_ASSERT(strlen(s) == 3);
+	CU_ASSERT(strcmp(s, "999") == 0);
 }
 
 
