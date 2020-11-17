@@ -22,7 +22,7 @@
 void
 include_c_errno_h(void)
 {
-	CU_ASSERT(_WPDK_BASE_ERRNO == ESHUTDOWN);
+	CU_ASSERT(ESHUTDOWN != 0);
 }
 
 #include "include_ut.h"

@@ -19,20 +19,6 @@
 #undef _strdup
 
 
-char *_wpdk_errlist[] = {
-	/* 200 - ESHUTDOWN */		"The socket has been shut down",
-	/* 201 - ETOOMANYREFS */	"Too many references to kernel object",
-	/* 202 - EHOSTDOWN */		"Host is down",
-	/* 203 - EUSERS */			"Too many users",
-	/* 204 - EDQUOT */			"Disk quota exceeded",
-	/* 205 - ESTALE	*/			"Stale file handle",
-	/* 206 - EREMOTE */			"Item is not available locally",
-	/* 207 - EPROCLIM */		"Too many processes"
-};
-
-int _wpdk_nerr = sizeof(_wpdk_errlist) / sizeof(_wpdk_errlist[0]);
-
-
 char *
 wpdk_strerror_r_gnu(int errnum, char *buf, size_t buflen)
 {
@@ -48,13 +34,44 @@ wpdk_strerror_r(int errnum, char *buf, size_t buflen)
 		return EINVAL;
 	}
 
+	wpdk_set_invalid_handler();
+
 	/*
 	 *  POSIX: ERANGE should be returned if the buffer is too small
 	 *  to contain the message. The message will be truncated instead.
 	 */
-	if (_WPDK_BASE_ERRNO <= errnum && errnum < _WPDK_BASE_ERRNO + _wpdk_nerr) {
-		strncpy(buf, _wpdk_errlist[errnum-_WPDK_BASE_ERRNO], buflen);
-		return 0;
+	switch (errnum) {
+		case ESHUTDOWN:
+			strncpy(buf, "The socket has been shut down", buflen);
+			return 0;
+
+		case ETOOMANYREFS:
+			strncpy(buf, "Too many references to kernel object", buflen);
+			return 0;
+
+		case EHOSTDOWN:
+			strncpy(buf, "Host is down", buflen);
+			return 0;
+
+		case EUSERS:
+			strncpy(buf, "Too many users", buflen);
+			return 0;
+
+		case EDQUOT:
+			strncpy(buf, "Disk quota exceeded", buflen);
+			return 0;
+
+		case ESTALE:
+			strncpy(buf, "Stale file handle", buflen);
+			return 0;
+
+		case EREMOTE:
+			strncpy(buf, "Item is not available locally", buflen);
+			return 0;
+
+		case EPROCLIM:
+			strncpy(buf, "Too many processes", buflen);
+			return 0;
 	}
 
 	return strerror_s(buf, buflen, errnum);

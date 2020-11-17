@@ -23,14 +23,15 @@ _WPDK_INCLUDE_NEXT_
 #ifndef _WPDK_ERRNO_H_
 #define _WPDK_ERRNO_H_
 
-#define _WPDK_BASE_ERRNO	200
 #define ESHUTDOWN			200
-#define ETOOMANYREFS		201
 #define EHOSTDOWN			202
 #define EUSERS				203
 #define EDQUOT				204
 #define ESTALE				205
 #define EREMOTE				206
 #define EPROCLIM			207
+
+/* Copy DPDK to avoid redefinition errors */
+#define ETOOMANYREFS 10059 /* WSAETOOMANYREFS */
 
 #endif /* _WPDK_ERRNO_H_ */
