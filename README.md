@@ -43,7 +43,7 @@ a Windows Command Line running with Administrator privilege, using:
 
 ~~~{.sh}
 curl -LJO https://raw.githubusercontent.com/wpdk/wpdk/master/scripts/pkgdep.bat
-.\pkgdep.bat
+.\pkgdep.bat [gcc|clang]
 ~~~
 
 These include:
