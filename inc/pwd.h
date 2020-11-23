@@ -15,7 +15,7 @@
 #define _WPDK_PWD_H_
 
 #include <wpdk/header.h>
-#include <wpdk/types.h>
+#include <sys/types.h>
 
 struct passwd {
 	char	*pw_name;

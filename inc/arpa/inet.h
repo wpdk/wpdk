@@ -15,7 +15,7 @@
 #define _WPDK_ARPA_INET_H_
 
 #include <wpdk/header.h>
-#include <wpdk/types.h>
+#include <sys/types.h>
 #include <netinet/in.h>
 
 _WPDK_BEGIN_C_HEADER

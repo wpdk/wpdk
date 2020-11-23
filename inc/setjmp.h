@@ -23,7 +23,7 @@ _WPDK_INCLUDE_NEXT_
 #ifndef _WPDK_SETJMP_H_
 #define _WPDK_SETJMP_H_
 
-#include <wpdk/types.h>
+#include <sys/types.h>
 
 _WPDK_BEGIN_C_HEADER
 

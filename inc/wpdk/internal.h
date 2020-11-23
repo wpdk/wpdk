@@ -20,7 +20,7 @@
 
 #include <wpdk/header.h>
 #include <wpdk/windows.h>
-#include <wpdk/types.h>
+#include <sys/types.h>
 #include <stdbool.h>
 
 _WPDK_BEGIN_C_HEADER

@@ -23,7 +23,7 @@ _WPDK_INCLUDE_NEXT_
 #ifndef _WPDK_SYS_STAT_H_
 #define _WPDK_SYS_STAT_H_
 
-#include <wpdk/types.h>
+#include <sys/types.h>
 #include <io.h>
 
 _WPDK_BEGIN_C_HEADER

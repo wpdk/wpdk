@@ -32,7 +32,7 @@ _WPDK_INCLUDE_NEXT_
 #ifndef _WPDK_STDIO_H_
 #define _WPDK_STDIO_H_
 
-#include <wpdk/types.h>
+#include <sys/types.h>
 #include <stdarg.h>
 
 _WPDK_BEGIN_C_HEADER

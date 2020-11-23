@@ -15,7 +15,7 @@
 #define _WPDK_SYS_TIME_H_
 
 #include <wpdk/header.h>
-#include <wpdk/types.h>
+#include <sys/types.h>
 #include <sys/select.h>
 #include <time.h>
 

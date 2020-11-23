@@ -23,7 +23,7 @@ _WPDK_INCLUDE_NEXT_
 #ifndef _WPDK_SIGNAL_H_
 #define _WPDK_SIGNAL_H_
 
-#include <wpdk/types.h>
+#include <sys/types.h>
 
 _WPDK_BEGIN_C_HEADER
 

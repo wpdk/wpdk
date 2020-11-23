@@ -22,7 +22,7 @@
 #define _WPDK_LIBAIO_H_
 
 #include <wpdk/header.h>
-#include <wpdk/types.h>
+#include <sys/types.h>
 #include <sys/uio.h>
 #include <stdlib.h>
 #include <time.h>

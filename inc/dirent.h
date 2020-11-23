@@ -15,7 +15,7 @@
 #define _WPDK_DIRENT_H_
 
 #include <wpdk/header.h>
-#include <wpdk/types.h>
+#include <sys/types.h>
 #include <limits.h>
 
 #define DT_REG	1

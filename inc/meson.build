@@ -48,6 +48,7 @@ install_headers(
 	'sys/socket.h',
 	'sys/stat.h',
 	'sys/time.h',
+	'sys/types.h',
 	'sys/uio.h',
 	'sys/un.h',
 	'sys/user.h',
@@ -57,7 +58,6 @@ install_headers(
 
 install_headers(
 	'wpdk/header.h',
-	'wpdk/types.h',
 	'wpdk/windows.h',
 	'wpdk/wrap.h',
 	subdir: include_prefix + 'wpdk'

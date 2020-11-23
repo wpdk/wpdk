@@ -15,7 +15,7 @@
 #define _WPDK_REGEX_H_
 
 #include <wpdk/header.h>
-#include <wpdk/types.h>
+#include <sys/types.h>
 
 _WPDK_BEGIN_C_HEADER
 

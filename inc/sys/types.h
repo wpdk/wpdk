@@ -11,11 +11,18 @@
  *  at https://www.kernel.org/doc/man-pages/
  */
 
-#ifndef _WPDK_TYPES_H_
-#define _WPDK_TYPES_H_
+#ifndef _WPDK_SYS_TYPES_H_
+#define _WPDK_SYS_TYPES_H_
 
 #include <wpdk/header.h>
-#include <sys/types.h>
+
+#ifdef _WPDK_INCLUDE_NEXT_
+_WPDK_INCLUDE_NEXT_
+#include_next <sys/types.h>
+#else
+#include <../ucrt/sys/types.h>
+#endif
+
 #include <stdint.h>
 
 _WPDK_BEGIN_C_HEADER
@@ -37,4 +44,4 @@ typedef short gid_t;
 
 _WPDK_END_C_HEADER
 
-#endif /* _WPDK_TYPES_H_ */
+#endif /* _WPDK_SYS_TYPES_H_ */
