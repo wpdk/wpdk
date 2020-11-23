@@ -1,6 +1,24 @@
 @echo off
 @setlocal enableextensions enabledelayedexpansion
 
+set MSC=
+set CLANG=
+set GCC=
+
+for %%i in (%*) do (
+	if "%%i"=="cl" set MSC=y
+	if "%%i"=="clang" set CLANG=y
+	if "%%i"=="mingw" set GCC=y
+	if "%%i"=="gcc" set GCC=y
+)
+
+if "%MSC%%CLANG%%GCC%"=="" (
+	set CLANG=y
+	set GCC=y
+)
+
+if "%CLANG%"=="y" set MSC=y
+
 net session >nul: 2>&1
 if errorlevel 1 (
 	echo %0 must be run with Administrator privileges
@@ -22,18 +40,40 @@ if errorlevel 1 (
 	if errorlevel 1 goto :eof
 )
 
+if "%GCC%"=="y" (
+	where /q gcc
+	if errorlevel 1 (
+		echo Installing GCC ...
+		choco install mingw -y -r
+		if errorlevel 1 goto :eof
+	)
+)
+
+set "PATH=%PATH%;%ProgramFiles%\LLVM\bin"
+where /q clang
+if errorlevel 1 if "%CLANG%"=="y" (
+	echo Installing Clang ...
+	choco install llvm -y -r
+	if errorlevel 1 goto :eof
+)
+
+set vc=
+set "vswhere=%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe"
+if exist "%vswhere%" for /f "tokens=*" %%i in ('"%vswhere%" -latest -find VC') do set "vc=%%i"
+
+if "%MSC%%vc%"=="y" (
+	echo Installing Visual Studio ...
+	choco install visualstudio2019community -y -r
+	if errorlevel 1 goto :eof
+	choco install visualstudio2019-workload-nativedesktop -y -r
+	if errorlevel 1 goto :eof
+)
+
 set "PATH=%PATH%;%ProgramFiles%\MESON"
 where /q meson
 if errorlevel 1 (
 	echo Installing Meson ...
 	choco install meson -y -r
-	if errorlevel 1 goto :eof
-)
-
-where /q gcc
-if errorlevel 1 (
-	echo Installing MinGW ...
-	choco install mingw -y -r
 	if errorlevel 1 goto :eof
 )
 
@@ -74,14 +114,4 @@ set ver=
 if "%ver%"=="" (
 	echo Installing diffutils ...
 	%MSYS2% -c "pacman --noconfirm -S msys/diffutils"
-)
-
-goto :eof
-
-set ver=
-( for /f "tokens=*" %%f in ('clang --version') do (set ver=%%f) ) 2>nul:
-if "%ver%"=="" (
-	echo Installing Clang ...
-	choco install llvm -y -r
-	if errorlevel 1 goto :eof
 )
