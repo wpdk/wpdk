@@ -35,6 +35,22 @@ These are indicated in the code with *WPDK_UNIMPLEMENTED* and *HACK*.
 
 Currently only x64 builds are supported.
 
+<a id="prerequisites"></a>
+## Prerequisites
+
+The prereqisites required to build WPDK and SPDK can be installed from
+a Windows Command Line running with Administrator privilege, using:
+
+~~~{.sh}
+curl -LJO https://raw.githubusercontent.com/wpdk/wpdk/master/scripts/pkgdep.bat
+.\pkgdep.bat
+~~~
+
+These include:
+
+* Visual Studio, Clang or MinGW.
+* Meson 0.55.0 or later.
+* MSYS2
 
 <a id="source"></a>
 ## Source Code
@@ -44,14 +60,6 @@ git clone https://github.com/wpdk/wpdk
 cd wpdk
 git submodule update --init
 ~~~
-
-<a id="prerequisites"></a>
-## Prerequisites
-
-* Visual Studio, Clang or MinGW.
-* Meson 0.55.0 or later.
-
-In addition, MSYS2 is neeeded to build the SPDK tree.
 
 <a id="build"></a>
 ## Build
