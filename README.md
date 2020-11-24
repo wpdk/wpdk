@@ -48,17 +48,17 @@ curl -LJO https://raw.githubusercontent.com/wpdk/wpdk/master/scripts/pkgdep.bat
 
 These include:
 
-* Visual Studio, Clang or MinGW.
-* Meson 0.55.0 or later.
+* Visual Studio, Clang or MinGW
+* Meson (>= 0.55.0), NASM
 * MSYS2
 
 <a id="source"></a>
 ## Source Code
 
+The source code can be obtained using:
+
 ~~~{.sh}
 git clone https://github.com/wpdk/wpdk
-cd wpdk
-git submodule update --init
 ~~~
 
 <a id="build"></a>
@@ -82,6 +82,15 @@ Unit tests are available for *libcunit* and the WPDK. These can be run with the 
 
 <a id="spdk"></a>
 ## Using with SPDK
+
+To build SPDK, obtain the source code using:
+
+~~~{.sh}
+git clone https://github.com/wpdk/spdk
+cd spdk
+git checkout windows
+git submodule update --init
+~~~
 
 This is still at an early stage. A few minor changes are required to the SPDK to enable it to build on Windows. These will be available in [wpdk/spdk](https://github.com/wpdk/spdk) in due course.
 Instructions will be available here once the process is finalised.
