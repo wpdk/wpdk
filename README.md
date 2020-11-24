@@ -99,10 +99,10 @@ Instructions will be available here once the process is finalised.
 
 The WPDK repository currently contains the following forked projects:
 
-* SPDK - based on the latest SPDK repo with Windows specific changes in the 'windows' branch.
+* [SPDK](https://github.com/wpdk/spdk) - based on the latest SPDK repo with Windows specific changes in the 'windows' branch.
 There is an ongoing dialog with the SPDK community to upstream these changes.
-* DPDK - required temporarily until the SPDK is updated to use DPDK 20.11.
-* CUnit - a convenience project for build purposes (no development).
+* [DPDK](https://github.com/wpdk/dpdk) - required temporarily until the SPDK is updated to use DPDK 20.11.
+* [CUnit](https://github.com/wpdk/CUnit) - a convenience project for build purposes (no development).
 
 <a id="contrib"></a>
 ## Contributing
