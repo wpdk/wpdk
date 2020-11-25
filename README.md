@@ -59,6 +59,9 @@ Windows Sandbox. The pkgdep.bat script is intended to indicate what needs to be
 installed, but may not apply to all environments. For convenience, the Chocolatey
 package manager is used.
 
+The Windows Shell should be closed after pkgdep.bat completes to ensure that the
+changes to the PATH variable are seen.
+
 <a id="source"></a>
 ## Source Code
 
