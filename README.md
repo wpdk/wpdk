@@ -92,8 +92,11 @@ git checkout windows
 git submodule update --init
 ~~~
 
-This is still at an early stage. A few minor changes are required to the SPDK to enable it to build on Windows. These will be available in [wpdk/spdk](https://github.com/wpdk/spdk) in due course.
-Instructions will be available here once the process is finalised.
+The build system uses configure and make and a batch file is provided as a convenience:
+
+~~~{.sh}
+.\wpdk\build.bat [release|debug] [clang|mingw] [clean|rebuild]
+~~~
 
 ## Forked Projects
 
