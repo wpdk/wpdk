@@ -28,7 +28,7 @@ The project is at an alpha stage:
 * All of the SPDK source compiles, apart from spdk_top which requires *libcurses*.
 * All of the SPDK Unit Tests pass.
 * The iSCSI target can serve storage.
-* Unit tests exist for the majority of the functionality.
+* Unit tests exist for the majority of the WPDK functionality.
 
 There are still a few areas that are currently unimplemented, or where quick hacks have been applied.
 These are indicated in the code with *WPDK_UNIMPLEMENTED* and *HACK*.
@@ -48,9 +48,16 @@ curl -LJO https://raw.githubusercontent.com/wpdk/wpdk/master/scripts/pkgdep.bat
 
 These include:
 
-* Visual Studio, Clang or MinGW
-* Meson (>= 0.55.0), NASM
-* MSYS2
+* Git
+* Clang and Visual Studio 2019, or MinGW (win32 threads)
+* Meson (>= 0.55.0)
+* NASM
+* MSYS2 (with make, python3, diffutils)
+
+Note: Installation of the prerequisites has only been tested on a Windows 10 2004
+Windows Sandbox. The pkgdep.bat script is intended to indicate what needs to be
+installed, but may not apply to all environments. For convenience, the Chocolatey
+package manager is used to manage the process.
 
 <a id="source"></a>
 ## Source Code
@@ -96,6 +103,12 @@ The build system uses configure and make and a batch file is provided as a conve
 
 ~~~{.sh}
 .\wpdk\build.bat [release|debug] [gcc|clang] [clean|rebuild]
+~~~
+
+A shell with the correct environment can be started with the command:
+
+~~~{.sh}
+.\wpdk\build.bat sh
 ~~~
 
 ## Forked Projects
