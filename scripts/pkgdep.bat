@@ -25,14 +25,14 @@ if errorlevel 1 (
 	goto :eof
 )
 
-set "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"
+set "PATH=%ALLUSERSPROFILE%\chocolatey\bin;%PATH%"
 where /q choco
 if errorlevel 1 (
 	powershell -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "[System.Net.ServicePointManager]::SecurityProtocol = 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))"
 	if errorlevel 1 goto :eof
 )
 
-set "PATH=%PATH%;%ProgramFiles%\Git\bin"
+set "PATH=%ProgramFiles%\Git\bin;%PATH%"
 where /q git
 if errorlevel 1 (
 	echo Installing Git ...
@@ -40,16 +40,39 @@ if errorlevel 1 (
 	if errorlevel 1 goto :eof
 )
 
+set "PATH=%SystemDrive%\MinGW\mingw64\bin;%PATH%"
 if "%GCC%"=="y" (
 	where /q gcc
+	if not errorlevel 1 (
+		gcc -v 2>&1 | find /i "model: win32" >nul:
+		if not errorlevel 1 goto :gcc
+	)
+	if exist %SystemDrive%\MinGW\mingw64 (
+		echo GCC must be installed with win32 thread model
+		goto :eof
+	)
+
+	set "PATH=%ProgramFiles%\7-Zip;%PATH%"
+	where /q 7z
 	if errorlevel 1 (
-		echo Installing GCC ...
-		choco install mingw -y -r
+		echo Installing 7-Zip ...
+		choco install 7zip -y -r
 		if errorlevel 1 goto :eof
 	)
-)
 
-set "PATH=%PATH%;%ProgramFiles%\LLVM\bin"
+	echo Downloading GCC ...
+	del /q x86_64-8.1.0-release-win32-seh-rt_v6-rev0.7z >nul:
+	curl -LJO "https://sourceforge.net/projects/mingw-w64/files/Toolchains targetting Win64/Personal Builds/mingw-builds/8.1.0/threads-win32/seh/x86_64-8.1.0-release-win32-seh-rt_v6-rev0.7z/download"
+	if errorlevel 1 goto :eof
+
+	echo Installing GCC ...
+	7z x -o%SystemDrive%\MinGW x86_64-8.1.0-release-win32-seh-rt_v6-rev0.7z
+	if errorlevel 1 goto :eof
+	del /q x86_64-8.1.0-release-win32-seh-rt_v6-rev0.7z >nul:
+)
+:gcc
+
+set "PATH=%ProgramFiles%\LLVM\bin;%PATH%"
 where /q clang
 if errorlevel 1 if "%CLANG%"=="y" (
 	echo Installing Clang ...
@@ -69,7 +92,7 @@ if "%MSC%%vc%"=="y" (
 	if errorlevel 1 goto :eof
 )
 
-set "PATH=%PATH%;%ProgramFiles%\MESON"
+set "PATH=%ProgramFiles%\MESON;%PATH%"
 where /q meson
 if errorlevel 1 (
 	echo Installing Meson ...
@@ -77,7 +100,7 @@ if errorlevel 1 (
 	if errorlevel 1 goto :eof
 )
 
-set "PATH=%PATH%;%ProgramFiles%\NASM"
+set "PATH=%ProgramFiles%\NASM;%PATH%"
 where /q nasm
 if errorlevel 1 (
 	echo Installing NASM ...
@@ -85,7 +108,7 @@ if errorlevel 1 (
 	if errorlevel 1 goto :eof
 )
 
-set "PATH=%PATH%;%SystemDrive%\tools\msys64"
+set "PATH=%SystemDrive%\tools\msys64;%PATH%"
 where /q msys2
 if errorlevel 1 (
 	echo Installing MSYS2 ...
