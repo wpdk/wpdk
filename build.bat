@@ -13,8 +13,8 @@ if exist inc set WPDK=y
 if exist drivers set DPDK=y
 if exist dpdkbuild set SPDK=y
 
-set "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin;%ProgramFiles%\LLVM\bin;%ProgramFiles%\MESON"
-set "PATH=%PATH%;%ProgramFiles%\NASM;%SystemDrive%\tools\msys64;%SystemDrive%\MinGW\mingw64\bin"
+set "PATH=%ProgramFiles%\NASM;%ALLUSERSPROFILE%\chocolatey\bin;%SystemDrive%\tools\msys64;%PATH%"
+set "PATH=%ProgramFiles%\LLVM\bin;%SystemDrive%\MinGW\mingw64\bin;%ProgramFiles%\MESON;%PATH%"
 
 set MSYS2=call msys2_shell -no-start -here -use-full-path -defterm
 
@@ -41,7 +41,7 @@ if not "%CLEAN%"=="clean" (
 	if "%SPDK%"=="y" if not exist mk\config.mk set CLEAN=y
 	if "%WPDK%%DPDK%"=="y" if not exist build-tmp\build.ninja set CLEAN=y
 	if not "%cfg%"=="%CC% %ARCH% %TYPE%" (
-		if not "%cfg%"=="" echo Config changed from '%CONFIG%' to '%CC% %ARCH% %TYPE%'
+		if not "%cfg%"=="" echo Config changed from '%cfg%' to '%CC% %ARCH% %TYPE%'
 		set CLEAN=y
 	)
 )
