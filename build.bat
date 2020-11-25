@@ -1,15 +1,31 @@
 @echo off
 @setlocal enableextensions enabledelayedexpansion
 
-set CC=cl
+set CC=clang
 set TYPE=debug
 set ARCH=x64
 set CLEAN=
 
-set CONFIG=
-if exist build-tmp\_config set /p CONFIG=<build-tmp\_config
+set WPDK=
+set DPDK=
+set SPDK=
+if exist inc set WPDK=y
+if exist drivers set DPDK=y
+if exist dpdkbuild set SPDK=y
 
-for %%i in (%CONFIG% %*) do (
+set "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin;%ProgramFiles%\LLVM\bin;%ProgramFiles%\MESON"
+set "PATH=%PATH%;%ProgramFiles%\NASM;%SystemDrive%\tools\msys64;%SystemDrive%\MinGW\mingw64\bin"
+
+set MSYS2=call msys2_shell -no-start -here -use-full-path -defterm
+
+set DESTDIR=
+if not "%SPDK%"=="y" set "DESTDIR=%CD%\build"
+if "%WPDK%"=="y" if exist ..\dpdkbuild set "DESTDIR=%CD%\..\dpdk\build"
+
+set cfg=
+if exist build\_config set /p cfg=<build\_config
+
+for %%i in (%cfg% %*) do (
 	if "%%i"=="cl" set CC=cl
 	if "%%i"=="clang" set CC=clang
 	if "%%i"=="mingw" set CC=gcc
@@ -21,16 +37,22 @@ for %%i in (%CONFIG% %*) do (
 	if "%%i"=="rebuild" set CLEAN=y
 )
 
-if not "%CLEAN%"=="clean" if not exist build-tmp\build.ninja set CLEAN=y
-if not "%CLEAN%"=="clean" if not "%CONFIG%"=="%CC% %ARCH% %TYPE%" (
-	if not "%CONFIG%"=="" echo Config changed from '%CONFIG%' to '%CC% %ARCH% %TYPE%'
-	set CLEAN=y
+if not "%CLEAN%"=="clean" (
+	if "%SPDK%"=="y" if not exist mk\config.mk set CLEAN=y
+	if "%WPDK%%DPDK%"=="y" if not exist build-tmp\build.ninja set CLEAN=y
+	if not "%cfg%"=="%CC% %ARCH% %TYPE%" (
+		if not "%cfg%"=="" echo Config changed from '%CONFIG%' to '%CC% %ARCH% %TYPE%'
+		set CLEAN=y
+	)
 )
 
 if not "%CLEAN%"=="" (
 	echo Cleaning...
-	if exist build rmdir /s /q build >nul:
-	if exist build-tmp rmdir /s /q build-tmp >nul:
+	for %%i in (. dpdk wpdk) do (
+		if exist %%i\build rmdir /s /q %%i\build >nul:
+		if exist %%i\build-tmp rmdir /s /q %%i\build-tmp >nul:
+	)
+	if exist mk\config.mk del /q mk\config.mk >nul:
 )
 
 if "%CLEAN%"=="clean" goto :eof
@@ -48,23 +70,48 @@ if "%CC%%VCINSTALLDIR%"=="cl" (
 
 if "%CC%"=="gcc" (
 	where /q gcc
-	if errorlevel 1 if exist %SystemDrive%\MinGW\mingw64\bin set PATH=%SystemDrive%\MinGW\mingw64\bin;!PATH!
-	where /q gcc
 	if errorlevel 1 (
 		echo echo Requires the MinGW GCC compiler be present in PATH
 		goto :eof
 	)
 )
 
+if "%CC%"=="clang" (
+	where /q clang
+	if errorlevel 1 (
+		echo echo Requires the Clang compiler be present in PATH
+		goto :eof
+	)
+)
+
 set CXX=%CC%
-if "%CC%"=="clang" set CXX="clang++"
-if "%CC%"=="gcc" set CXX="g++"
+if "%CC%"=="clang" set "CXX=clang++"
+if "%CC%"=="gcc" set "CXX=g++"
+
+set LD=
+if "%CC%"=="clang" set LD=lld-link
+if "%CC%"=="gcc" set LD=ld
+
+set CFLAGS=
+set CXXFLAGS=
+set LDFLAGS=
 
 echo Building %TYPE% with %CC%...
-if not exist build-tmp meson --buildtype=%TYPE% build-tmp
-echo %CC% %ARCH% %TYPE%>build-tmp\_config
+if not exist build mkdir build
+echo %CC% %ARCH% %TYPE%>build\_config
 
-set DESTDIR=%CD%\build
-ninja -C build-tmp -j8 install
+if "%WPDK%%DPDK%"=="y" (
+	set MESON_OPTS=
+	if "%DPDK%"=="y" set "MESON_OPTS=-Dexamples=helloworld"
+	if not exist build-tmp meson --buildtype=%TYPE% !MESON_OPTS! build-tmp
+	ninja -C build-tmp -j8 && meson install -C build-tmp --no-rebuild --only-changed
+)
+
+if "%SPDK%"=="y" (
+	set CONFIG_OPTS=
+	if "%TYPE%"=="debug" set CONFIG_OPTS=--enable-debug
+	if not exist mk\config.mk %MSYS2% -c "./configure !CONFIG_OPTS! --without-isal --without-vhost --without-virtio"
+	%MSYS2% -c "make -j8"
+)
 
 if not "%vcvars%"=="" echo Built using "%vcvars%" %ARCH%
