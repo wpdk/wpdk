@@ -5,6 +5,7 @@ set CC=clang
 set TYPE=debug
 set ARCH=x64
 set CLEAN=
+set SH=
 
 set WPDK=
 set DPDK=
@@ -35,6 +36,8 @@ for %%i in (%cfg% %*) do (
 	if "%%i"=="x64s" set ARCH=x64
 	if "%%i"=="clean" set CLEAN=clean
 	if "%%i"=="rebuild" set CLEAN=y
+	if "%%i"=="shell" set SH=y
+	if "%%i"=="sh" set SH=y
 )
 
 if not "%CLEAN%"=="clean" (
@@ -95,6 +98,11 @@ if "%CC%"=="gcc" set LD=ld
 set CFLAGS=
 set CXXFLAGS=
 set LDFLAGS=
+
+if "%SH%"=="y" (
+	%MSYS2%
+	goto :eof
+)
 
 echo Building %TYPE% with %CC%...
 if not exist build mkdir build
