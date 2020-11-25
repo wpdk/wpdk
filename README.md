@@ -67,7 +67,7 @@ git clone https://github.com/wpdk/wpdk
 The build system uses Meson and Ninja and a batch file is provided as a covenience:
 
 ~~~{.sh}
-.\build.bat [release|debug] [cl|clang|mingw] [clean|rebuild]
+.\build.bat [release|debug] [gcc|clang|cl] [clean|rebuild]
 ~~~
 
 The batch file remembers the previous configuration and only changes need to be specified on the command line.
@@ -95,7 +95,7 @@ git submodule update --init
 The build system uses configure and make and a batch file is provided as a convenience:
 
 ~~~{.sh}
-.\wpdk\build.bat [release|debug] [clang|mingw] [clean|rebuild]
+.\wpdk\build.bat [release|debug] [gcc|clang] [clean|rebuild]
 ~~~
 
 ## Forked Projects
