@@ -57,7 +57,7 @@ These include:
 Note: Installation of the prerequisites has only been tested on a Windows 10 2004
 Windows Sandbox. The pkgdep.bat script is intended to indicate what needs to be
 installed, but may not apply to all environments. For convenience, the Chocolatey
-package manager is used to manage the process.
+package manager is used.
 
 <a id="source"></a>
 ## Source Code
