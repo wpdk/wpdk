@@ -54,12 +54,12 @@ These include:
 * NASM
 * MSYS2 (with make, python3, diffutils)
 
-Note: Installation of the prerequisites has only been tested on a Windows 10 2004
+Note:
+* Installation of the prerequisites has only been tested on a Windows 10 2004
 Windows Sandbox. The pkgdep.bat script is intended to indicate what needs to be
 installed, but may not apply to all environments. For convenience, the Chocolatey
 package manager is used.
-
-The Windows Shell should be closed after pkgdep.bat completes to ensure that the
+* The Windows Shell should be closed after pkgdep.bat completes to ensure that the
 changes to the PATH variable are seen.
 
 <a id="source"></a>
@@ -82,6 +82,9 @@ The build system uses Meson and Ninja and a batch file is provided as a covenien
 
 The batch file remembers the previous configuration and only changes need to be specified on the command line.
 
+Note:
+* The built executables have not been tested within Windows Sandbox, only within
+the host operating system.
 ## Unit Tests
 
 Unit tests are available for *libcunit* and the WPDK. These can be run with the batch file:
