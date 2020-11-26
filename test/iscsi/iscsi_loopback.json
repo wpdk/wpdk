@@ -1,0 +1,93 @@
+{
+  "subsystems": [
+    {
+      "subsystem": "bdev",
+      "config": [
+        {
+          "params": {
+            "block_size": 512,
+            "num_blocks": 131072.0,
+            "name": "Malloc0"
+          },
+          "method": "bdev_malloc_create"
+        }
+      ]
+    },
+    {
+      "subsystem": "iscsi",
+      "config": [
+        {
+          "method": "iscsi_set_options",
+          "params": {
+            "allow_duplicated_isid": false,
+            "default_time2retain": 60,
+            "mutual_chap": false,
+            "max_connections_per_session": 1,
+            "nop_timeout": 30,
+            "disable_chap": true,
+            "require_chap": false,
+            "node_base": "iqn.2019-05.io.openebs",
+            "chap_group": 0,
+            "max_sessions": 2,
+            "immediate_data": true,
+            "error_recovery_level": 0,
+            "nop_in_interval": 30,
+            "default_time2wait": 2,
+            "max_queue_depth": 64,
+            "first_burst_length": 8192
+          }
+        },
+        {
+          "params": {
+            "portals": [
+              {
+                "host": "127.0.0.1",
+                "port": "3260"
+              }
+            ],
+            "tag": 1
+          },
+          "method": "iscsi_create_portal_group"
+        },
+        {
+          "params": {
+            "initiators": [
+              "Any"
+            ],
+            "tag": 1,
+            "netmasks": [
+              "127.0.0.1/24"
+            ]
+          },
+          "method": "iscsi_create_initiator_group"
+        },
+        {
+          "params": {
+            "alias_name": "Backend Malloc1",
+            "name": "iqn.2019-05.io.openebs:disk1",
+            "luns": [
+              {
+                "lun_id": 0,
+                "bdev_name": "Malloc0"
+              }
+            ],
+            "pg_ig_maps": [
+              {
+                "ig_tag": 1,
+                "pg_tag": 1
+              }
+            ],
+            "queue_depth": 1,
+            "chap_group": 1,
+            "header_digest": false,
+            "mutual_chap": false,
+            "require_chap": false,
+            "data_digest": false,
+            "disable_chap": true
+          },
+          "method": "iscsi_create_target_node"
+        }
+      ]
+    }
+  ]
+}
