@@ -123,6 +123,11 @@ As a quick verification, a 64MB loopback iscsi RAM disk can be created with:
 .\wpdk\test\iscsi\iscsi_loopback.bat
 ~~~
 
+Note:
+* This project builds upon the excellent work being done by the DPDK community to add support for Windows.
+Please follow the DPDK setup instructions [here](https://doc.dpdk.org/guides/windows_gsg/run_apps.html)
+to enable Large Page support and virtual to physical address translation.
+
 ## Forked Projects
 
 The WPDK repository currently contains the following forked projects:
