@@ -416,7 +416,7 @@ test_ttyname(void)
 	
 	/* Check basic operation */
 	tty = ttyname(0);
-	CU_ASSERT(tty == NULL || strncmp(tty, "/dev/tty", 8) == 0);
+	CU_ASSERT(tty == NULL || strncmp(tty, "/dev/", 5) == 0);
 }
 
 

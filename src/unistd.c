@@ -120,7 +120,7 @@ wpdk_usleep(useconds_t useconds)
 char *
 wpdk_ttyname(int fildes)
 {
-	static char tty[] = "/dev/tty";
+	static char tty[] = "/dev/pts/0";
 
 	if (wpdk_isatty(fildes) == 0)
 		return NULL;
