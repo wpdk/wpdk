@@ -114,6 +114,12 @@ A shell with the correct environment can be started with the command:
 .\wpdk\build.bat sh
 ~~~
 
+As a quick verification, a 64MB loopback iscsi RAM disk can be created with:
+
+~~~{.sh}
+.\wpdk\test\iscsi\iscsi_loopback.bat
+~~~
+
 ## Forked Projects
 
 The WPDK repository currently contains the following forked projects:
