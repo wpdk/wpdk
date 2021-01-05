@@ -33,7 +33,7 @@ for %%i in (%cfg% %*) do (
 	if "%%i"=="gcc" set CC=gcc
 	if "%%i"=="debug" set TYPE=debug
 	if "%%i"=="release" set TYPE=release
-	if "%%i"=="x64s" set ARCH=x64
+	if "%%i"=="x64" set ARCH=x64
 	if "%%i"=="clean" set CLEAN=clean
 	if "%%i"=="rebuild" set CLEAN=y
 	if "%%i"=="shell" set SH=y
