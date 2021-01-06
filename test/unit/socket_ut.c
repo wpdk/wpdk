@@ -124,7 +124,7 @@ start_server(struct server *s, const char *path)
 
 	/* Bind server socket */
 	un.sun_family = AF_UNIX;
-	strncpy(un.sun_path, s->path, sizeof(un.sun_path));
+	strncpy_s(un.sun_path, sizeof(un.sun_path), s->path, sizeof(un.sun_path) - 1);
 	rc = bind(s->server, (struct sockaddr *)&un, sizeof(un));
 	CU_ASSERT(rc == 0);
 
