@@ -84,7 +84,8 @@ wpdk_sigismember(const sigset_t *set, int signo)
 sighandler_t
 wpdk_signal(int sig, sighandler_t handler)
 {
-	struct sigaction oact, act = { 0 };
+	struct sigaction oact = { 0 };
+	struct sigaction act = { 0 };
 
 	act.sa_handler = handler;
 	act.sa_flags = SA_RESETHAND;
