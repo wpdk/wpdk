@@ -117,6 +117,13 @@ A shell with the correct environment can be started with the command:
 .\wpdk\build.bat sh
 ~~~
 
+Experimental support has been added for cross compilation using WSL and the
+MinGW compiler.  The build can be started from Windows with the command:
+
+~~~{.sh}
+.\wpdk\build.bat [release|debug] xgcc [clean|rebuild]
+~~~
+
 As a quick verification, a 64MB loopback iscsi RAM disk can be created with:
 
 ~~~{.sh}
