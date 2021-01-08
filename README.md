@@ -28,6 +28,7 @@ The project is at an alpha stage:
 * All of the SPDK source compiles, apart from spdk_top which requires *libcurses*.
 * All of the SPDK Unit Tests pass.
 * The iSCSI target can serve storage.
+* The NVMe over TCP target can serve storage.
 * Unit tests exist for the majority of the WPDK functionality.
 
 There are still a few areas that are currently unimplemented, or where quick hacks have been applied.
@@ -128,6 +129,12 @@ As a quick verification, a 64MB loopback iscsi RAM disk can be created with:
 
 ~~~{.sh}
 .\wpdk\test\iscsi\iscsi_loopback.bat
+~~~
+
+A 50MB NVMe over TCP RAM disk can be created with:
+
+~~~{.sh}
+.\wpdk\test\nvmf\nvmf_tgt.bat
 ~~~
 
 Note:
