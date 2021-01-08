@@ -189,6 +189,8 @@ wpdk_epoll_wait(int epfd, struct epoll_event *events, int maxevents, int timeout
 	FD_ZERO(&exceptfds);
 
 	for (i = 0; i < ep->maxcount; i++) {
+		if (ep->socket[i] == INVALID_SOCKET) continue;
+
 		if (ep->event[i].events & EPOLLIN) {
 			FD_SET(ep->socket[i], &readfds);
 			worktodo = 1;
