@@ -58,5 +58,5 @@ echo "$cfg" > build/_config
 CONFIG_OPTS="--cross-prefix=x86_64-w64-mingw32"
 [ "$TYPE" == "debug" ] && CONFIG_OPTS="$CONFIG_OPTS --enable-debug"
 
-[ ! -f mk/config.mk ] && CC=gcc ./configure $CONFIG_OPTS --without-isal --without-vhost --without-virtio
+[ ! -f mk/config.mk ] && CC=gcc ./configure $CONFIG_OPTS
 make -j8
