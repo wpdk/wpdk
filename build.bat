@@ -145,7 +145,8 @@ if "%SPDK%"=="y" (
 	set CONFIG_OPTS=
 	if "%TYPE%"=="debug" set CONFIG_OPTS=--enable-debug
 	if not "%CROSS%"=="" set "CONFIG_OPTS=!CONFIG_OPTS! --cross-prefix=%CROSS%"
-	if not exist mk\config.mk %SH% -c "%ENV% ./configure !CONFIG_OPTS! --without-isal --without-vhost --without-virtio"
+	if "%CROSS%"=="" set "CONFIG_OPTS=!CONFIG_OPTS! --without-isal"
+	if not exist mk\config.mk %SH% -c "%ENV% ./configure !CONFIG_OPTS!"
 	%SH% -c "make -j8"
 )
 
