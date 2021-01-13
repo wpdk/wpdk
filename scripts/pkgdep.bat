@@ -122,19 +122,40 @@ set ver=
 ( for /f "tokens=*" %%f in ('%MSYS2% -c "make --version 2>/dev/null"') do (set ver=%%f) ) 2>nul:
 if "%ver%"=="" (
 	echo Installing make ...
-	%MSYS2% -c "pacman --noconfirm -S msys/make"
+	%MSYS2% -c "pacman --noconfirm -Syy msys/make"
 )
 
 set ver=
 ( for /f "tokens=*" %%f in ('%MSYS2% -c "python3 --version 2>/dev/null"') do (set ver=%%f) ) 2>nul:
 if "%ver%"=="" (
 	echo Installing python ...
-	%MSYS2% -c "pacman --noconfirm -S msys/python"
+	%MSYS2% -c "pacman --noconfirm -Syy msys/python"
 )
 
 set ver=
 ( for /f "tokens=*" %%f in ('%MSYS2% -c "cmp --version 2>/dev/null"') do (set ver=%%f) ) 2>nul:
 if "%ver%"=="" (
 	echo Installing diffutils ...
-	%MSYS2% -c "pacman --noconfirm -S msys/diffutils"
+	%MSYS2% -c "pacman --noconfirm -Syy msys/diffutils"
+)
+
+set ver=
+( for /f "tokens=*" %%f in ('%MSYS2% -c "yasm --version 2>/dev/null"') do (set ver=%%f) ) 2>nul:
+if "%ver%"=="" (
+	echo Installing yasm ...
+	%MSYS2% -c "pacman --noconfirm -Syy msys/yasm"
+)
+
+set ver=
+( for /f "tokens=*" %%f in ('%MSYS2% -c "libtool --version 2>/dev/null"') do (set ver=%%f) ) 2>nul:
+if "%ver%"=="" (
+	echo Installing libtool ...
+	%MSYS2% -c "pacman --noconfirm -Syy msys/libtool"
+)
+
+set ver=
+( for /f "tokens=*" %%f in ('%MSYS2% -c "help2man --version 2>/dev/null"') do (set ver=%%f) ) 2>nul:
+if "%ver%"=="" (
+	echo Installing help2man ...
+	%MSYS2% -c "pacman --noconfirm -Syy msys/help2man"
 )
