@@ -69,7 +69,7 @@ if not "%CLEAN%"=="" (
 		if exist %%i\build-tmp rmdir /s /q %%i\build-tmp >nul:
 	)
 	if exist mk\config.mk del /q mk\config.mk >nul:
-	if "%SPDK%"=="y" del /q /s *.d >nul: 2>&1 
+	if "%SPDK%"=="y" del /q /s *.d *.o *.lo *.lib >nul: 2>&1 
 )
 
 if "%CLEAN%"=="clean" goto :eof
