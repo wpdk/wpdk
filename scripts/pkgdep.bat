@@ -159,3 +159,17 @@ if "%ver%"=="" (
 	echo Installing help2man ...
 	%MSYS2% -c "pacman --noconfirm -Syy msys/help2man"
 )
+
+set ver=
+( for /f "tokens=*" %%f in ('%MSYS2% -c "automake --version 2>/dev/null"') do (set ver=%%f) ) 2>nul:
+if "%ver%"=="" (
+	echo Installing automake ...
+	%MSYS2% -c "pacman --noconfirm -Syy msys/automake"
+)
+
+set ver=
+( for /f "tokens=*" %%f in ('%MSYS2% -c "autoconf --version 2>/dev/null"') do (set ver=%%f) ) 2>nul:
+if "%ver%"=="" (
+	echo Installing autoconf ...
+	%MSYS2% -c "pacman --noconfirm -Syy msys/autoconf"
+)
