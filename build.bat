@@ -53,6 +53,8 @@ if "%CC%"=="xgcc" (
 	if exist config\!CROSS! set "CROSS=config/!CROSS!"
 )
 
+if not "%CROSS%"=="" set SH=wsl bash
+
 if not "%CLEAN%"=="clean" (
 	if "%SPDK%"=="y" if not exist mk\config.mk set CLEAN=y
 	if "%WPDK%%DPDK%"=="y" if not exist build-tmp\build.ninja set CLEAN=y
@@ -68,8 +70,9 @@ if not "%CLEAN%"=="" (
 		if exist %%i\build rmdir /s /q %%i\build >nul:
 		if exist %%i\build-tmp rmdir /s /q %%i\build-tmp >nul:
 	)
+	if exist isa-l\Makefile %SH% -c "cd isalbuild; make clean" >nul: 2>&1
 	if exist mk\config.mk del /q mk\config.mk >nul:
-	if "%SPDK%"=="y" del /q /s *.d *.o *.lo *.lib >nul: 2>&1 
+	if "%SPDK%"=="y" del /q /s *.d >nul: 2>&1
 )
 
 if "%CLEAN%"=="clean" goto :eof
@@ -117,8 +120,6 @@ set CFLAGS=
 set CXXFLAGS=
 set LDFLAGS=
 set ENV=CC='%CC%' CXX='%CXX%' LD='%LD%' CFLAGS='%CFLAGS%' CXXFLAGS='%CXXFLAGS%' LDFLAGS='%LDFLAGS%'
-
-if not "%CROSS%"=="" set SH=wsl bash
 
 if "%INTERACTIVE%"=="y" (
 	%SH%
