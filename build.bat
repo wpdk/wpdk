@@ -145,9 +145,10 @@ if "%SPDK%"=="y" (
 	set CONFIG_OPTS=
 	if "%TYPE%"=="debug" set CONFIG_OPTS=--enable-debug
 	if not "%CROSS%"=="" set "CONFIG_OPTS=!CONFIG_OPTS! --cross-prefix=%CROSS%"
-	if "%CROSS%"=="" set "CONFIG_OPTS=!CONFIG_OPTS! --without-isal"
 	if not exist mk\config.mk %SH% -c "%ENV% ./configure !CONFIG_OPTS!"
-	%SH% -c "make -j8"
+	set MAKE_OPTS=
+	if "%CROSS%"=="" ( for /f "tokens=*" %%i in ('where jlibtool.exe') do set "MAKE_OPTS=LIBTOOL=`cygpath '%%i'`" ) 2>nul:
+	%SH% -c "make !MAKE_OPTS! REDIRECT= -j8"
 )
 
 if not "%vcvars%"=="" echo Built using "%vcvars%" %ARCH%
