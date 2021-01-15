@@ -153,7 +153,7 @@ if "%SPDK%"=="y" (
 	if not exist mk\config.mk %SH% -c "%ENV% ./configure !CONFIG_OPTS!"
 	set MAKE_OPTS=
 	if "%CROSS%"=="" ( for /f "tokens=*" %%i in ('where jlibtool.exe') do set "MAKE_OPTS=LIBTOOL=`cygpath '%%i'`" ) 2>nul:
-	%SH% -c "make !MAKE_OPTS! REDIRECT= -j8"
+	%SH% -c "make !MAKE_OPTS! -j8"
 )
 
 if not "%vcvars%"=="" echo Built using "%vcvars%" %ARCH%
