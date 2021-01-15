@@ -143,7 +143,7 @@ Note:
 * This project builds upon the excellent work being done by the DPDK community to add support for Windows.
 Please follow the DPDK setup instructions [here](https://doc.dpdk.org/guides/windows_gsg/run_apps.html)
 to enable Large Page support and virtual to physical address translation.
-* Python 3.9 does not AF_UNIX for sockets on Windows which means that the SPDK ./scripts/rpc.py
+* Python 3.9 does not support AF_UNIX for sockets on Windows which means that the SPDK ./scripts/rpc.py
 does not work. Currently, the best workaround is to use WSL to access the socket file located
 in /mnt/c/tools/msys64/var/tmp.
 
