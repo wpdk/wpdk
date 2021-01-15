@@ -15,9 +15,6 @@ if exist inc set WPDK=y
 if exist drivers set DPDK=y
 if exist dpdkbuild set SPDK=y
 
-set "PATH=%ProgramFiles%\NASM;%ALLUSERSPROFILE%\chocolatey\bin;%SystemDrive%\tools\msys64;%PATH%"
-set "PATH=%ProgramFiles%\LLVM\bin;%SystemDrive%\MinGW\mingw64\bin;%ProgramFiles%\MESON;%PATH%"
-
 set DESTDIR=
 if not "%SPDK%"=="y" set "DESTDIR=%CD%\build"
 if "%WPDK%"=="y" if exist ..\dpdkbuild set "DESTDIR=%CD%\..\dpdk\build"
@@ -55,6 +52,11 @@ if "%CC%"=="xgcc" (
 
 if not "%CROSS%"=="" set SH=wsl bash
 
+if "%CROSS%"=="" (
+	set "PATH=%ProgramFiles%\NASM;%ALLUSERSPROFILE%\chocolatey\bin;%SystemDrive%\tools\msys64;!PATH!"
+	set "PATH=%ProgramFiles%\LLVM\bin;%SystemDrive%\MinGW\mingw64\bin;%ProgramFiles%\MESON;!PATH!"
+)
+
 if not "%CLEAN%"=="clean" (
 	if "%SPDK%"=="y" if not exist mk\config.mk set CLEAN=y
 	if "%WPDK%%DPDK%"=="y" if not exist build-tmp\build.ninja set CLEAN=y
@@ -70,7 +72,9 @@ if not "%CLEAN%"=="" (
 		if exist %%i\build rmdir /s /q %%i\build >nul:
 		if exist %%i\build-tmp rmdir /s /q %%i\build-tmp >nul:
 	)
-	if exist isa-l\Makefile %SH% -c "cd isalbuild; make clean" >nul: 2>&1
+	if exist isa-l\Makefile (
+		%SH% -c "make -C isalbuild clean; find isa-l -type d -name .deps -exec rm -rf {} +"
+	) >nul: 2>&1
 	if exist mk\config.mk del /q mk\config.mk >nul:
 	if "%SPDK%"=="y" del /q /s *.d >nul: 2>&1
 )
