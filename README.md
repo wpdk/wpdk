@@ -119,7 +119,9 @@ A shell with the correct environment can be started with the command:
 ~~~
 
 Experimental support has been added for cross compilation using WSL and the
-MinGW compiler.  The build can be started from Windows with the command:
+MinGW compiler.  To use this, ensure the definitions from .\wpdk\gitattributes
+are present as global gitattributes. The build can be started from Windows
+with the command:
 
 ~~~{.sh}
 .\wpdk\build.bat [release|debug] xgcc [clean|rebuild]
