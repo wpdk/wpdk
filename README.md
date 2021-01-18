@@ -66,7 +66,9 @@ changes to the PATH variable are seen.
 <a id="source"></a>
 ## Source Code
 
-The source code can be obtained using:
+To ensure that correct CR/LF line endings are used, add the definitions in
+.\wpdk\gitattributes as global gitattributes. The source code can then be
+obtained using:
 
 ~~~{.sh}
 git clone https://github.com/wpdk/wpdk
@@ -119,9 +121,7 @@ A shell with the correct environment can be started with the command:
 ~~~
 
 Experimental support has been added for cross compilation using WSL and the
-MinGW compiler.  To use this, ensure the definitions from .\wpdk\gitattributes
-are present as global gitattributes. The build can be started from Windows
-with the command:
+MinGW compiler. The build can be started from Windows with the command:
 
 ~~~{.sh}
 .\wpdk\build.bat [release|debug] xgcc [clean|rebuild]
