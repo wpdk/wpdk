@@ -66,9 +66,7 @@ changes to the PATH variable are seen.
 <a id="source"></a>
 ## Source Code
 
-To ensure that correct CR/LF line endings are used, add the definitions in
-.\wpdk\gitattributes as global gitattributes. The source code can then be
-obtained using:
+The source code can be obtained using:
 
 ~~~{.sh}
 git clone https://github.com/wpdk/wpdk
@@ -99,7 +97,9 @@ Unit tests are available for *libcunit* and the WPDK. These can be run with the 
 <a id="spdk"></a>
 ## Using with SPDK
 
-To build SPDK, obtain the source code using:
+To ensure that correct CR/LF line endings are used, add the definitions in
+.\wpdk\gitattributes as global gitattributes. The source code can then be
+obtained using:
 
 ~~~{.sh}
 git clone https://github.com/wpdk/spdk
