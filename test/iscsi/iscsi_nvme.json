@@ -1,0 +1,130 @@
+{
+  "subsystems": [
+    {
+      "subsystem": "bdev",
+      "config": [
+        {
+          "method": "bdev_set_options",
+          "params": {
+            "bdev_io_pool_size": 65535,
+            "bdev_io_cache_size": 256,
+            "bdev_auto_examine": true
+          }
+        },
+        {
+          "method": "bdev_nvme_set_options",
+          "params": {
+            "action_on_timeout": "none",
+            "timeout_us": 0,
+            "keep_alive_timeout_ms": 10000,
+            "retry_count": 4,
+            "arbitration_burst": 0,
+            "low_priority_weight": 0,
+            "medium_priority_weight": 0,
+            "high_priority_weight": 0,
+            "nvme_adminq_poll_period_us": 10000,
+            "nvme_ioq_poll_period_us": 0,
+            "io_queue_requests": 512,
+            "delay_cmd_submit": true
+          }
+        },
+        {
+          "method": "bdev_nvme_attach_controller",
+          "params": {
+            "name": "NVMe1",
+            "trtype": "PCIe",
+            "traddr": "9d49:00:00.0",
+            "prchk_reftag": false,
+            "prchk_guard": false
+          }
+        },
+        {
+          "method": "bdev_nvme_set_hotplug",
+          "params": {
+            "period_us": 100000,
+            "enable": false
+          }
+        },
+        {
+          "method": "bdev_wait_for_examine"
+        }
+      ]
+    },
+    {
+      "subsystem": "iscsi",
+      "config": [
+        {
+          "method": "iscsi_set_options",
+          "params": {
+            "allow_duplicated_isid": false,
+            "default_time2retain": 60,
+            "mutual_chap": false,
+            "max_connections_per_session": 1,
+            "nop_timeout": 30,
+            "disable_chap": true,
+            "require_chap": false,
+            "node_base": "iqn.2019-05.io.openebs",
+            "chap_group": 0,
+            "max_sessions": 2,
+            "immediate_data": true,
+            "error_recovery_level": 0,
+            "nop_in_interval": 30,
+            "default_time2wait": 2,
+            "max_queue_depth": 64,
+            "first_burst_length": 8192
+          }
+        },
+        {
+          "params": {
+            "portals": [
+              {
+                "host": "127.0.0.1",
+                "port": "3260"
+              }
+            ],
+            "tag": 1
+          },
+          "method": "iscsi_create_portal_group"
+        },
+        {
+          "params": {
+            "initiators": [
+              "Any"
+            ],
+            "tag": 1,
+            "netmasks": [
+              "127.0.0.1/24"
+            ]
+          },
+          "method": "iscsi_create_initiator_group"
+        },
+        {
+          "params": {
+            "alias_name": "Backend NVMe1",
+            "name": "iqn.2019-05.io.openebs:disk1",
+            "luns": [
+              {
+                "lun_id": 0,
+                "bdev_name": "NVMe1n1"
+              }
+            ],
+            "pg_ig_maps": [
+              {
+                "ig_tag": 1,
+                "pg_tag": 1
+              }
+            ],
+            "queue_depth": 1,
+            "chap_group": 1,
+            "header_digest": false,
+            "mutual_chap": false,
+            "require_chap": false,
+            "data_digest": false,
+            "disable_chap": true
+          },
+          "method": "iscsi_create_target_node"
+        }
+      ]
+    }
+  ]
+}
