@@ -851,8 +851,8 @@ wpdk_pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start
 	if (detached) CloseHandle(h);
 
 	// HACK - pthread_create - DPDK should be setting priority
-	SetPriorityClass(GetCurrentProcess(), REALTIME_PRIORITY_CLASS);
-	SetThreadPriority(h, THREAD_PRIORITY_TIME_CRITICAL);
+	// SetPriorityClass(GetCurrentProcess(), REALTIME_PRIORITY_CLASS);
+	// SetThreadPriority(h, THREAD_PRIORITY_TIME_CRITICAL);
 
 	*thread = id;
 	return 0;
