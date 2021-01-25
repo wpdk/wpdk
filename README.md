@@ -29,6 +29,7 @@ The project is at an alpha stage:
 * All of the SPDK Unit Tests pass.
 * The iSCSI target can serve storage.
 * The NVMe over TCP target can serve storage.
+* The SPDK stack can attach to a physical NVMe disk and issue I/O.
 * Unit tests exist for the majority of the WPDK functionality.
 
 There are still a few areas that are currently unimplemented, or where quick hacks have been applied.
@@ -138,6 +139,9 @@ A 50MB NVMe over TCP RAM disk can be created with:
 ~~~{.sh}
 .\wpdk\test\nvmf\nvmf_tgt.bat
 ~~~
+
+Access to physical NVMe disks requires use of the 'netuio' and 'virt2phys' drivers from 
+the 'windows' branch of [dpdk-kmods](https://github.com/wpdk/spdk).
 
 Note:
 * This project builds upon the excellent work being done by the DPDK community to add support for Windows.
