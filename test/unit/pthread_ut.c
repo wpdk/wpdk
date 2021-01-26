@@ -973,6 +973,132 @@ test_equal(void)
 }
 
 
+static void
+test_key_create(void)
+{
+	pthread_key_t key;
+	int rc;
+
+	/* Check null pointer */
+	rc = pthread_key_create(NULL, NULL);
+	CU_ASSERT(rc == EINVAL);
+
+	/* Check create */
+	rc = pthread_key_create(&key, NULL);
+	CU_ASSERT(rc == 0);
+
+	/* Check delete */
+	rc = pthread_key_delete(key);
+	CU_ASSERT(rc == 0);
+}
+
+
+static void
+test_key_delete(void)
+{
+	pthread_key_t key;
+	int rc;
+
+	/* Check create */
+	rc = pthread_key_create(&key, NULL);
+	CU_ASSERT(rc == 0);
+
+	/* Check delete */
+	rc = pthread_key_delete(key);
+	CU_ASSERT(rc == 0);
+
+	/* Check second delete */
+	rc = pthread_key_delete(key);
+	CU_ASSERT(rc == EINVAL);
+}
+
+
+static void
+test_getspecific(void)
+{
+	pthread_key_t key;
+	void *val;
+	int rc;
+
+	/* Check create */
+	rc = pthread_key_create(&key, NULL);
+	CU_ASSERT(rc == 0);
+
+	/* Check setspecific */
+	rc = pthread_setspecific(key, &rc);
+	CU_ASSERT(rc == 0);
+
+	/* Check getspecific */
+	val = pthread_getspecific(key);
+	CU_ASSERT(val == &rc);
+
+	/* Check delete */
+	rc = pthread_key_delete(key);
+	CU_ASSERT(rc == 0);
+
+	/* Check getspecific after delete */
+	val = pthread_getspecific(key);
+	CU_ASSERT(val == NULL);
+}
+
+
+static void *
+test_setspecific_async(void *arg)
+{
+	pthread_key_t key = *(pthread_key_t *)arg;
+	void *val;
+	int rc;
+
+	/* Check setspecific */
+	rc = pthread_setspecific(key, &rc);
+	CU_ASSERT(rc == 0);
+
+	/* Check getspecific */
+	val = pthread_getspecific(key);
+	CU_ASSERT(val == &rc);
+
+	return NULL;
+}
+
+
+static void
+test_setspecific(void)
+{
+	pthread_key_t key;
+	pthread_t thread;
+	void *val;
+	int rc;
+
+	/* Check create */
+	rc = pthread_key_create(&key, NULL);
+	CU_ASSERT(rc == 0);
+
+	/* Check setspecific */
+	rc = pthread_setspecific(key, &rc);
+	CU_ASSERT(rc == 0);
+
+	/* Check getspecific */
+	val = pthread_getspecific(key);
+	CU_ASSERT(val == &rc);
+
+	/* Create thread */
+	rc = pthread_create(&thread, NULL, test_setspecific_async, &key);
+	CU_ASSERT(rc == 0);
+
+	/* Wait for completion */
+	rc = pthread_join(thread, NULL);
+	CU_ASSERT(rc == 0);
+
+	/* Check getspecific */
+	val = pthread_getspecific(key);
+	CU_ASSERT(val == &rc);
+
+	/* Check delete */
+	rc = pthread_key_delete(key);
+	CU_ASSERT(rc == 0);
+}
+
+
 void
 add_pthread_tests()
 {
@@ -1008,4 +1134,8 @@ add_pthread_tests()
 	CU_ADD_TEST(suite, test_getaffinity);
 	CU_ADD_TEST(suite, test_setaffinity);
 	CU_ADD_TEST(suite, test_equal);
+	CU_ADD_TEST(suite, test_key_create);
+	CU_ADD_TEST(suite, test_key_delete);
+	CU_ADD_TEST(suite, test_getspecific);
+	CU_ADD_TEST(suite, test_setspecific);
 }

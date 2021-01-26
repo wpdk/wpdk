@@ -1025,3 +1025,55 @@ wpdk_pthread_equal(pthread_t t1, pthread_t t2)
 {
 	return (t1 == t2);
 }
+
+
+int
+wpdk_pthread_key_create(pthread_key_t *key, void (*destructor)(void*))
+{
+	DWORD index;
+
+	// HACK - destructor not implemented
+	if (!key || destructor != NULL)
+		return EINVAL;
+
+	index = TlsAlloc();
+
+	if (index == TLS_OUT_OF_INDEXES) {
+		wpdk_last_error();
+		return errno;
+	}
+
+	*key = index;
+	return 0;
+}
+
+
+int
+wpdk_pthread_key_delete(pthread_key_t key)
+{
+	if (TlsFree(key) == 0) {
+		wpdk_last_error();
+		return errno;
+	}
+
+	return 0;
+}
+
+
+void *
+wpdk_pthread_getspecific(pthread_key_t key)
+{
+	return TlsGetValue(key);
+}
+
+
+int
+wpdk_pthread_setspecific(pthread_key_t key, const void *value)
+{
+	if (TlsSetValue(key, (void *)value) == 0) {
+		wpdk_last_error();
+		return errno;
+	}
+
+	return 0;
+}

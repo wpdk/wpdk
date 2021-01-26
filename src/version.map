@@ -119,7 +119,10 @@ WPDK_0.1 {
 	wpdk_pthread_equal;
 	wpdk_pthread_exit;
 	wpdk_pthread_getaffinity_np;
+	wpdk_pthread_getspecific;
 	wpdk_pthread_join;
+	wpdk_pthread_key_create;
+	wpdk_pthread_key_delete;
 	wpdk_pthread_mutexattr_destroy;
 	wpdk_pthread_mutexattr_getprioceiling;
 	wpdk_pthread_mutexattr_getprotocol;
@@ -142,6 +145,7 @@ WPDK_0.1 {
 	wpdk_pthread_setaffinity_np;
 	wpdk_pthread_setcancelstate;
 	wpdk_pthread_setcanceltype;
+	wpdk_pthread_setspecific;
 	wpdk_pthread_sigmask;
 	wpdk_pthread_spin_destroy;
 	wpdk_pthread_spin_init;

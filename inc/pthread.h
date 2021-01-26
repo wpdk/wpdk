@@ -29,6 +29,7 @@ _WPDK_BEGIN_C_HEADER
  *  implementation, but which avoid the need to include windows.h.
  */
 typedef unsigned long pthread_t;
+typedef unsigned long pthread_key_t;
 typedef struct { intptr_t x; } pthread_cond_t;
 typedef struct { intptr_t x[4]; } pthread_barrier_t;
 typedef struct { intptr_t x[5]; } pthread_spinlock_t;
@@ -223,6 +224,18 @@ int wpdk_pthread_equal(pthread_t t1, pthread_t t2);
 #define pthread_setaffinity_np(thread,cpusetsize,cpuset) wpdk_pthread_setaffinity_np(thread,cpusetsize,cpuset)
 #define pthread_getaffinity_np(thread,cpusetsize,cpuset) wpdk_pthread_getaffinity_np(thread,cpusetsize,cpuset)
 #define pthread_equal(t1,t2) wpdk_pthread_equal(t1,t2)
+#endif
+
+int wpdk_pthread_key_create(pthread_key_t *key, void (*destructor)(void*));
+int wpdk_pthread_key_delete(pthread_key_t key);
+void *wpdk_pthread_getspecific(pthread_key_t key);
+int wpdk_pthread_setspecific(pthread_key_t key, const void *value);
+
+#ifndef _WPDK_BUILD_LIB_
+#define pthread_key_create(key,destructor) wpdk_pthread_key_create(key,destructor)
+#define pthread_key_delete(key) wpdk_pthread_key_delete(key)
+#define pthread_getspecific(key) wpdk_pthread_getspecific(key)
+#define pthread_setspecific(key,value) wpdk_pthread_setspecific(key,value)
 #endif
 
 _WPDK_END_C_HEADER
