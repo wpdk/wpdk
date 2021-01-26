@@ -479,6 +479,7 @@ wpdk_io_submit(io_context_t ctx_id, long nr, struct iocb *ios[])
 			case IO_CMD_PREADV:
 				iov = (struct iovec *)iocb->aio_buf;
 
+#ifdef WPDK_AIO_TEST
 				if (iocb->aio_nbytes == 1) {
 					// HACK - test out the iovec logic
 					struct iocb io = *iocb;
@@ -499,7 +500,7 @@ wpdk_io_submit(io_context_t ctx_id, long nr, struct iocb *ios[])
 					rc = io_submit(ctx_id, 1, &iovs);
 					break;
 				}
-
+#endif
 				if (!wpdk_aio_validate_iovec(iov, iocb->aio_nbytes))
 					rc = -EINVAL;
 				else if (iocb->aio_nbytes == 1)
@@ -511,6 +512,7 @@ wpdk_io_submit(io_context_t ctx_id, long nr, struct iocb *ios[])
 			case IO_CMD_PWRITEV:
 				iov = (struct iovec *)iocb->aio_buf;
 
+#ifdef WPDK_AIO_TEST
 				if (iocb->aio_nbytes == 1) {
 					// HACK - test out the iovec logic
 					struct iocb io = *iocb;
@@ -531,7 +533,7 @@ wpdk_io_submit(io_context_t ctx_id, long nr, struct iocb *ios[])
 					rc = io_submit(ctx_id, 1, &iovs);
 					break;
 				}
-
+#endif
 				if (!wpdk_aio_validate_iovec(iov, iocb->aio_nbytes))
 					rc = -EINVAL;
 				else if (iocb->aio_nbytes == 1)
