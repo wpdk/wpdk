@@ -34,6 +34,7 @@
 #include <netinet/tcp.h>
 #include <openssl/md5.h>
 #include <uuid/uuid.h>
+#include <assert.h>
 #include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>

@@ -55,6 +55,7 @@ DEF_TEST(sys_un_h);
 DEF_TEST(sys_user_h);
 DEF_TEST(sys_wait_h);
 DEF_TEST(corecrt_h);
+DEF_TEST(assert_h);
 DEF_TEST(dirent_h);
 DEF_TEST(errno_h);
 DEF_TEST(fcntl_h);
@@ -135,6 +136,7 @@ ADD_TESTS()
 	ADD_TEST(sys_un_h);
 	ADD_TEST(sys_user_h);
 	ADD_TEST(sys_wait_h);
+	ADD_TEST(assert_h);
 	ADD_TEST(corecrt_h);
 	ADD_TEST(dirent_h);
 	ADD_TEST(errno_h);

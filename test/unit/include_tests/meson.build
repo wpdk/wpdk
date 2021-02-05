@@ -28,6 +28,7 @@ c_files = [
 	'sys_un_h.c',
 	'sys_user_h.c',
 	'sys_wait_h.c',
+	'assert_h.c',
 	'corecrt_h.c',
 	'dirent_h.c',
 	'errno_h.c',

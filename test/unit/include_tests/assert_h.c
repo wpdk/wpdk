@@ -11,20 +11,19 @@
  *  at https://www.kernel.org/doc/man-pages/
  */
 
-#include <wpdk/header.h>
+#include <assert.h>
 
-#ifdef _WPDK_INCLUDE_NEXT_
-_WPDK_INCLUDE_NEXT_
-#include_next <assert.h>
-#else
-#include <../ucrt/assert.h>
+#include <CUnit/Basic.h>
+
+#ifdef __cplusplus
+#define include_c_assert_h include_cpp_assert_h
 #endif
 
-#ifndef _WPDK_ASSERT_H_
-#define _WPDK_ASSERT_H_
+static_assert(sizeof(int) == sizeof(unsigned int), "integer size");
 
-#if defined(__MINGW32__) && !defined(static_assert) && !defined(__cplusplus)
-#define static_assert _Static_assert
-#endif
+void
+include_c_assert_h(void)
+{
+}
 
-#endif /* _WPDK_ASSERT_H_ */
+#include "include_ut.h"
