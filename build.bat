@@ -19,8 +19,11 @@ set DESTDIR=
 if not "%SPDK%"=="y" set "DESTDIR=%CD%\build"
 if "%WPDK%"=="y" if exist ..\dpdkbuild set "DESTDIR=%CD%\..\dpdk\build"
 
+set "CONFDIR=build"
+if not "%SPDK%"=="y" if exist ..\dpdkbuild set "CONFDIR=..\build"
+
 set cfg=
-if exist build\_config set /p cfg=<build\_config
+if exist %CONFDIR%\_config set /p cfg=<%CONFDIR%\_config
 
 for %%i in (%cfg% %*) do (
 	if "%%i"=="cl" set CC=cl
@@ -131,8 +134,8 @@ if "%INTERACTIVE%"=="y" (
 )
 
 echo Building %cfg%...
-if not exist build mkdir build
-echo %cfg%>build\_config
+if not exist %CONFDIR% mkdir %CONFDIR%
+echo %cfg%>%CONFDIR%\_config
 
 if "%WPDK%%DPDK%"=="y" (
 	set MESON_OPTS=
