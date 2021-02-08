@@ -23,8 +23,19 @@ _WPDK_INCLUDE_NEXT_
 #ifndef _WPDK_ASSERT_H_
 #define _WPDK_ASSERT_H_
 
-#if defined(__MINGW32__) && !defined(static_assert) && !defined(__cplusplus)
+#if !defined(static_assert) && !defined(__cplusplus)
+
+#if defined(__MINGW32__)
 #define static_assert _Static_assert
 #endif
+
+#if defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wkeyword-macro"
+#define static_assert _Static_assert
+#pragma GCC diagnostic pop
+#endif
+
+#endif /* !static_assert && !_cplusplus */
 
 #endif /* _WPDK_ASSERT_H_ */
