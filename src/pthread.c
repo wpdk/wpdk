@@ -43,9 +43,6 @@ CHECK_SIZE(pthread_cond_t, CONDITION_VARIABLE);
  */ 
 static const pthread_mutex_t mutex_init = PTHREAD_MUTEX_INITIALIZER;
 
-static bool spdk_mutex_workarounds = true;
-static SRWLOCK mutex_init_lock = SRWLOCK_INIT;
-
 struct thread {
 	DWORD id;
 	HANDLE h;
@@ -388,14 +385,6 @@ wpdk_pthread_mutex_destroy(pthread_mutex_t *mutex)
 	if (!mutex) return EINVAL;
 
 	DeleteCriticalSection((CRITICAL_SECTION *)mutex);
-
-	/*
-	 *  Reinitialise the mutex to handle the SPDK Unit Tests
-	 *  which can reuse it without calling init().
-	 */
-	if (spdk_mutex_workarounds)
-		memcpy(mutex, &mutex_init, sizeof(*mutex));
-
 	return 0;
 }
 
@@ -406,20 +395,6 @@ wpdk_pthread_mutex_lock(pthread_mutex_t *mutex)
 	CRITICAL_SECTION *lock = (CRITICAL_SECTION *)mutex;
 
 	if (!mutex) return EINVAL;
-
-	/*
-	 *  The SPDK Unit Tests can use the mutex without initialising it.
-	 *  If the DebugInfo field is zero then assume this has happened and
-	 *  initialise the lock in a threadsafe manner.
-	 */
-	if (spdk_mutex_workarounds && !lock->DebugInfo) {
-		AcquireSRWLockExclusive(&mutex_init_lock);
-		memset(mutex, 0, sizeof(*mutex));
-		lock->LockCount = -1;
-		lock->SpinCount = 4000;
-		InterlockedExchangePointer((void **)&lock->DebugInfo, (void *)-1);
-		ReleaseSRWLockExclusive(&mutex_init_lock);
-	}
 
 	EnterCriticalSection(lock);
 	return 0;
@@ -483,14 +458,6 @@ wpdk_pthread_spin_destroy(pthread_spinlock_t *lock)
 	if (!lock) return EINVAL;
 
 	DeleteCriticalSection((CRITICAL_SECTION *)lock);
-
-	/*
-	 *  Reinitialise the lock to handle the SPDK Unit Tests
-	 *  which can reuse it without calling init().
-	 */
-	if (spdk_mutex_workarounds)
-		InitializeCriticalSectionAndSpinCount((CRITICAL_SECTION *)lock, 32000);
-
 	return 0;
 }
 
