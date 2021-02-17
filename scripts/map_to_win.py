@@ -43,9 +43,9 @@ def main(args):
 # generate __wrap_ and __real_ aliases to simulate GCC --wrap
     for line in functions:
         if line.startswith('\twpdk_'):
-            fn = line.replace('\twpdk_', '').replace('\n','')
-            functions = functions + ['\t__wrap_' + fn + '=wpdk_' + fn + '\n']
-            functions = functions + ['\t__real_' + fn + '=wpdk_' + fn + '\n']
+            fn = line.replace('\t', '').replace('\n','')
+            functions = functions + ['\t__wrap_' + fn + '=' + fn + '\n']
+            functions = functions + ['\t__real_' + fn + '=' + fn + '\n']
     
     with open(args[2], 'w') as f_out:
         f_out.writelines(functions)

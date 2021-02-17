@@ -52,6 +52,8 @@
 #define _WPDK_END_C_HEADER
 #endif
 
+#if !defined(_WPDK_BUILD_LIB_)
 #include <wpdk/wrap.h>
+#endif
 
 #endif /* _WPDK_HEADER_H_ */
