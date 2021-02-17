@@ -10,3 +10,4 @@ else
 endif
 
 map_to_win_cmd = py3 + files('map_to_win.py')
+map_to_wrap_cmd = py3 + files('map_to_wrap.py')

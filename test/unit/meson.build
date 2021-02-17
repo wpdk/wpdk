@@ -37,6 +37,7 @@ sources = [
 	'uio_ut.c',
 	'uuid_ut.c',
 	'unistd_ut.c',
+	wrap_header,
 ]
 
 sources += configure_file(copy: true, input: 'include_ut.c', output: 'include_ut.cpp')

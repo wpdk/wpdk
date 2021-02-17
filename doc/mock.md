@@ -11,9 +11,8 @@ The wpdk/wrap.h header file redefines wpdk_function() to __wrap_wpdk_function(),
 References to __wrap_function() and __real_function() are redefined to include 'wpdk' in the function name.  This is required
 for both GCC and MSVC support.
 
-This file is currently manually generated and only covers the functions that are known to be mocked by the SPDK.
-
-In future, it would be possible to use version.map to autogenerate wrap.h to cover all functions defined by the WPDK library.
+This file is currently generated from src/wrap.map and only covers the functions that are known to be mocked by the SPDK.
+In future, it would be possible to use version.map to cover all functions defined by the WPDK library.
 
 ### Static Library
 

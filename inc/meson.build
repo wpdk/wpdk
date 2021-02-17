@@ -4,6 +4,8 @@
 
 include_prefix = 'wpdk/'
 
+subdir('wpdk')
+
 install_headers(
 	'_mingw.h',
 	'_timeval.h',
@@ -60,7 +62,6 @@ install_headers(
 install_headers(
 	'wpdk/header.h',
 	'wpdk/windows.h',
-	'wpdk/wrap.h',
 	subdir: include_prefix + 'wpdk'
 )
 

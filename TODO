@@ -1,20 +1,8 @@
-Sanity checks for pthreads to make sure init/destroy calls are being used correctly
-
-SPDK
-enable static asserts
-Fix nvme bit definitions and any initialisation (rename reserved to find)
-
 afunix - only works on build 17063 onwards - verify and document
 
 Fix env inclusion for unit tests
-Check if initialisation segment works with msvc as well as clang
-
-Use #define __wrap_ for names to map to wpdk_ (or change wrap macro definition?)
-Auto-generate wrap.h header files
 
 SetThreadDescription - https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-setthreaddescription
-
-Use SPDK_CONFIG_WPDK for some definitions rather than _WIN32
 
 Closing one end of AF_UNIX should generate SIGPIPE signal.
 
@@ -30,8 +18,7 @@ Investigate impact of thread local storage https://github.com/PlushBeaver/tlstes
 
 Fix for 32-bit builds
 
-libiscsi - include it
-libiscsi includes md5 code
+libiscsi - include it?
 
 Add log message handling - also add way for unit tests to tell if called.
 

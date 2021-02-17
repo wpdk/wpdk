@@ -1,0 +1,10 @@
+WPDK_0.1 {
+	global:
+	wpdk_calloc;
+	wpdk_pthread_mutexattr_init;
+	wpdk_pthread_mutex_init;
+	wpdk_recvmsg;
+	wpdk_sendmsg;
+	wpdk_unlink;
+	wpdk_writev;
+};
