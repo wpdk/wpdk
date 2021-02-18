@@ -238,10 +238,14 @@ int wpdk_pthread_setspecific(pthread_key_t key, const void *value);
 #define pthread_setspecific(key,value) wpdk_pthread_setspecific(key,value)
 #endif
 
+void wpdk_pthread_set_name_np(pthread_t thread, const char *name);
+void wpdk_pthread_get_name_np(pthread_t thread, char *name, size_t len);
 int wpdk_pthread_setname_np(pthread_t thread, const char *name);
 int wpdk_pthread_getname_np(pthread_t thread, char *name, size_t len);
 
 #ifndef _WPDK_BUILD_LIB_
+#define pthread_set_name_np(thread,name) wpdk_pthread_setname_np(thread,name)
+#define pthread_get_name_np(thread,name,len) wpdk_pthread_getname_np(thread,name,len)
 #define pthread_setname_np(thread,name) wpdk_pthread_setname_np(thread,name)
 #define pthread_getname_np(thread,name,len) wpdk_pthread_getname_np(thread,name,len)
 #endif

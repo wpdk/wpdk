@@ -1046,6 +1046,23 @@ wpdk_pthread_setspecific(pthread_key_t key, const void *value)
 }
 
 
+void
+wpdk_pthread_set_name_np(pthread_t thread, const char *name)
+{
+	wpdk_pthread_setname_np(thread, name);
+}
+
+
+void
+wpdk_pthread_get_name_np(pthread_t thread, char *name, size_t len)
+{
+	int rc = wpdk_pthread_getname_np(thread, name, len);
+
+	if (rc != 0 && name && len > 0)
+		name[0] = 0;
+}
+
+
 int
 wpdk_pthread_setname_np(pthread_t thread, const char *name)
 {
