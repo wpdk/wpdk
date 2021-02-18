@@ -2,8 +2,6 @@ afunix - only works on build 17063 onwards - verify and document
 
 Fix env inclusion for unit tests
 
-SetThreadDescription - https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-setthreaddescription
-
 Closing one end of AF_UNIX should generate SIGPIPE signal.
 
 Common array for fd state and flags in fd.c

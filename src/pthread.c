@@ -1044,3 +1044,73 @@ wpdk_pthread_setspecific(pthread_key_t key, const void *value)
 
 	return 0;
 }
+
+
+int
+wpdk_pthread_setname_np(pthread_t thread, const char *name)
+{
+	WCHAR buf[32];
+	HRESULT rc;
+	HANDLE h;
+	size_t i;
+
+	if (!thread || !name)
+		return EINVAL;
+
+	for (i = 0; i < sizeof(buf) / sizeof(buf[0]) && name[i]; i++)
+		buf[i] = name[i];
+
+	if (!i) return EINVAL;
+
+	if (i == sizeof(buf) / sizeof(buf[0]))
+		return ERANGE;
+
+	buf[i] = 0;
+
+	h = OpenThread(THREAD_SET_LIMITED_INFORMATION,
+			FALSE, thread);
+
+	if (h == NULL) {
+		wpdk_last_error();
+		return errno;
+	}
+
+	rc = SetThreadDescription(h, buf);
+
+	CloseHandle(h);
+	return (FAILED(rc)) ? EINVAL : 0;
+}
+
+
+int
+wpdk_pthread_getname_np(pthread_t thread, char *name, size_t len)
+{
+	HRESULT rc;
+	WCHAR *str;
+	HANDLE h;
+	size_t i;
+
+	if (!thread || !name || len < 1)
+		return EINVAL;
+
+	h = OpenThread(THREAD_QUERY_LIMITED_INFORMATION,
+			FALSE, thread);
+
+	if (h == NULL) {
+		wpdk_last_error();
+		return errno;
+	}
+
+	rc = GetThreadDescription(h, &str);
+
+	if (SUCCEEDED(rc)) {
+		for (i = 0; i < len && str[i]; i++)
+			name[i] = (char)str[i];
+	
+		if (i < len) name[i] = 0;
+		LocalFree(str);
+	}
+
+	CloseHandle(h);
+	return (FAILED(rc)) ? EINVAL : (i < len) ? 0 : ERANGE;
+}

@@ -1099,6 +1099,133 @@ test_setspecific(void)
 }
 
 
+static void *
+test_name_async(void *arg)
+{
+	int *stop = (int *)arg;
+
+	while (*stop == 0)
+		Sleep(1);
+
+	return NULL;
+}
+
+
+static void
+test_setname(void)
+{
+	pthread_t thread1, thread2;
+	int stop1 = 0, stop2 = 0;
+	char name[16];
+	int rc;
+
+	/* Create thread 1 */
+	rc = pthread_create(&thread1, NULL, test_name_async, &stop1);
+	CU_ASSERT(rc == 0);
+
+	/* Create thread 2 */
+	rc = pthread_create(&thread2, NULL, test_name_async, &stop2);
+	CU_ASSERT(rc == 0);
+
+	/* Check invalid thread */
+	rc = pthread_setname_np((pthread_t)0, "thread");
+	CU_ASSERT(rc == EINVAL);
+
+	/* Check invalid name */
+	rc = pthread_setname_np(thread1, NULL);
+	CU_ASSERT(rc == EINVAL);
+
+	/* Check null name */
+	rc = pthread_setname_np(thread1, "");
+	CU_ASSERT(rc == EINVAL);
+
+	/* Check long name */
+	rc = pthread_setname_np(thread1, "very very very very very long name");
+	CU_ASSERT(rc == ERANGE);
+
+	/* Check setname 1 */
+	rc = pthread_setname_np(thread1, "thread1");
+	CU_ASSERT(rc == 0);
+
+	/* Check setname 2 */
+	rc = pthread_setname_np(thread2, "thread2");
+	CU_ASSERT(rc == 0);
+
+	/* Check thread 1 */
+	rc = pthread_getname_np(thread1, name, sizeof(name));
+	CU_ASSERT(rc == 0);
+	CU_ASSERT(strcmp(name, "thread1") == 0);
+
+	/* Check thread 2 */
+	rc = pthread_getname_np(thread2, name, sizeof(name));
+	CU_ASSERT(rc == 0);
+	CU_ASSERT(strcmp(name, "thread2") == 0);
+
+	/* Check rename */
+	rc = pthread_setname_np(thread1, "rename1");
+	CU_ASSERT(rc == 0);
+
+	/* Check changed name */
+	rc = pthread_getname_np(thread1, name, sizeof(name));
+	CU_ASSERT(rc == 0);
+	CU_ASSERT(strcmp(name, "rename1") == 0);
+
+	stop1 = 1;
+	stop2 = 1;
+
+	/* Wait for completion */
+	rc = pthread_join(thread1, NULL);
+	CU_ASSERT(rc == 0);
+	rc = pthread_join(thread2, NULL);
+	CU_ASSERT(rc == 0);
+}
+
+
+static void
+test_getname(void)
+{
+	pthread_t thread;
+	int stop = 0;
+	char name[16];	
+	int rc;
+
+	/* Create thread */
+	rc = pthread_create(&thread, NULL, test_name_async, &stop);
+	CU_ASSERT(rc == 0);
+
+	/* Check setname child */
+	rc = pthread_setname_np(thread, "threadname");
+	CU_ASSERT(rc == 0);
+
+	/* Check invalid thread */
+	rc = pthread_getname_np((pthread_t)0, name, sizeof(name));
+	CU_ASSERT(rc == EINVAL);
+
+	/* Check invalid buffer */
+	rc = pthread_getname_np(thread, NULL, sizeof(name));
+	CU_ASSERT(rc == EINVAL);
+
+	/* Check invalid length */
+	rc = pthread_getname_np(thread, name, 0);
+	CU_ASSERT(rc == EINVAL);
+
+	/* Check thread name */
+	rc = pthread_getname_np(thread, name, sizeof(name));
+	CU_ASSERT(rc == 0);
+	CU_ASSERT(strcmp(name, "threadname") == 0);
+
+	/* Check small buffer */
+	rc = pthread_getname_np(thread, name, 4);
+	CU_ASSERT(rc == ERANGE);
+
+	stop = 1;
+
+	/* Wait for completion */
+	rc = pthread_join(thread, NULL);
+	CU_ASSERT(rc == 0);
+}
+
+
 void
 add_pthread_tests()
 {
@@ -1138,4 +1265,6 @@ add_pthread_tests()
 	CU_ADD_TEST(suite, test_key_delete);
 	CU_ADD_TEST(suite, test_getspecific);
 	CU_ADD_TEST(suite, test_setspecific);
+	CU_ADD_TEST(suite, test_setname);
+	CU_ADD_TEST(suite, test_getname);
 }
