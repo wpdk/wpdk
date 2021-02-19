@@ -84,17 +84,24 @@ wpdk_socket_cleanup()
 
 
 static int
-wpdk_allocate_socket(SOCKET s, int domain)
+wpdk_allocate_socket(SOCKET s, int domain, int flags)
 {
+	u_long nb = (flags & O_NONBLOCK) != 0;
 	int i;
-	
+
+	if (ioctlsocket(s, FIONBIO, &nb) == SOCKET_ERROR) {
+		wpdk_last_wsa_error();
+		closesocket(s);
+		return -1;
+	}
+
 	for (i = 0; i < maxsockets; i++)
 		if (wpdk_socket_fds[i].socket == INVALID_SOCKET)
 			if ((SOCKET)InterlockedCompareExchangePointer(
 					(void **)&wpdk_socket_fds[i].socket,
 					(void *)s, (void *)INVALID_SOCKET) == INVALID_SOCKET) {
 				wpdk_socket_fds[i].domain = domain;
-				wpdk_socket_fds[i].flags = 0;
+				wpdk_socket_fds[i].flags = flags;
 				return socketbase + i;
 			}
 
@@ -128,17 +135,20 @@ wpdk_get_socket(int fd)
 int
 wpdk_socket(int domain, int type, int protocol)
 {
+	int flags;
 	SOCKET s;
 
 	if (!wpdk_socket_ready && !wpdk_socket_startup())
 		return wpdk_last_wsa_error();
 
-	s = socket(domain, type, protocol);
+	s = socket(domain, (type & ~SOCK_NONBLOCK), protocol);
 
 	if (s == INVALID_SOCKET)
 		return wpdk_last_wsa_error();
 
-	return wpdk_allocate_socket(s, domain);
+	flags = (type & SOCK_NONBLOCK) ? O_NONBLOCK : 0;
+
+	return wpdk_allocate_socket(s, domain, flags);
 }
 
 
@@ -166,7 +176,28 @@ int
 wpdk_accept(int socket, struct sockaddr *address, socklen_t *address_len)
 {
 	SOCKET s = wpdk_get_socket(socket);
-	int domain;
+	int domain, flags;
+
+	if (s == INVALID_SOCKET)
+		return wpdk_posix_error(EBADF);
+	
+	domain = wpdk_socket_fds[socket - socketbase].domain;
+	flags = wpdk_socket_fds[socket - socketbase].flags;
+
+	s = accept(s, address, address_len);
+
+	if (s == INVALID_SOCKET)
+		return wpdk_last_wsa_error();
+
+	return wpdk_allocate_socket(s, domain, flags);
+}
+
+
+int
+wpdk_accept4(int socket, struct sockaddr *address, socklen_t *address_len, int sflags)
+{
+	SOCKET s = wpdk_get_socket(socket);
+	int domain, flags;
 
 	if (s == INVALID_SOCKET)
 		return wpdk_posix_error(EBADF);
@@ -178,7 +209,9 @@ wpdk_accept(int socket, struct sockaddr *address, socklen_t *address_len)
 	if (s == INVALID_SOCKET)
 		return wpdk_last_wsa_error();
 
-	return wpdk_allocate_socket(s, domain);
+	flags = (sflags & SOCK_NONBLOCK) ? O_NONBLOCK : 0;
+
+	return wpdk_allocate_socket(s, domain, flags);
 }
 
 

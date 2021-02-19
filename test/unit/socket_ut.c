@@ -21,6 +21,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <pthread.h>
+#include <fcntl.h>
 
 #include <CUnit/Basic.h>
 
@@ -31,6 +32,7 @@ struct server {
 	int			client;
 	pthread_t	thread;
 	void		*result;
+	int			stop;
 };
 
 
@@ -72,7 +74,7 @@ server_thread(void *arg)
 
 	fd = accept(s->server, (struct sockaddr *)&addr, &len);
 
-	if (rc == -1) {
+	if (fd == -1) {
 		fprintf(stderr, "server: accept failed (%s)\n", strerror(errno));
 		return 0;
 	}
@@ -185,6 +187,18 @@ test_socket(void)
 	/* Check INET domain */
 	fd = socket(AF_INET, SOCK_STREAM, 0);
 	CU_ASSERT(fd != -1);
+
+	/* Check blocking mode */
+	rc = fcntl(fd, F_GETFL, 0);
+	CU_ASSERT(rc == 0);
+	rc = close(fd);
+	CU_ASSERT(rc == 0);
+
+	/* Check non-blocking mode */
+	fd = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0);
+	CU_ASSERT(fd != -1);
+	rc = fcntl(fd, F_GETFL, 0);
+	CU_ASSERT(rc == O_NONBLOCK);
 	rc = close(fd);
 	CU_ASSERT(rc == 0);
 }
@@ -257,6 +271,190 @@ test_bind(void)
 }
 
 
+static void *
+client_thread(void *arg)
+{
+	struct server *s = (struct server *)arg;
+	struct sockaddr_un un;
+	int rc;
+
+	un.sun_family = AF_UNIX;
+	strncpy_s(un.sun_path, sizeof(un.sun_path), s->path, sizeof(un.sun_path) - 1);
+
+	/* Connect client */
+	rc = connect(s->client, (struct sockaddr *)&un, sizeof(un));
+
+	if (rc != 0) {
+		fprintf(stderr, "client: connect failed (%s)\n", strerror(errno));
+		return 0;
+	}
+
+	while (!s->stop)
+		Sleep(1);
+
+	return (void *)1;
+}
+
+
+static void
+start_client(struct server *s, const char *path)
+{
+	struct sockaddr_un un;
+	int rc;
+
+	s->path = path;
+	unlink(s->path);
+
+	/* Open server socket */
+	s->server = socket(AF_UNIX, SOCK_STREAM, 0);
+	CU_ASSERT(s->server != -1);
+
+	/* Bind server socket */
+	un.sun_family = AF_UNIX;
+	strncpy_s(un.sun_path, sizeof(un.sun_path), s->path, sizeof(un.sun_path) - 1);
+	rc = bind(s->server, (struct sockaddr *)&un, sizeof(un));
+	CU_ASSERT(rc == 0);
+
+	/* Open client socket */
+	s->client = socket(AF_UNIX, SOCK_STREAM, 0);
+	CU_ASSERT(s->client != -1);
+
+	/* Listen on server */
+	rc = listen(s->server, 5);
+	CU_ASSERT(rc == 0);
+
+	s->stop = 0;
+
+	/* Create client */
+	rc = pthread_create(&s->thread, NULL, client_thread, (void *)s);
+	CU_ASSERT(rc == 0);
+}
+
+
+static void
+stop_client(struct server *s)
+{
+	DWORD rc;
+
+	s->stop = 1;
+
+	/* Collect client result */
+	rc = pthread_join(s->thread, &s->result);
+	CU_ASSERT(rc == 0);
+	CU_ASSERT(s->result == (void *)1);
+
+	rc = close(s->server);
+	CU_ASSERT(rc == 0);
+
+	rc = close(s->client);
+	CU_ASSERT(rc == 0);
+
+	unlink(s->path);
+}
+
+
+static void
+test_accept(void)
+{
+	struct sockaddr_un addr;
+	struct server s;
+	socklen_t len;
+	int fd, rc;
+
+	/* Check blocking accept */
+	start_client(&s, "testsocket");
+
+	len = sizeof(addr);
+	fd = accept(s.server, (struct sockaddr *)&addr, &len);
+	CU_ASSERT(fd != -1);
+
+	rc = fcntl(fd, F_GETFL, 0);
+	CU_ASSERT(rc == 0);
+
+	rc = close(fd);
+	CU_ASSERT(rc == 0);
+	stop_client(&s);
+
+	/* Check non-blocking accept */
+	start_client(&s, "testsocket");
+
+	rc = fcntl(s.server, F_SETFL, O_NONBLOCK);
+	CU_ASSERT(rc == 0);
+
+	for (; 1; Sleep(1)) {
+		len = sizeof(addr);
+		fd = accept(s.server, (struct sockaddr *)&addr, &len);
+		if (fd != -1 || errno != EWOULDBLOCK) break;
+	}
+	CU_ASSERT(fd != -1);
+
+	rc = fcntl(fd, F_GETFL, 0);
+	CU_ASSERT(rc == O_NONBLOCK);
+
+	rc = close(fd);
+	CU_ASSERT(rc == 0);
+	stop_client(&s);
+}
+
+
+static void
+test_accept4(void)
+{
+	struct sockaddr_un addr;
+	struct server s;
+	socklen_t len;
+	int fd, rc;
+
+	/* Check blocking accept */
+	start_client(&s, "testsocket");
+
+	len = sizeof(addr);
+	fd = accept4(s.server, (struct sockaddr *)&addr, &len, 0);
+	CU_ASSERT(fd != -1);
+
+	rc = fcntl(fd, F_GETFL, 0);
+	CU_ASSERT(rc == 0);
+
+	rc = close(fd);
+	CU_ASSERT(rc == 0);
+	stop_client(&s);
+
+	/* Check non-blocking accept */
+	start_client(&s, "testsocket");
+
+	len = sizeof(addr);
+	fd = accept4(s.server, (struct sockaddr *)&addr, &len, SOCK_NONBLOCK);
+	CU_ASSERT(fd != -1);
+
+	rc = fcntl(fd, F_GETFL, 0);
+	CU_ASSERT(rc == O_NONBLOCK);
+
+	rc = close(fd);
+	CU_ASSERT(rc == 0);
+
+	/* Check blocking accept on non-blocking socket*/
+	start_client(&s, "testsocket");
+
+	rc = fcntl(s.server, F_SETFL, O_NONBLOCK);
+	CU_ASSERT(rc == 0);
+
+	for (; 1; Sleep(1)) {
+		len = sizeof(addr);
+		fd = accept4(s.server, (struct sockaddr *)&addr, &len, 0);
+		if (fd != -1 || errno != EWOULDBLOCK) break;
+	}
+	CU_ASSERT(fd != -1);
+
+	rc = fcntl(fd, F_GETFL, 0);
+	CU_ASSERT(rc == 0);
+
+	rc = close(fd);
+	CU_ASSERT(rc == 0);
+	stop_client(&s);
+
+}
+
+
 static void
 test_send(void)
 {
@@ -287,5 +485,7 @@ void add_socket_tests()
 
 	CU_ADD_TEST(suite, test_socket);
 	CU_ADD_TEST(suite, test_bind);
+	CU_ADD_TEST(suite, test_accept);
+	CU_ADD_TEST(suite, test_accept4);
 	CU_ADD_TEST(suite, test_send);
 }

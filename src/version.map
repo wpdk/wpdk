@@ -6,6 +6,7 @@ WPDK_0.1 {
 	wpdk_MD5_Transform;
 	wpdk_MD5_Update;
 	wpdk_accept;
+	wpdk_accept4;
 	wpdk_access;
 	wpdk_bind;
 	wpdk_calloc;

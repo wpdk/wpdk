@@ -99,9 +99,12 @@ struct msghdr {
 #define SCM_RIGHTS			1
 #define SCM_CREDENTIALS		2
 
+#define SOCK_NONBLOCK		0x1000
+
 typedef unsigned short sa_family_t;
 
 int wpdk_accept(int socket, struct sockaddr *address, socklen_t *address_len);
+int wpdk_accept4(int socket, struct sockaddr *address, socklen_t *address_len, int flags);
 int wpdk_bind(int socket, const struct sockaddr *address, socklen_t address_len);
 int wpdk_connect(int socket, const struct sockaddr *address, socklen_t address_len);
 int wpdk_getpeername(int socket, struct sockaddr *address, socklen_t *address_len);
@@ -124,6 +127,7 @@ int wpdk_socketpair(int domain, int type, int protocol, int socket_vector[2]);
 
 #ifndef _WPDK_BUILD_LIB_
 #define accept wpdk_accept
+#define accept4 wpdk_accept4
 #define bind wpdk_bind
 #define connect wpdk_connect
 #define getpeername wpdk_getpeername
