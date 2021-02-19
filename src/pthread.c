@@ -58,6 +58,63 @@ static SRWLOCK wpdk_threads_lock = SRWLOCK_INIT;
 static int hwmthreads = 0;
 static const int maxthreads = 8192;
 
+static HRESULT (WINAPI *pSetThreadDescription)(HANDLE, PCWSTR);
+static HRESULT (WINAPI *pGetThreadDescription)(HANDLE, PWSTR *);
+
+static INIT_ONCE wpdk_pthread_once = INIT_ONCE_STATIC_INIT;
+
+
+#ifdef __MINGW32__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcast-function-type"
+#endif
+
+static BOOL CALLBACK
+wpdk_pthread_initialise_once(INIT_ONCE *pInit, void *arg, void **pContext)
+{
+	HMODULE h;
+
+	UNREFERENCED_PARAMETER(pInit);
+	UNREFERENCED_PARAMETER(arg);
+
+ 	h = LoadLibrary("Kernel32.dll");
+
+	if (h != NULL) {
+		pSetThreadDescription = (HRESULT (WINAPI *)(HANDLE, PCWSTR))
+			GetProcAddress(h, "SetThreadDescription");
+		pGetThreadDescription = (HRESULT (WINAPI *)(HANDLE, PWSTR *))
+			GetProcAddress(h, "GetThreadDescription");
+	}
+
+	if (!pSetThreadDescription || !pGetThreadDescription)
+		WPDK_WARNING("Unable to find SetThreadDescription");
+
+	*pContext = NULL;
+	return TRUE;
+}
+
+#ifdef __MINGW32__
+#pragma GCC diagnostic pop
+#endif
+
+
+static void
+wpdk_pthread_initialise()
+{
+	void *context = NULL;
+
+	/*
+	 *  Initialise the function pointers.
+	 *
+	 *  NOTE: The documentation appears to incorrectly state the order
+	 *  of the arguments as (..., Context, Parameter).  According to
+	 *  the function prototype and the example code, the correct order
+	 *  is (..., Parameter, Context).
+	 */
+	InitOnceExecuteOnce(&wpdk_pthread_once, wpdk_pthread_initialise_once,
+			NULL, &context);
+}
+
 
 static struct thread *
 wpdk_allocate_thread()
@@ -1074,6 +1131,11 @@ wpdk_pthread_setname_np(pthread_t thread, const char *name)
 	if (!thread || !name)
 		return EINVAL;
 
+	wpdk_pthread_initialise();
+
+	if (!pSetThreadDescription)
+		return ENOSYS;
+
 	for (i = 0; i < sizeof(buf) / sizeof(buf[0]) && name[i]; i++)
 		buf[i] = name[i];
 
@@ -1092,7 +1154,7 @@ wpdk_pthread_setname_np(pthread_t thread, const char *name)
 		return errno;
 	}
 
-	rc = SetThreadDescription(h, buf);
+	rc = (*pSetThreadDescription)(h, buf);
 
 	CloseHandle(h);
 	return (FAILED(rc)) ? EINVAL : 0;
@@ -1110,6 +1172,11 @@ wpdk_pthread_getname_np(pthread_t thread, char *name, size_t len)
 	if (!thread || !name || len < 1)
 		return EINVAL;
 
+	wpdk_pthread_initialise();
+
+	if (!pGetThreadDescription)
+		return ENOSYS;
+
 	h = OpenThread(THREAD_QUERY_LIMITED_INFORMATION,
 			FALSE, thread);
 
@@ -1118,7 +1185,7 @@ wpdk_pthread_getname_np(pthread_t thread, char *name, size_t len)
 		return errno;
 	}
 
-	rc = GetThreadDescription(h, &str);
+	rc = (*pGetThreadDescription)(h, &str);
 
 	if (SUCCEEDED(rc)) {
 		for (i = 0; i < len && str[i]; i++)
