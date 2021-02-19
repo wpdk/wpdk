@@ -1164,10 +1164,10 @@ wpdk_pthread_setname_np(pthread_t thread, const char *name)
 int
 wpdk_pthread_getname_np(pthread_t thread, char *name, size_t len)
 {
+	size_t i = 0;
 	HRESULT rc;
 	WCHAR *str;
 	HANDLE h;
-	size_t i;
 
 	if (!thread || !name || len < 1)
 		return EINVAL;
@@ -1188,7 +1188,7 @@ wpdk_pthread_getname_np(pthread_t thread, char *name, size_t len)
 	rc = (*pGetThreadDescription)(h, &str);
 
 	if (SUCCEEDED(rc)) {
-		for (i = 0; i < len && str[i]; i++)
+		for (; i < len && str[i]; i++)
 			name[i] = (char)str[i];
 	
 		if (i < len) name[i] = 0;
