@@ -364,23 +364,37 @@ test_accept(void)
 	/* Check blocking accept */
 	start_client(&s, "testsocket");
 
+	/* Accept connection */
 	len = sizeof(addr);
 	fd = accept(s.server, (struct sockaddr *)&addr, &len);
 	CU_ASSERT(fd != -1);
 
+	/* Check blocking mode */
 	rc = fcntl(fd, F_GETFL, 0);
 	CU_ASSERT(rc == 0);
 
 	rc = close(fd);
 	CU_ASSERT(rc == 0);
 	stop_client(&s);
+}
+
+
+static void
+test_accept_nonblock(void)
+{
+	struct sockaddr_un addr;
+	struct server s;
+	socklen_t len;
+	int fd, rc;
 
 	/* Check non-blocking accept */
 	start_client(&s, "testsocket");
 
+	/* Set non-blocking mode */
 	rc = fcntl(s.server, F_SETFL, O_NONBLOCK);
 	CU_ASSERT(rc == 0);
 
+	/* Wait for connection */
 	for (; 1; Sleep(1)) {
 		len = sizeof(addr);
 		fd = accept(s.server, (struct sockaddr *)&addr, &len);
@@ -388,6 +402,7 @@ test_accept(void)
 	}
 	CU_ASSERT(fd != -1);
 
+	/* Check blocking mode */
 	rc = fcntl(fd, F_GETFL, 0);
 	CU_ASSERT(rc == O_NONBLOCK);
 
@@ -408,36 +423,63 @@ test_accept4(void)
 	/* Check blocking accept */
 	start_client(&s, "testsocket");
 
+	/* Accept connection */
 	len = sizeof(addr);
 	fd = accept4(s.server, (struct sockaddr *)&addr, &len, 0);
 	CU_ASSERT(fd != -1);
 
+	/* Check blocking mode */
 	rc = fcntl(fd, F_GETFL, 0);
 	CU_ASSERT(rc == 0);
 
 	rc = close(fd);
 	CU_ASSERT(rc == 0);
 	stop_client(&s);
+}
+
+
+static void
+test_accept4_nonblock(void)
+{
+	struct sockaddr_un addr;
+	struct server s;
+	socklen_t len;
+	int fd, rc;
 
 	/* Check non-blocking accept */
 	start_client(&s, "testsocket");
 
+	/* Accept connection */
 	len = sizeof(addr);
 	fd = accept4(s.server, (struct sockaddr *)&addr, &len, SOCK_NONBLOCK);
 	CU_ASSERT(fd != -1);
 
+	/* Check blocking mode */
 	rc = fcntl(fd, F_GETFL, 0);
 	CU_ASSERT(rc == O_NONBLOCK);
 
 	rc = close(fd);
 	CU_ASSERT(rc == 0);
+	stop_client(&s);
+}
+
+
+static void
+test_accept4_block(void)
+{
+	struct sockaddr_un addr;
+	struct server s;
+	socklen_t len;
+	int fd, rc;
 
 	/* Check blocking accept on non-blocking socket*/
 	start_client(&s, "testsocket");
 
+	/* Set non-blocking mode */
 	rc = fcntl(s.server, F_SETFL, O_NONBLOCK);
 	CU_ASSERT(rc == 0);
 
+	/* Wait for connection */
 	for (; 1; Sleep(1)) {
 		len = sizeof(addr);
 		fd = accept4(s.server, (struct sockaddr *)&addr, &len, 0);
@@ -445,13 +487,13 @@ test_accept4(void)
 	}
 	CU_ASSERT(fd != -1);
 
+	/* Check blocking mode */
 	rc = fcntl(fd, F_GETFL, 0);
 	CU_ASSERT(rc == 0);
 
 	rc = close(fd);
 	CU_ASSERT(rc == 0);
 	stop_client(&s);
-
 }
 
 
@@ -486,6 +528,9 @@ void add_socket_tests()
 	CU_ADD_TEST(suite, test_socket);
 	CU_ADD_TEST(suite, test_bind);
 	CU_ADD_TEST(suite, test_accept);
+	CU_ADD_TEST(suite, test_accept_nonblock);
 	CU_ADD_TEST(suite, test_accept4);
+	CU_ADD_TEST(suite, test_accept4_nonblock);
+	CU_ADD_TEST(suite, test_accept4_block);
 	CU_ADD_TEST(suite, test_send);
 }
