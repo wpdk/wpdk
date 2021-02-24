@@ -7,5 +7,5 @@ if not errorlevel 1 (
 	goto :eof
 )
 
-set "PATH=%~dp0\..\..\..\dpdk\build\bin;%PATH%"
+set "PATH=%~dp0\..\..\..\dpdk\build\bin;%~dp0\..\..\..\wpdk\build\bin;%PATH%"
 "%~dp0\..\..\..\build\bin\nvmf_tgt.exe" -c "%~dp0\nvmf_tgt.json"

@@ -17,7 +17,6 @@ if exist dpdkbuild set SPDK=y
 
 set DESTDIR=
 if not "%SPDK%"=="y" set "DESTDIR=%CD%\build"
-if "%WPDK%"=="y" if exist ..\dpdkbuild set "DESTDIR=%CD%\..\dpdk\build"
 
 set "CONFDIR=build"
 if not "%SPDK%"=="y" if exist ..\dpdkbuild set "CONFDIR=..\build"
@@ -58,7 +57,7 @@ if not "%CROSS%"=="" set SH=wsl bash
 if "%CROSS%"=="" (
 	set "PATH=%ProgramFiles%\NASM;%ALLUSERSPROFILE%\chocolatey\bin;%SystemDrive%\tools\msys64;!PATH!"
 	set "PATH=%ProgramFiles%\LLVM\bin;%SystemDrive%\MinGW\mingw64\bin;%ProgramFiles%\MESON;!PATH!"
-	if "%SPDK%"=="y" set "PATH=%CD%\dpdk\build\bin;!PATH!"
+	if "%SPDK%"=="y" set "PATH=%CD%\dpdk\build\bin;%CD%\wpdk\build\bin;!PATH!"
 )
 
 if not "%CLEAN%"=="clean" (
