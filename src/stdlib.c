@@ -82,13 +82,16 @@ wpdk_mkstemp(char *template)
 void *
 wpdk_calloc(size_t nelem, size_t elsize)
 {
+	size_t size = nelem * elsize;
 	char *cp;
 	
 	wpdk_set_invalid_handler();
 
-	cp = _aligned_malloc(nelem * elsize, default_alignment);
+	if (!size) size = sizeof(int);
 
-	if (cp) memset(cp, 0, nelem * elsize);
+	cp = _aligned_malloc(size, default_alignment);
+
+	if (cp) memset(cp, 0, size);
 	return cp;
 }
 
@@ -105,7 +108,7 @@ wpdk_malloc(size_t size)
 {
 	wpdk_set_invalid_handler();
 
-	return _aligned_malloc(size, default_alignment);
+	return _aligned_malloc(size ? size : sizeof(int), default_alignment);
 }
 
 
@@ -114,7 +117,7 @@ wpdk_realloc(void *ptr, size_t size)
 {
 	wpdk_set_invalid_handler();
 
-	return _aligned_realloc(ptr, size, default_alignment);
+	return _aligned_realloc(ptr, size ? size : sizeof(int), default_alignment);
 }
 
 
@@ -126,7 +129,7 @@ wpdk_posix_memalign(void **memptr, size_t alignment, size_t size)
 	if (!memptr || !size)
 		return EINVAL;
 
-	*memptr = _aligned_malloc(size, alignment);
+	*memptr = _aligned_malloc(size ? size : sizeof(int), alignment);
 
 	if (!*memptr)
 		return ENOMEM;
