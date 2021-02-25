@@ -46,3 +46,11 @@ if get_option('b_lto')
 		add_project_link_arguments('-Wno-lto-type-mismatch', language: 'c')
 	endif
 endif
+
+# workaround for gcc bug 86832
+if cc.get_id() == 'gcc' and cc.version().version_compare('<8.3')
+	add_project_arguments('-mstack-protector-guard=global', language: 'c')
+endif
+if cpp.get_id() == 'gcc' and cpp.version().version_compare('<8.3')
+	add_project_arguments('-mstack-protector-guard=global', language: 'cpp')
+endif

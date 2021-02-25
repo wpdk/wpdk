@@ -1,5 +1,7 @@
 WPDK_0.1 {
 	global:
+	__stack_chk_fail;
+	__stack_chk_guard;
 	wpdk_MD5;
 	wpdk_MD5_Final;
 	wpdk_MD5_Init;

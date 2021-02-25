@@ -34,6 +34,7 @@ sources = [
 	'stat.c',
 	'stdio.c',
 	'stdlib.c',
+	'stack.c',
 	'string.c',
 	'strings.c',
 	'syslog.c',
