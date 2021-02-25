@@ -24,6 +24,8 @@ if not "%SPDK%"=="y" if exist ..\dpdkbuild set "CONFDIR=..\build"
 set cfg=
 if exist %CONFDIR%\_config set /p cfg=<%CONFDIR%\_config
 
+set SH=call msys2_shell -no-start -here -use-full-path -defterm
+
 for %%i in (%cfg% %*) do (
 	if "%%i"=="cl" set CC=cl
 	if "%%i"=="clang" set CC=clang
@@ -36,11 +38,10 @@ for %%i in (%cfg% %*) do (
 	if "%%i"=="x64" set ARCH=x64
 	if "%%i"=="clean" set CLEAN=clean
 	if "%%i"=="rebuild" set CLEAN=y
-	if "%%i"=="shell" set INTERACTIVE=y
-	if "%%i"=="sh" set INTERACTIVE=y
+	if "%%i"=="shell" set INTERACTIVE=%SH%
+	if "%%i"=="sh" set INTERACTIVE=%SH%
+	if "%%i"=="wsl" set INTERACTIVE=wsl
 )
-
-set SH=call msys2_shell -no-start -here -use-full-path -defterm
 
 if "%CC%"=="xgcc" (
 	if not "%ARCH%"=="x64" (
@@ -57,8 +58,9 @@ if not "%CROSS%"=="" set SH=wsl bash
 if "%CROSS%"=="" (
 	set "PATH=%ProgramFiles%\NASM;%ALLUSERSPROFILE%\chocolatey\bin;%SystemDrive%\tools\msys64;!PATH!"
 	set "PATH=%ProgramFiles%\LLVM\bin;%SystemDrive%\MinGW\mingw64\bin;%ProgramFiles%\MESON;!PATH!"
-	if "%SPDK%"=="y" set "PATH=%CD%\dpdk\build\bin;%CD%\wpdk\build\bin;!PATH!"
 )
+
+if "%SPDK%"=="y" set "PATH=%CD%\dpdk\build\bin;%CD%\wpdk\build\bin;%PATH%"
 
 if not "%CLEAN%"=="clean" (
 	if "%SPDK%"=="y" if not exist mk\config.mk set CLEAN=y
@@ -128,8 +130,8 @@ set CXXFLAGS=
 set LDFLAGS=
 set ENV=CC='%CC%' CXX='%CXX%' LD='%LD%' CFLAGS='%CFLAGS%' CXXFLAGS='%CXXFLAGS%' LDFLAGS='%LDFLAGS%'
 
-if "%INTERACTIVE%"=="y" (
-	%SH%
+if not "%INTERACTIVE%"=="" (
+	%INTERACTIVE%
 	goto :eof
 )
 
@@ -141,7 +143,7 @@ if "%WPDK%%DPDK%"=="y" (
 	set MESON_OPTS=
 	if "%DPDK%"=="y" set "MESON_OPTS=-Dexamples=helloworld"
 	if not "%CROSS%"=="" (
-		if not exist build-tmp %SH% -c "meson --buildtype=%TYPE% !MESON_OPTS! --cross-file=%CROSS% build-tmp"
+		if not exist build-tmp %SH% -c "meson --buildtype=%TYPE% !MESON_OPTS! --prefix='/' --cross-file=%CROSS% build-tmp"
 		%SH% -c "ninja -C build-tmp -j8 && DESTDIR=`wslpath '%DESTDIR%'` meson install -C build-tmp --no-rebuild --only-changed"
 	) else (
 		if not exist build-tmp meson --buildtype=%TYPE% !MESON_OPTS! build-tmp
