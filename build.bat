@@ -130,12 +130,13 @@ set CXXFLAGS=
 set LDFLAGS=
 set ENV=CC='%CC%' CXX='%CXX%' LD='%LD%' CFLAGS='%CFLAGS%' CXXFLAGS='%CXXFLAGS%' LDFLAGS='%LDFLAGS%'
 
+echo Building %cfg%...
+
 if not "%INTERACTIVE%"=="" (
 	%INTERACTIVE%
 	goto :eof
 )
 
-echo Building %cfg%...
 if not exist %CONFDIR% mkdir %CONFDIR%
 echo %cfg%>%CONFDIR%\_config
 
