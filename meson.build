@@ -21,6 +21,7 @@ cunit = subproject('CUnit')
 cunit_dep = cunit.get_variable('cunit_dep')
 
 machine_args = []
+link_static_libs = []
 link_libs = ['-lws2_32', '-lrpcrt4', '-liphlpapi']
 
 global_includes = include_directories('.', 'inc')
@@ -40,6 +41,10 @@ foreach warning : warnings
 		add_project_arguments(warning, language: 'c')
 	endif
 endforeach
+
+if cc.get_id() == 'gcc'
+	link_static_libs += '-l:libssp.a'
+endif
 
 subdir('scripts')
 subdir('config')

@@ -56,7 +56,7 @@ unit_tests = executable('wpdk_unit',
 		include_directories: [ global_includes ],
 		link_with : [ static_lib ],
 		dependencies : cunit_dep,
-		link_args : [ link_libs ],
+		link_args : [ link_libs, link_static_libs ],
 		install: true
 )
 
