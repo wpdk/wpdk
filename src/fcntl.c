@@ -28,6 +28,7 @@ const char *
 wpdk_get_path(const char *path, char *buffer, size_t len)
 {
 	size_t pathlen;
+	char *tmp;
 
 	if (!path || !*path) return path;
 
@@ -38,13 +39,39 @@ wpdk_get_path(const char *path, char *buffer, size_t len)
 	if (pathlen == 0 || pathlen >= PATH_MAX)
 		return NULL;
 
-	if (!strncmp(path, "/tmp/", 5) || !strncmp(path, "/var/tmp/", 9))
-		return (strcpy_s(buffer, len, msys) == 0
-			&& strcat_s(buffer, len, path) == 0) ? buffer : NULL;
+	/*
+	 * Map temporary files into the MSY2 directory
+	 */
+	if (_access(msys, F_OK) == 0) {
+		if (!strncmp(path, "/tmp/", 5) || !strncmp(path, "/var/tmp/", 9))
+			return (strcpy_s(buffer, len, msys) == 0
+				&& strcat_s(buffer, len, path) == 0) ? buffer : NULL;
+
+		if (strrchr(path, '/') == path)
+			return (strcpy_s(buffer, len, msys) == 0
+				&& strcat_s(buffer, len, "/tmp") == 0
+				&& strcat_s(buffer, len, path) == 0) ? buffer : NULL;
+
+		return path;
+	}
+
+	/*
+	 * If MSYS2 is not found, use Windows TMP directory
+	 */
+	tmp = getenv("TMP");
+
+	if (tmp == NULL) return path;
+
+	if (!strncmp(path, "/tmp/", 5))
+		return (strcpy_s(buffer, len, tmp) == 0
+			&& strcat_s(buffer, len, path + 4) == 0) ? buffer : NULL;
+
+	if (!strncmp(path, "/var/tmp/", 9))
+		return (strcpy_s(buffer, len, tmp) == 0
+			&& strcat_s(buffer, len, path + 8) == 0) ? buffer : NULL;
 
 	if (strrchr(path, '/') == path)
-		return (strcpy_s(buffer, len, msys) == 0
-			&& strcat_s(buffer, len, "/tmp") == 0
+		return (strcpy_s(buffer, len, tmp) == 0
 			&& strcat_s(buffer, len, path) == 0) ? buffer : NULL;
 
 	return path;
