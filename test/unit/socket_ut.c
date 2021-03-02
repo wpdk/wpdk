@@ -115,7 +115,7 @@ static void
 start_server(struct server *s, const char *path)
 {
 	struct sockaddr_un un;
-	int rc;
+	int i, rc;
 
 	s->path = path;
 	unlink(s->path);
@@ -139,7 +139,11 @@ start_server(struct server *s, const char *path)
 	CU_ASSERT(s->client != -1);
 
 	/* Connect client */
-	rc = connect(s->client, (struct sockaddr *)&un, sizeof(un));
+	for (i = 0; i < 5000; Sleep(1), i++) {
+		rc = connect(s->client, (struct sockaddr *)&un, sizeof(un));
+		if (rc != -1 || errno != ECONNREFUSED) break;
+	}
+
 	CU_ASSERT(rc == 0);
 }
 
@@ -385,7 +389,7 @@ test_accept_nonblock(void)
 	struct sockaddr_un addr;
 	struct server s;
 	socklen_t len;
-	int fd, rc;
+	int i, fd, rc;
 
 	/* Check non-blocking accept */
 	start_client(&s, "testsocket");
@@ -395,7 +399,7 @@ test_accept_nonblock(void)
 	CU_ASSERT(rc == 0);
 
 	/* Wait for connection */
-	for (; 1; Sleep(1)) {
+	for (i = 0; i < 5000; Sleep(1), i++) {
 		len = sizeof(addr);
 		fd = accept(s.server, (struct sockaddr *)&addr, &len);
 		if (fd != -1 || errno != EWOULDBLOCK) break;
@@ -470,7 +474,7 @@ test_accept4_block(void)
 	struct sockaddr_un addr;
 	struct server s;
 	socklen_t len;
-	int fd, rc;
+	int i, fd, rc;
 
 	/* Check blocking accept on non-blocking socket*/
 	start_client(&s, "testsocket");
@@ -480,7 +484,7 @@ test_accept4_block(void)
 	CU_ASSERT(rc == 0);
 
 	/* Wait for connection */
-	for (; 1; Sleep(1)) {
+	for (i = 0; i < 5000; Sleep(1), i++) {
 		len = sizeof(addr);
 		fd = accept4(s.server, (struct sockaddr *)&addr, &len, 0);
 		if (fd != -1 || errno != EWOULDBLOCK) break;
