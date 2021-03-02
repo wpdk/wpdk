@@ -611,18 +611,20 @@ test_cond_timedwait(void)
 	rc = pthread_cond_timedwait(&cond, &mutex, &now);
 	CU_ASSERT(rc == ETIMEDOUT);
 
-	/* Check 40msec timedwait */
+	/* Check 100msec timedwait */
 	rc = clock_gettime(CLOCK_REALTIME, &delay);
 	CU_ASSERT(rc == 0);
-	delay.tv_nsec += 40000000;
+	delay.tv_nsec += 100000000;
+	delay.tv_sec += delay.tv_nsec / 1000000000;
+	delay.tv_nsec %= 1000000000;
 	rc = pthread_cond_timedwait(&cond, &mutex, &delay);
 	CU_ASSERT(rc == ETIMEDOUT);
 
-	/* Check delay time to within 2 msec*/
+	/* Check delay time to within 20 msec*/
 	rc = clock_gettime(CLOCK_REALTIME, &now);
 	CU_ASSERT(rc == 0);
 	CU_ASSERT(now.tv_sec > delay.tv_sec ||
-		(now.tv_sec == delay.tv_sec && now.tv_nsec + 2000000 >= delay.tv_nsec));
+		(now.tv_sec == delay.tv_sec && now.tv_nsec + 20000000 >= delay.tv_nsec));
 
 	rc = pthread_mutex_unlock(&mutex);
 	CU_ASSERT(rc == 0);
