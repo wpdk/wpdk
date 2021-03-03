@@ -99,7 +99,7 @@ Unit tests are available for *libcunit* and the WPDK. These can be run with the 
 ## Using with SPDK
 
 To ensure that correct CR/LF line endings are used, add the definitions in
-.\wpdk\gitattributes as global gitattributes. The source code can then be
+.\wpdk\.gitattributes as global gitattributes. The source code can then be
 obtained using:
 
 ~~~{.sh}
