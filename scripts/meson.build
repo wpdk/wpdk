@@ -11,3 +11,7 @@ endif
 
 map_to_win_cmd = py3 + files('map_to_win.py')
 map_to_wrap_cmd = py3 + files('map_to_wrap.py')
+
+sudo = configure_file(input : 'sudo.sh', output : 'sudo',
+		copy: true, install: true, install_dir: 'bin/msys2',
+		install_mode: 'rwxr-xr-x')

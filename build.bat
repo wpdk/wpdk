@@ -60,7 +60,10 @@ if "%CROSS%"=="" (
 	set "PATH=%ProgramFiles%\LLVM\bin;%SystemDrive%\MinGW\mingw64\bin;%ProgramFiles%\MESON;!PATH!"
 )
 
-if "%SPDK%"=="y" set "PATH=%CD%\dpdk\build\bin;%CD%\wpdk\build\bin;%PATH%"
+if "%SPDK%"=="y" (
+	set "PATH=%CD%\dpdk\build\bin;%CD%\wpdk\build\bin;!PATH!"
+	if "%CROSS%"=="" set "PATH=%CD%\wpdk\build\bin\msys2;!PATH!"
+)
 
 if not "%CLEAN%"=="clean" (
 	if "%SPDK%"=="y" if not exist mk\config.mk set CLEAN=y
