@@ -4,12 +4,14 @@
 set MSC=
 set CLANG=
 set GCC=
+set WPDK=
 
 for %%i in (%*) do (
 	if "%%i"=="cl" set MSC=y
 	if "%%i"=="clang" set CLANG=y
 	if "%%i"=="mingw" set GCC=y
 	if "%%i"=="gcc" set GCC=y
+	if "%%i"=="wpdk" set WPDK=y
 )
 
 if "%MSC%%CLANG%%GCC%"=="" (
@@ -99,6 +101,8 @@ if errorlevel 1 (
 	choco install meson -y -r
 	if errorlevel 1 goto :eof
 )
+
+if "%WPDK%"=="y" goto :eof
 
 set "PATH=%ProgramFiles%\NASM;%PATH%"
 where /q nasm
