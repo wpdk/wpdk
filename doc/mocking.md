@@ -4,17 +4,16 @@ GCC supports the --wrap=function flag to enable mocking of library functions.  T
 
 The MSVC linker does not support this flag, so the equivalent functionality has been simulated as follows:
 
-### wdpk/wrap.h
+## wdpk/wrap.h
 
 The wpdk/wrap.h header file redefines wpdk_function() to __wrap_wpdk_function(), enabling the mock functions if they are defined.
 
-References to __wrap_function() and __real_function() are redefined to include 'wpdk' in the function name.  This is required
-for both GCC and MSVC support.
+References to __wrap_function() and __real_function() are redefined to include 'wpdk' in the function name. This is required for both GCC and MSVC support.
 
 This file is currently generated from src/wrap.map and only covers the functions that are known to be mocked by the SPDK.
 In future, it would be possible to use version.map to cover all functions defined by the WPDK library.
 
-### Static Library
+## Static Library
 
 The wpdk/wrap.h file contains linker /alternatename directives to define two aliases for each wpdk_function():
 - __wrap_wpdk_function()
@@ -22,7 +21,7 @@ The wpdk/wrap.h file contains linker /alternatename directives to define two ali
 
 If the application defines __wrap_wpdk_function it overrides the definition in the shared library.
 
-### Shared Library
+## Shared Library
 
 The shared library exports.def file is built to define three symbols for each function():
 - wpdk_function()
