@@ -60,7 +60,8 @@ A Getting Started guide is available:
 For more advanced use, the following Getting Started guides are also available:
 
 * [Building SPDK for Windows using MSYS2](https://github.com/wpdk/wpdk/blob/master/doc/build-spdk-msys2.md)
-* [Building WPDK](https://github.com/wpdk/wpdk/blob/master/doc/build-wpdk.md)
+* [Building SPDK for Windows using Linux](https://github.com/wpdk/wpdk/blob/master/doc/build-spdk-linux.md)
+* [Building WPDK without SPDK](https://github.com/wpdk/wpdk/blob/master/doc/build-wpdk.md)
 
 <a id="status"></a>
 ## Current Status

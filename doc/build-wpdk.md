@@ -1,4 +1,4 @@
-# Building WPDK
+# Building WPDK without SPDK
 
 <a id="prerequisites"></a>
 ## Prerequisites
@@ -8,7 +8,7 @@ a Windows Command Line running with Administrator privilege, using:
 
 ~~~{.sh}
 curl -LJO https://raw.githubusercontent.com/wpdk/wpdk/master/scripts/pkgdep.bat
-.\pkgdep.bat [gcc|clang]
+.\pkgdep.bat wpdk [gcc|clang|cl]
 ~~~
 
 These include:
@@ -16,8 +16,6 @@ These include:
 * Git
 * Clang and Visual Studio 2019, or MinGW (win32 threads)
 * Meson (>= 0.55.0)
-* NASM
-* MSYS2 (with make, python3, diffutils)
 
 Installation of the prerequisites has been tested on a Windows 10 2004
 Windows Sandbox. The pkgdep.bat script is intended to indicate what needs to be
@@ -25,7 +23,7 @@ installed, but may not apply to all environments. For convenience, the Chocolate
 package manager is used.
 
 Open a new Windows Shell after pkgdep.bat completes to ensure that the changes
-to the PATH variable are seen.
+to the PATH variable are seen. Administrator privilege is not required.
 
 <a id="attrib"></a>
 ## Git Attributes
@@ -47,6 +45,7 @@ The source code for WPDK can be obtained using:
 
 ~~~{.sh}
 git clone https://github.com/wpdk/wpdk
+cd wpdk
 ~~~
 
 <a id="build"></a>
