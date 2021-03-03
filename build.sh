@@ -5,8 +5,21 @@ ARCH=x64
 TYPE=debug
 CLEAN=
 
+WPDK=
+DPDK=
+SPDK=
+[ -d inc ] && WPDK=y
+[ -d drivers ] && DPDK=y
+[ -d dpdkbuild ] && SPDK=y
+
+DESTDIR=
+[ "$SPDK" != "y" ] && DESTDIR=`pwd`/build
+
+CONFDIR=build
+[ "$SPDK" != "y" -a -d ../dpdkbuild ] && CONFDIR=../build
+
 cfg=
-[ -f build/_config ] && cfg=`cat build/_config | tr -d '\r'`
+[ -f $CONFDIR/_config ] && cfg=`cat $CONFDIR/_config | tr -d '\r'`
 
 for i in $cfg $*
 do
@@ -47,16 +60,27 @@ then
 	find . -type f -name \*.d -print | xargs rm -f
 fi
 
-[ "$CLEAN" == "clean" ] && exit 0
+[ "$CLEAN" = "clean" ] && exit 0
 
 cfg="$CC $ARCH $TYPE"
 
 echo Building $cfg...
-[ -d build ] || mkdir build
-echo "$cfg" > build/_config
 
-CONFIG_OPTS="--cross-prefix=x86_64-w64-mingw32"
-[ "$TYPE" == "debug" ] && CONFIG_OPTS="$CONFIG_OPTS --enable-debug"
+[ -d $CONFDIR ] || mkdir $CONFDIR
+echo "$cfg" > $CONFDIR/_config
 
-[ ! -f mk/config.mk ] && CC=gcc ./configure $CONFIG_OPTS
-make -j8
+if [ "$WPDK$DPDK" = "y" ]
+then
+	MESON_OPTS=
+	[ "$DPDK" = "y" ] && MESON_OPTS="-Dexamples=helloworld"
+	[ -d build-tmp ] || meson --buildtype=$TYPE $MESON_OPTS --prefix='/' --cross-file=./config/x86_64-w64-mingw32 build-tmp
+	ninja -C build-tmp -j8 && DESTDIR="$DESTDIR" meson install -C build-tmp --no-rebuild --only-changed
+fi
+
+if [ "$SPDK" = "y" ]
+then
+	CONFIG_OPTS="--cross-prefix=x86_64-w64-mingw32"
+	[ "$TYPE" == "debug" ] && CONFIG_OPTS="$CONFIG_OPTS --enable-debug"
+	[ ! -f mk/config.mk ] && CC=gcc ./configure $CONFIG_OPTS
+	make -j8
+fi
