@@ -15,6 +15,8 @@
 #include <sys/socket.h>
 #include <sys/locking.h>
 #include <sys/stat.h>
+#include <stdlib.h>
+#include <unistd.h>
 #include <stdbool.h>
 #include <fcntl.h>
 #include <io.h>
