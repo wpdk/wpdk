@@ -53,12 +53,21 @@ For more advanced use, the following Getting Started guides are also available:
 <a id="prereq"></a>
 ## Runtime Prerequisites
 
-Running SPDK on Windows depends upon the excellent work being done by the [DPDK community](https://www.dpdk.org/) to add support for Windows. Please follow [Running DPDK Applications](https://doc.dpdk.org/guides/windows_gsg/run_apps.html) in the [Getting Started Guide for Windows](https://doc.dpdk.org/guides/windows_gsg/index.html) to grant 'lock pages in memory' privileges and to load the 'virt2phys' driver which can be found in the 'windows' branch of [dpdk-kmods](https://github.com/wpdk/dpdk-kmods/tree/windows/windows) 
+Running SPDK on Windows depends upon the excellent work being done by the
+[DPDK community](https://www.dpdk.org/) to add support for Windows. Please
+follow [Running DPDK Applications](https://doc.dpdk.org/guides/windows_gsg/run_apps.html)
+in the [Getting Started Guide for Windows](https://doc.dpdk.org/guides/windows_gsg/index.html)
+to grant 'lock pages in memory' privileges and to load the 'virt2phys' driver which can be
+found in the 'windows' branch of
+[dpdk-kmods](https://github.com/wpdk/dpdk-kmods/tree/windows/windows) 
 
-Note: It is possible to run an iSCSI or NVMe over TCP target stack without requiring the 'virt2phys' driver, but this currently requires a patch to SPDK. The 'windows' branch of https://github.com/wpdk/spdk already contains this, or it
+Note: It is possible to run an iSCSI or NVMe over TCP target stack without requiring the
+'virt2phys' driver, but this currently requires a patch to SPDK. The 'windows' branch of
+https://github.com/wpdk/spdk already contains this, or it
 can be obtained from https://review.spdk.io/gerrit/c/spdk/spdk/+/6697.
 
-Access to physical NVMe disks requires loading the 'netuio' and 'virt2phys' drivers from the 'windows' branch of [dpdk-kmods](https://github.com/wpdk/dpdk-kmods/tree/windows/windows).
+Access to physical NVMe disks requires loading the 'netuio' and 'virt2phys' drivers from
+the 'windows' branch of [dpdk-kmods](https://github.com/wpdk/dpdk-kmods/tree/windows/windows).
 
 <a id="status"></a>
 ## Current Status

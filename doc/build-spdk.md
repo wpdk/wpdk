@@ -30,39 +30,10 @@ The source code for SPDK and WPDK can be obtained using:
 
 ~~~{.sh}
 git clone https://github.com/wpdk/wpdk
-git clone https://github.com/spdk/wpdk
+git clone https://github.com/spdk/spdk
 cd spdk
-git checkout windows
+git checkout master
 git submodule update --init
-~~~
-
-<a id="patch"></a>
-## Patch SPDK
-
-The bulk of the changes required to support SPDK on Windows have been upstreamed,
-but there are a couple of patches that are still being reviewed. These can be applied
-(one at a time) with:
-
-~~~{.sh}
-# mk: support file extension for executables
-# https://review.spdk.io/gerrit/c/spdk/spdk/+/6494
-git pull https://review.spdk.io/gerrit/spdk/spdk refs/changes/94/6494/3
-~~~
-
-~~~{.sh}
-# mk: add support for mingw builds
-https://review.spdk.io/gerrit/c/spdk/spdk/+/6589
-git pull https://review.spdk.io/gerrit/spdk/spdk refs/changes/89/6589/7
-~~~
-
-To enable support for running SPDK without the DPDK virt2phys driver (see
-[Runtime Prerequisites](https://github.com/wpdk/wpdk#prereq)),
-apply the following patch:
-
-~~~{.sh}
-# [RFC] when virt2phys is unavailable
-# https://review.spdk.io/gerrit/c/spdk/spdk/+/6697
-git pull https://review.spdk.io/gerrit/spdk/spdk refs/changes/97/6697/1
 ~~~
 
 <a id="prerequisites"></a>
@@ -74,6 +45,43 @@ the shell, using:
 ~~~{.sh}
 sudo scripts/pkgdep.sh
 sudo apt install gcc-mingw-w64 g++-mingw-w64 yasm
+~~~
+
+<a id="patchdpdk"></a>
+## Patch DPDK
+
+The bulk of the changes required to support DPDK on Windows have been upstreamed,
+but there is one patch still being reviewed. This is required for access to physical NVMe devices and can be applied with:
+
+~~~{.sh}
+# https://patches.dpdk.org/project/dpdk/patch/20210301095644.1711-1-nick.connolly@mayadata.io/
+( cd dpdk; git apply ../../wpdk/scripts/patches/dpdk-bus-pci-nvme-on-Windows-requires-class-id-and-bus.diff )
+~~~
+
+<a id="patch"></a>
+## Patch SPDK
+
+The bulk of the changes required to support SPDK on Windows have been upstreamed,
+but there are a couple of patches that are still being reviewed. These can be applied
+(one at a time) with:
+
+~~~{.sh}
+# https://review.spdk.io/gerrit/c/spdk/spdk/+/6494
+git apply ../wpdk/scripts/patches/spdk-mk-support-file-extension-for-executables.diff
+~~~
+
+~~~{.sh}
+# https://review.spdk.io/gerrit/c/spdk/spdk/+/6589
+git apply ../wpdk/scripts/patches/spdk-mk-add-support-for-mingw-builds.diff
+~~~
+
+To enable support for running SPDK without the DPDK virt2phys driver (see
+[Runtime Prerequisites](https://github.com/wpdk/wpdk#prereq)),
+apply the following patch:
+
+~~~{.sh}
+# https://review.spdk.io/gerrit/c/spdk/spdk/+/6697
+git apply ../wpdk/scripts/patches/spdk-rfc-when-virt2phys-is-unavailable.diff
 ~~~
 
 <a id="wpdk"></a>

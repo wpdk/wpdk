@@ -72,3 +72,12 @@ The SPDK unit tests can then be run as detailed in the [SPDK documentation](http
 ~~~{.sh}
 ./test/unit/unittest.sh
 ~~~
+
+The script will currently attempt to run unittest_ftl which will fail.
+This can be fixed by adding a colon to the start of the line as follows:
+
+~~~{.sh}
+if [ $(uname -s) = Linux ]; then
+	: run_test "unittest_ftl" unittest_ftl
+fi
+~~~
