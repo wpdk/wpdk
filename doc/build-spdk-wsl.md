@@ -52,13 +52,13 @@ sudo apt install gcc-mingw-w64 g++-mingw-w64 yasm
 The build system uses Meson and Ninja and a shell script is provided as a convenience:
 
 ~~~{.sh}
-./wpdk/build.bat [release|debug] [clean|rebuild]
+./wpdk/build.sh [release|debug] [clean|rebuild]
 ~~~
 
-The batch file remembers the previous configuration and only changes need to be specified on the command line.
+The shell script remembers the previous configuration and only changes need to be specified on the command line.
 
 SPDK usually builds executables without a suffix and the SPDK scripts are written with this expectation.
-However, on Windows the standard *.exe* suffix has to be used. In order to help resolve this, *build.bat*
+However, on Windows the standard *.exe* suffix has to be used. In order to help resolve this, *build.sh*
 creates symbolic links so that either name will work.
 
 <a id="runtime"></a>
