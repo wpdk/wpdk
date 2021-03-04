@@ -42,7 +42,7 @@ The project can be built and tested independently, but it is intended to be used
 
 A Getting Started guide is available:
 
-* [Building SPDK for Windows](https://github.com/wpdk/wpdk/blob/master/doc/build-spdk-linux.md)
+* [Building SPDK for Windows](https://github.com/wpdk/wpdk/blob/master/doc/build-spdk.md)
 
 For more advanced use, the following Getting Started guides are also available:
 
