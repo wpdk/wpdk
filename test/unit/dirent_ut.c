@@ -170,7 +170,7 @@ test_readdir(void)
 	}
 
 	/* Check ending conditions */
-	CU_ASSERT(i == 4);
+	CU_ASSERT(i == 5);
 	CU_ASSERT(errno == 0);
 
 	/* Check all entries seen */
@@ -224,7 +224,7 @@ test_rewinddir(void)
 	/* Read all entries */
 	for (i = 0; (entry = readdir(dir)) != NULL; i++)
 		CU_ASSERT(entry->d_type == (entry->d_name[0] == '.') ? DT_DIR : DT_REG);
-	CU_ASSERT(i == 3);
+	CU_ASSERT(i == 4);
 
 	/* Rewind null directory */
 	rewinddir(NULL);
@@ -235,7 +235,7 @@ test_rewinddir(void)
 	/* Read all entries */
 	for (i = 0; (entry = readdir(dir)) != NULL; i++)
 		CU_ASSERT(entry->d_type == (entry->d_name[0] == '.') ? DT_DIR : DT_REG);
-	CU_ASSERT(i == 3);
+	CU_ASSERT(i == 4);
 
 	/* Close directory */
 	rc = closedir(dir);

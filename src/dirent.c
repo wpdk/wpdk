@@ -25,6 +25,7 @@
 struct _DIR {
 	intptr_t h;
 	int fd;
+	int first;
 	struct _finddata_t info;
 	struct dirent entry;
 	char spec[PATH_MAX];
@@ -88,6 +89,7 @@ wpdk_opendir(const char *dirname)
 		return NULL;
 	}
 
+	dirp->first = 1;
 	return dirp;
 }
 
@@ -121,11 +123,12 @@ wpdk_readdir(DIR *dirp)
 		return NULL;
 	}
 
-	if (_findnext(dirp->h, &dirp->info) == -1) {
+	if (!dirp->first && _findnext(dirp->h, &dirp->info) == -1) {
 		if (errno == ENOENT) _set_errno(error);
 		return NULL;
 	}
 
+	dirp->first = 0;
 	strncpy(dirp->entry.d_name, dirp->info.name,
 			sizeof(dirp->entry.d_name));
 
@@ -147,6 +150,7 @@ wpdk_rewinddir(DIR *dirp)
 			_findclose(dirp->h);
 
 		dirp->h = _findfirst(dirp->spec, &dirp->info);
+		dirp->first = 1;
 	}
 }
 
