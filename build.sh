@@ -12,6 +12,8 @@ SPDK=
 [ -d drivers ] && DPDK=y
 [ -d dpdkbuild ] && SPDK=y
 
+WPDKDIR=`dirname "$0"`
+
 DESTDIR=
 [ "$SPDK" != "y" ] && DESTDIR=`pwd`/build
 
@@ -58,6 +60,7 @@ then
 	done
 	rm -f mk/config.mk
 	find . -type f -name \*.d -print | xargs rm -f
+	"$WPDKDIR/scripts/symlink_exe.sh" rm
 fi
 
 [ "$CLEAN" = "clean" ] && exit 0
@@ -75,6 +78,7 @@ then
 	[ "$DPDK" = "y" ] && MESON_OPTS="-Dexamples=helloworld"
 	[ -d build-tmp ] || meson --buildtype=$TYPE $MESON_OPTS --prefix='/' --cross-file=./config/x86_64-w64-mingw32 build-tmp
 	ninja -C build-tmp -j8 && DESTDIR="$DESTDIR" meson install -C build-tmp --no-rebuild --only-changed
+	"$WPDKDIR/scripts/symlink_exe.sh"
 fi
 
 if [ "$SPDK" = "y" ]
@@ -83,4 +87,5 @@ then
 	[ "$TYPE" == "debug" ] && CONFIG_OPTS="$CONFIG_OPTS --enable-debug"
 	[ ! -f mk/config.mk ] && CC=gcc ./configure $CONFIG_OPTS
 	make -j8
+	"$WPDKDIR/scripts/symlink_exe.sh"
 fi
