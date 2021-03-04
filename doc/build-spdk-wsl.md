@@ -1,6 +1,6 @@
 # Building SPDK for Windows using WSL
 
-SPDK can be built for Windows using a WSL distribution and the MinGW cross compiler.
+SPDK can be built for Windows using a WSL distribution and the MinGW cross compiler. Using WSL it is possible to run native Windows applications directly from the shell.
 
 The examples in this Getting Started guide assume a Debian based distribution with the *apt* package manager. The instructions should translate readily to other distributions.
 
