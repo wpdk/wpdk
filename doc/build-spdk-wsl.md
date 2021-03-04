@@ -1,4 +1,4 @@
-# Building SPDK for Windows using Linux
+# Building SPDK for Windows using WSL
 
 SPDK can be built for Windows using a WSL distribution and the MinGW cross compiler.
 
@@ -55,7 +55,15 @@ The build system uses Meson and Ninja and a shell script is provided as a conven
 ./wpdk/build.bat [release|debug] [clean|rebuild]
 ~~~
 
-The batch file remembers the previous configuration and only changes need to be specified on the command line. The resulting executables have only been tested within the host operating system and not within a Windows Sandbox.
+The batch file remembers the previous configuration and only changes need to be specified on the command line.
+
+SPDK usually builds executables without a suffix and the SPDK scripts are written with this expectation.
+However, on Windows the standard *.exe* suffix has to be used. In order to help resolve this, *build.bat*
+creates symbolic links so that either name will work.
+
+<a id="runtime"></a>
+## Runtime Prerequisites
+Ensure that the [Runtime Prerequisites](https://github.com/wpdk/wpdk#prereq) have been set up on the Windows host.
 
 <a id="tests"></a>
 ## Unit Tests

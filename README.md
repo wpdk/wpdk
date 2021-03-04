@@ -10,8 +10,8 @@ The scope of the project is limited to supporting the Storage Performance Develo
 
 * [Documentation](#documentation)
 * [Source Code](#source)
-* [Prerequisites](#prereq)
 * [Getting Started](#start)
+* [Runtime Prerequisites](#prereq)
 * [Current Status](#status)
 * [Limitations](#limitations)
 * [Known Issues](#issues)
@@ -35,19 +35,6 @@ The source code can be obtained using:
 git clone https://github.com/wpdk/wpdk
 ~~~
 
-<a id="prereq"></a>
-## Prerequisites
-
-Running SPDK on Windows depends upon the excellent work being done by the [DPDK community](https://www.dpdk.org/) to add support for Windows.
-
-Please follow [Running DPDK Applications](https://doc.dpdk.org/guides/windows_gsg/run_apps.html) in the [Getting Started Guide for Windows](https://doc.dpdk.org/guides/windows_gsg/index.html) to grant 'lock pages in memory' privileges and to load the 'virt2phys' driver which can be found in the 'windows' branch of [dpdk-kmods](https://github.com/wpdk/dpdk-kmods/tree/windows/windows) 
-
-Note: It is possible to run an iSCSI or NVMe over TCP target stack without requiring the 'virt2phys' driver, but this currently requires a patch to SPDK. Use the 'windows' branch of https://github.com/wpdk/spdk to obtain this.
-
-Access to physical NVMe disks requires loading the 'netuio' and 'virt2phys' drivers from the 'windows' branch of [dpdk-kmods](https://github.com/wpdk/dpdk-kmods/tree/windows/windows).
-
-Build prerequisites are detailed in the relevant [Getting Started](#start) guide.
-
 <a id="start"></a>
 ## Getting Started
 
@@ -60,8 +47,17 @@ A Getting Started guide is available:
 For more advanced use, the following Getting Started guides are also available:
 
 * [Building SPDK for Windows using MSYS2](https://github.com/wpdk/wpdk/blob/master/doc/build-spdk-msys2.md)
-* [Building SPDK for Windows using Linux](https://github.com/wpdk/wpdk/blob/master/doc/build-spdk-linux.md)
+* [Building SPDK for Windows using WSL](https://github.com/wpdk/wpdk/blob/master/doc/build-spdk-wsl.md)
 * [Building WPDK without SPDK](https://github.com/wpdk/wpdk/blob/master/doc/build-wpdk.md)
+
+<a id="prereq"></a>
+## Runtime Prerequisites
+
+Running SPDK on Windows depends upon the excellent work being done by the [DPDK community](https://www.dpdk.org/) to add support for Windows. Please follow [Running DPDK Applications](https://doc.dpdk.org/guides/windows_gsg/run_apps.html) in the [Getting Started Guide for Windows](https://doc.dpdk.org/guides/windows_gsg/index.html) to grant 'lock pages in memory' privileges and to load the 'virt2phys' driver which can be found in the 'windows' branch of [dpdk-kmods](https://github.com/wpdk/dpdk-kmods/tree/windows/windows) 
+
+Note: It is possible to run an iSCSI or NVMe over TCP target stack without requiring the 'virt2phys' driver, but this currently requires a patch to SPDK. Use the 'windows' branch of https://github.com/wpdk/spdk to obtain this.
+
+Access to physical NVMe disks requires loading the 'netuio' and 'virt2phys' drivers from the 'windows' branch of [dpdk-kmods](https://github.com/wpdk/dpdk-kmods/tree/windows/windows).
 
 <a id="status"></a>
 ## Current Status
@@ -121,7 +117,8 @@ The generated SPDK binaries in *spdk*\build\bin can be used to create example ta
 <a id="contrib"></a>
 ## Contributing
 
-Contributions are welcome. It is expected that the process will be modelled on the [SPDK Development Guidelines](https://spdk.io/development/). In these initial stages of the project, please email the [maintainers](https://github.com/wpdk/wpdk/blob/master/MAINTAINERS.md) directly.
+Contributions are welcome and needed! It is expected that the process will be modelled on the [SPDK Development Guidelines](https://spdk.io/development/).
+In these initial stages of the project, please email the [maintainers](https://github.com/wpdk/wpdk/blob/master/MAINTAINERS.md) directly.
 
 Please join the [SPDK community](https://spdk.io/community) and tell us how you are using SPDK on Windows. For real-time discussions, the SPDK Slack contains a [Windows channel](https://spdk-team.slack.com/archives/C01Q700GPGU).
 

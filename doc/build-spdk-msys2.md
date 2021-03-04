@@ -63,6 +63,10 @@ The build system uses Meson and Ninja and a batch file is provided as a convenie
 
 The batch file remembers the previous configuration and only changes need to be specified on the command line. The resulting executables have only been tested within the host operating system and not within a Windows Sandbox.
 
+<a id="runtime"></a>
+## Runtime Prerequisites
+Ensure that the [Runtime Prerequisites](https://github.com/wpdk/wpdk#prereq) have been set up on the Windows host.
+
 <a id="tests"></a>
 ## Unit Tests
 
