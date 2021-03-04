@@ -1,0 +1,54 @@
+From b5498a92f1eb9d0a42a8312d3800f87399ca46f1 Mon Sep 17 00:00:00 2001
+From: Nick Connolly <nick.connolly@mayadata.io>
+Date: Thu, 04 Mar 2021 10:02:21 +0000
+Subject: [PATCH] [RFC] when virt2phys is unavailable
+
+This is a hack to deal with a failure on Windows when the DPDK virt2phys
+driver has not been installed. Without it we will fail memory allocation
+and refuse to run even if no physical memory accesses are required
+(e.g. an iSCSI target stack).
+
+On Windows, there is no officially signed distribution of the DPDK
+virt2phys translation driver which means that the host system has to
+be put into 'test mode'. This creates a barrier to experimenting with
+the SPDK stack.
+
+Creating this as an RFC to request feedback on how else this might
+be handled and to provide a reference patch for people who are trying
+SPDK on Windows.
+
+Signed-off-by: Nick Connolly <nick.connolly@mayadata.io>
+Change-Id: I02ecf8578e0f63e647986367dddcdf666209bac1
+---
+
+diff --git a/lib/env_dpdk/memory.c b/lib/env_dpdk/memory.c
+index c923483..4ad87df 100644
+--- a/lib/env_dpdk/memory.c
++++ b/lib/env_dpdk/memory.c
+@@ -915,7 +915,12 @@
+ 	if (seg != NULL) {
+ 		paddr = seg->iova;
+ 		if (paddr == RTE_BAD_IOVA) {
++#ifndef _WIN32
+ 			return SPDK_VTOPHYS_ERROR;
++#else
++			/* HACK - virt2phys driver is not installed */
++			return vaddr;
++#endif
+ 		}
+ 		paddr += (vaddr - (uintptr_t)seg->addr);
+ 		return paddr;
+@@ -944,7 +949,12 @@
+ 	}
+ 	if (paddr == RTE_BAD_IOVA) {
+ 		/* Unable to get to the physical address. */
+-		return SPDK_VTOPHYS_ERROR;
++#ifndef _WIN32
++			return SPDK_VTOPHYS_ERROR;
++#else
++			/* HACK - virt2phys driver is not installed */
++			return vaddr;
++#endif
+ 	}
+ 
+ 	return paddr;

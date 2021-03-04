@@ -1,0 +1,155 @@
+From 8cde96fdf26e90852899714f8db77f18467fdd9f Mon Sep 17 00:00:00 2001
+From: Nick Connolly <nick.connolly@mayadata.io>
+Date: Wed, 03 Mar 2021 09:48:43 +0000
+Subject: [PATCH] mk: add support for mingw builds
+
+MinGW builds require a thin layer above the standard libraries to
+provide POSIX functionality that is missing on Windows. Add support
+for building this.
+
+MinGW cross builds are experimental and work is ongoing to integrate
+them into the CI and test environment. Including the changes at this
+stage is being done to facilitate that process.
+
+The layer has been arranged in the same way as DPDK and is
+accessed as an external build using ./configure --with-wpdk=<dir>.
+Support has also been added for using a default ./wpdk in
+preparation for reaching the required level of stability.
+
+The help text for ./configure indicates that support for --with-wpdk
+is experimental.
+
+Further details and instructions can be found at https://wpdk.github.io.
+
+Signed-off-by: Nick Connolly <nick.connolly@mayadata.io>
+Change-Id: Iff0f705789f19fb193dcb3c9090c3e90613a8d9a
+---
+
+diff --git a/CONFIG b/CONFIG
+index 1f99a8b..8c49c7d 100644
+--- a/CONFIG
++++ b/CONFIG
+@@ -87,6 +87,9 @@
+ # installation.
+ CONFIG_DPDK_DIR=
+ 
++# This directory should contain 'include' and 'lib' directories for WPDK.
++CONFIG_WPDK_DIR=
++
+ # Build SPDK FIO plugin. Requires CONFIG_FIO_SOURCE_DIR set to a valid
+ # fio source code directory.
+ CONFIG_FIO_PLUGIN=n
+diff --git a/Makefile b/Makefile
+index a50fa94..ca52c0d 100644
+--- a/Makefile
++++ b/Makefile
+@@ -63,6 +63,13 @@
+ endif
+ endif
+ 
++ifeq ($(OS),Windows)
++ifeq ($(CURDIR)/wpdk/build,$(CONFIG_WPDK_DIR))
++WPDK = wpdk
++DIRS-y += wpdk
++endif
++endif
++
+ ifeq ($(CONFIG_SHARED),y)
+ LIB = shared_lib
+ else
+@@ -101,10 +108,11 @@
+ 	$(Q)echo "Uninstalled spdk"
+ 
+ ifneq ($(SKIP_DPDK_BUILD),1)
+-dpdkbuild: $(DPDK_DEPS)
++dpdkdeps $(DPDK_DEPS): $(WPDK)
++dpdkbuild: $(WPDK) $(DPDK_DEPS)
+ endif
+ 
+-lib: $(DPDKBUILD) $(VFIOUSERBUILD)
++lib: $(WPDK) $(DPDKBUILD) $(VFIOUSERBUILD)
+ module: lib
+ shared_lib: module
+ app: $(LIB)
+diff --git a/configure b/configure
+index 0316ed3..0370a65 100755
+--- a/configure
++++ b/configure
+@@ -96,6 +96,8 @@
+ 	echo "                           No path required."
+ 	echo " raid5                     Build with bdev_raid module RAID5 support."
+ 	echo "                           No path required."
++	echo " wpdk                      Build using WPDK to provide support for Windows (experimental)."
++	echo "                           The argument must be a directory containing lib and include."
+ 	echo ""
+ 	echo "Environment variables:"
+ 	echo ""
+@@ -139,6 +141,10 @@
+ arch=$($CC -dumpmachine)
+ sys_name=$(uname -s)
+ 
++if [[ $arch == *mingw* ]] || [[ $arch == *windows* ]]; then
++	sys_name=Windows
++fi
++
+ # Sanitize default configuration. All parameters set by user explicit should fail
+ # Force no ISA-L if non-x86 or non-aarch64 architecture
+ if [[ "${CONFIG[ISAL]}" = "y" ]]; then
+@@ -276,6 +282,10 @@
+ 		--without-dpdk)
+ 			CONFIG[DPDK_DIR]=
+ 			;;
++		--with-wpdk=*)
++			check_dir "$i"
++			CONFIG[WPDK_DIR]=$(readlink -f ${i#*=})
++			;;
+ 		--with-env=*)
+ 			CONFIG[ENV]="${i#*=}"
+ 			;;
+@@ -539,6 +549,23 @@
+ 	CONFIG[VIRTIO]="n"
+ fi
+ 
++if [[ $sys_name == "Windows" ]]; then
++	if [ -z "${CONFIG[WPDK_DIR]}" ]; then
++		if [ ! -f "$rootdir"/wpdk/Makefile ]; then
++			echo "WPDK not found; please specify --with-wpdk=<path>. See https://wpdk.github.io."
++			exit 1
++		else
++			CONFIG[WPDK_DIR]="${rootdir}/wpdk/build"
++			echo "Using default WPDK in ${CONFIG[WPDK_DIR]}"
++		fi
++	fi
++else
++	if [ -n "${CONFIG[WPDK_DIR]}" ]; then
++		echo "ERROR: --with-wpdk is only supported for Windows"
++		exit 1
++	fi
++fi
++
+ if [ "${CONFIG[VTUNE]}" = "y" ]; then
+ 	if [ -z "${CONFIG[VTUNE_DIR]}" ]; then
+ 		echo "When VTune is enabled, you must specify the VTune directory using --with-vtune=path"
+diff --git a/mk/spdk.common.mk b/mk/spdk.common.mk
+index 26d95f7..ba3c9d0 100644
+--- a/mk/spdk.common.mk
++++ b/mk/spdk.common.mk
+@@ -247,6 +247,18 @@
+ endif
+ endif
+ 
++ifeq ($(OS),Windows)
++WPDK_DIR = $(abspath $(CONFIG_WPDK_DIR))
++COMMON_CFLAGS += -I$(WPDK_DIR)/include/wpdk -I$(WPDK_DIR)/include
++LDFLAGS += -L$(WPDK_DIR)/lib
++ifeq ($(CONFIG_SHARED),y)
++SYS_LIBS += -lwpdk
++else
++SYS_LIBS += $(WPDK_DIR)/lib/libwpdk.a
++endif
++SYS_LIBS += -ldbghelp -lkernel32 -lsetupapi -lws2_32 -lrpcrt4 -liphlpapi
++endif
++
+ include $(CONFIG_ENV)/env.mk
+ 
+ ifeq ($(CONFIG_ASAN),y)
