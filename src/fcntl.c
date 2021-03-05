@@ -18,63 +18,211 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdbool.h>
+#include <string.h>
 #include <fcntl.h>
 #include <io.h>
 
 
-// HACK - hard-coded local path
-static char msys[] = "c:\\tools\\msys64";
+static struct {
+	const char *dir;
+	const char *dest;
+	size_t len;
+} map[20];
+
+static int map_init;
+static int map_count;
+
+static SRWLOCK map_lock = SRWLOCK_INIT;
+
+
+static void
+wpdk_add_mapping(const char *dir, const char *dest, int prefix)
+{
+	char *from, *path = NULL;
+	char buf[MAX_PATH];
+	int i;
+
+	if (dest == NULL) return;
+
+	if (map_count >= (int)(sizeof(map) / sizeof(map[0]))) {
+		WPDK_WARNING("Too many path mappings");
+		return;
+	}
+
+	/* If the mapping is already present it takes priority */
+	for (i = 0; i < map_count; i++)
+		if (strcmp(map[i].dir, dir) == 0) return;
+
+	if (strcpy_s(buf, sizeof(buf), dest) == 0
+			&& (!prefix || strcat_s(buf, sizeof(buf), dir) == 0))
+		path = wpdk_strdup(buf);
+
+	if (path == NULL) {
+		WPDK_WARNING("Unable to create path mapping");
+		return;
+	}
+
+	if (_access(path, F_OK) == -1) {
+		wpdk_free(path);
+		return;
+	}
+
+	from = wpdk_strdup(dir);
+
+	if (from == NULL) {
+		wpdk_free(path);
+		WPDK_WARNING("Unable to create path mapping");
+		return;
+	}
+
+	map[map_count].dir = from;
+	map[map_count].dest = path;
+	map[map_count].len = strlen(dir);
+	map_count++;
+}
+
+
+static void
+wpdk_add_pathmap()
+{
+	char dir[MAX_PATH], dest[MAX_PATH];
+	const char *cp, *end;
+
+	/*
+	 * WPDKPATHMAP contains a semicolon separated list of
+	 * mapping assignments.
+	 */
+	for (cp = getenv("WPDKPATHMAP"); cp != NULL; cp = end) {
+		end = strchr(cp, '=');
+		if (end == NULL) break;
+
+		strncpy_s(dir, sizeof(dir), cp, end - cp);
+		end = strchr((cp = end + 1), ';');
+
+		if (end) strncpy_s(dest, sizeof(dest), cp, end - cp);
+		else strcpy_s(dest, sizeof(dest), cp);
+
+		wpdk_add_mapping(dir, dest, 0);
+		if (end) end++;
+	}
+}
+
+
+static int
+wpdk_add_wsl_paths()
+{
+	char path[MAX_PATH];
+	char *cp;
+	DWORD rc;
+
+	/*
+	 * If the current directory starts with \\wsl$\ then
+	 * the executable has been run from WSL.
+	 */
+	rc = GetCurrentDirectory(sizeof(path), path);
+
+	if (rc == 0 || rc > sizeof(path)) return 0;
+	if (strncmp(path, "\\\\wsl$\\", 7) != 0) return 0;
+
+	cp = strchr(path + 7, '\\');
+	if (cp == NULL) return 0;
+	*cp = '\0';
+
+	/*
+	 * Map /var/tmp into WSL so that the SPDK socket is shared.
+	 */
+	wpdk_add_mapping("/var/tmp", path, 1);
+	return 1;
+}
+
+
+static void
+wpdk_add_msys_paths(char *dir)
+{
+	char path[MAX_PATH];
+	char *cp;
+	
+	if (!dir || strstr(dir, "msys") == NULL) return;
+	if (strcpy_s(path, sizeof(path), dir) != 0) return;
+
+	if ((cp = strstr(path, "\\tmp")) != NULL) *cp = '\0';
+	else if ((cp = strstr(path, "/usr")) != NULL) *cp = '\0';
+	else return;
+
+	/*
+	 * Map temporary files into the MSY2 directory
+	 */
+	wpdk_add_mapping("/tmp", path, 1);
+	wpdk_add_mapping("/var/tmp", path, 1);
+}
+
+
+static void
+wpdk_init_map ()
+{
+	const char *tmp;
+
+	AcquireSRWLockExclusive(&map_lock);
+
+	if (map_init) {
+		ReleaseSRWLockExclusive(&map_lock);
+		return;
+	}
+
+	wpdk_add_pathmap();
+
+	if (!wpdk_add_wsl_paths()) {
+		wpdk_add_msys_paths(getenv("MSYSTEM_PREFIX"));
+		wpdk_add_msys_paths(getenv("TMP"));
+	}
+
+	/*
+	 * Default to the Windows TMP directory
+	 */
+	tmp = getenv("TMP");
+	wpdk_add_mapping("/tmp", tmp, 0);
+	wpdk_add_mapping("/var/tmp", tmp, 0);
+
+	map_init = 1;
+	ReleaseSRWLockExclusive(&map_lock);
+}
+
+
+static const char *
+wpdk_remap_root_file(const char *path, char *buffer, size_t len)
+{
+	char buf[MAX_PATH];
+
+	/* Remap files in / into /tmp */
+	if (strcpy_s(buf, sizeof(buf), "/tmp") == 0
+			&& strcat_s(buf, sizeof(buf), path) == 0)
+		return wpdk_get_path(buf, buffer, len);
+
+	return NULL;
+}
 
 
 const char *
 wpdk_get_path(const char *path, char *buffer, size_t len)
 {
-	size_t pathlen;
-	char *tmp;
+	int i;
 
 	if (!path || !*path) return path;
 
 	wpdk_set_invalid_handler();
 
-	pathlen = strnlen(path, PATH_MAX);
-
-	if (pathlen == 0 || pathlen >= PATH_MAX)
+	if (strnlen(path, PATH_MAX) >= PATH_MAX)
 		return NULL;
 
-	/*
-	 * Map temporary files into the MSY2 directory
-	 */
-	if (_access(msys, F_OK) == 0) {
-		if (!strncmp(path, "/tmp/", 5) || !strncmp(path, "/var/tmp/", 9))
-			return (strcpy_s(buffer, len, msys) == 0
-				&& strcat_s(buffer, len, path) == 0) ? buffer : NULL;
+	if (!map_init) wpdk_init_map();
 
-		if (strrchr(path, '/') == path)
-			return (strcpy_s(buffer, len, msys) == 0
-				&& strcat_s(buffer, len, "/tmp") == 0
-				&& strcat_s(buffer, len, path) == 0) ? buffer : NULL;
+	if (strrchr(path, '/') == path && path[1] != '\0')
+		return wpdk_remap_root_file(path, buffer, len);
 
-		return path;
-	}
-
-	/*
-	 * If MSYS2 is not found, use Windows TMP directory
-	 */
-	tmp = getenv("TMP");
-
-	if (tmp == NULL) return path;
-
-	if (!strncmp(path, "/tmp/", 5))
-		return (strcpy_s(buffer, len, tmp) == 0
-			&& strcat_s(buffer, len, path + 4) == 0) ? buffer : NULL;
-
-	if (!strncmp(path, "/var/tmp/", 9))
-		return (strcpy_s(buffer, len, tmp) == 0
-			&& strcat_s(buffer, len, path + 8) == 0) ? buffer : NULL;
-
-	if (strrchr(path, '/') == path)
-		return (strcpy_s(buffer, len, tmp) == 0
-			&& strcat_s(buffer, len, path) == 0) ? buffer : NULL;
+	for (i = 0; i < map_count; i++)
+		if (strncmp(path, map[i].dir, map[i].len) == 0 && path[map[i].len] == '/')
+			return (strcpy_s(buffer, len, map[i].dest) == 0 
+				&& strcat_s(buffer, len, path + map[i].len) == 0) ? buffer : NULL;
 
 	return path;
 }
