@@ -51,16 +51,21 @@ wpdk_mknod(const char *pathname, mode_t mode, dev_t dev)
 
 
 int
-wpdk_stat64(const char *path, struct _stat64 *buf)
+wpdk_stat64(const char *pathname, struct _stat64 *stbuf)
 {
+	char buf[MAX_PATH];
+	const char *path;
 	int rc;
 	
 	wpdk_set_invalid_handler();
 
-	if (!path || !buf)
+	if (!pathname || !stbuf)
 		return wpdk_posix_error(EINVAL);
 
-	rc = _stat64(path, buf);
+	if ((path = wpdk_get_path(pathname, buf, sizeof(buf))) == NULL)
+		return wpdk_posix_error(EINVAL);
+
+	rc = _stat64(path, stbuf);
 	return (rc == 0) ? 0 : -1;
 }
 
