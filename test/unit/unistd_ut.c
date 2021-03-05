@@ -319,10 +319,14 @@ test_getpid(void)
 static void
 test_truncate(void)
 {
-	char *path = "testfile";
+	char path[] = "/tmp/wpdk_truncate_XXXXXX";
 	struct stat s;
 	int rc, fd;
 
+	/* Create temporary file */
+	fd = mkstemp(path);
+	CU_ASSERT(fd != -1);
+	close(fd);
 	unlink(path);
 
 	/* Truncate non-existent file */

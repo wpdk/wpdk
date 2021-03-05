@@ -40,13 +40,11 @@ null_clean(void)
 static void
 test_chmod(void)
 {
-	char *path = "testfile";
+	char path[] = "/tmp/testXXXXXX";
 	int fd, rc;
 
-	unlink(path);
-
 	/* Create file */
-	fd = open(path, O_CREAT|O_RDWR, S_IWRITE|S_IREAD);
+	fd = mkstemp(path);
 	CU_ASSERT(fd != -1);
 	close(fd);
 
@@ -69,9 +67,13 @@ test_chmod(void)
 static void
 test_mknod(void)
 {
-	char *path = "testfile";
-	int rc;
+	char path[] = "/tmp/wpdk_mknod_XXXXXX";
+	int rc, fd;
 
+	/* Create temporary file */
+	fd = mkstemp(path);
+	CU_ASSERT(fd != -1);
+	close(fd);
 	unlink(path);
 
 	/* Check invalid argument */
