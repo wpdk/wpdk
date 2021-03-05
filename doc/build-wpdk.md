@@ -14,7 +14,7 @@ curl -LJO https://raw.githubusercontent.com/wpdk/wpdk/master/scripts/pkgdep.bat
 These include:
 
 * Git
-* Clang and Visual Studio 2019, or MinGW (win32 threads)
+* Clang and Visual Studio 2019, or MinGW (>= 8.3, win32 threads)
 * Meson (>= 0.55.0)
 
 Installation of the prerequisites has been tested on a Windows 10 2004
