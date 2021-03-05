@@ -507,16 +507,14 @@ test_daemon(void)
 static void
 test_lockf(void)
 {
-	char *path = "testfile";
+	char path[] = "/tmp/testXXXXXX";
 	int rc, fd1, fd2;
 	ssize_t nbytes;
 	char buf[200];
 	off_t posn;
-	
-	unlink(path);
 
 	/* Create test file */
-	fd1 = open(path, O_CREAT|O_RDWR, S_IWRITE|S_IREAD);
+	fd1 = mkstemp(path);
 	CU_ASSERT(fd1 != -1);
 
 	/* Add some data */

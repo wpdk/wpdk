@@ -62,16 +62,14 @@ test_fcntl_getfd(void)
 static void
 test_fcntl_lock(void)
 {
-	char *path = "testfile";
+	char path[] = "/tmp/testXXXXXX";
 	int rc, fd1, fd2;
 	struct flock fl;
 	ssize_t nbytes;
 	off_t posn;
-	
-	unlink(path);
 
 	/* Create test file */
-	fd1 = open(path, O_CREAT|O_RDWR, S_IWRITE|S_IREAD);
+	fd1 = mkstemp(path);
 	CU_ASSERT(fd1 != -1);
 
 	/* Add some data */
@@ -180,15 +178,13 @@ test_fcntl_lock(void)
 static void
 test_lockfile_get_range(void)
 {
-	char *path = "testfile";
+	char path[] = "/tmp/testXXXXXX";
 	off_t start, nbytes;
 	ssize_t posn;
 	int rc, fd;
-	
-	unlink(path);
 
 	/* Create test file */
-	fd = open(path, O_CREAT|O_RDWR, S_IWRITE|S_IREAD);
+	fd = mkstemp(path);
 	CU_ASSERT(fd != -1);
 
 	/* Add some data */
