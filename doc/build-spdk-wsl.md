@@ -47,7 +47,7 @@ sudo apt install gcc-mingw-w64 g++-mingw-w64 yasm
 ~~~
 The minimum requirements are:
 
-* MinGW (>= 8.3)
+* MinGW (GCC >= 8.3)
 * Meson (>= 0.55.0)
 
 <a id="build"></a>
