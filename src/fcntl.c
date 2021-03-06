@@ -38,7 +38,7 @@ static SRWLOCK map_lock = SRWLOCK_INIT;
 static void
 wpdk_add_mapping(const char *dir, const char *dest, int prefix)
 {
-	char *from, *path = NULL;
+	char *cp, *from, *path = NULL;
 	char buf[MAX_PATH];
 	int i;
 
@@ -75,9 +75,22 @@ wpdk_add_mapping(const char *dir, const char *dest, int prefix)
 		return;
 	}
 
-	map[map_count].dir = from;
-	map[map_count].dest = path;
-	map[map_count].len = strlen(dir);
+	/* Remove duplicated '/'s */
+	for (cp = from; (cp = strstr(cp, "//")) != NULL; )
+		memmove(cp, cp + 1, strlen(cp));
+
+	if (strcmp(from, "/") == 0) *from = '\0';
+
+	/* Sort by longest match first */
+	for (i = 0; i < map_count; i++)
+		if (strlen(map[i].dir) < strlen(from)) {
+			memmove(&map[i+1], &map[i], (map_count - i) * sizeof(map[0]));
+			break;
+		}
+
+	map[i].dir = from;
+	map[i].dest = path;
+	map[i].len = strlen(dir);
 	map_count++;
 }
 
@@ -108,6 +121,19 @@ wpdk_add_pathmap()
 }
 
 
+static void
+wpdk_add_system_drive(char *prefix)
+{
+	char buf[MAX_PATH];
+	char *cp;
+
+	if ((cp = getenv("SystemDrive")) != NULL) {
+		sprintf(buf, "%s/%c", prefix, tolower(*cp));
+		wpdk_add_mapping(buf, cp, 0);
+	}
+}
+
+
 static int
 wpdk_add_wsl_paths()
 {
@@ -128,10 +154,8 @@ wpdk_add_wsl_paths()
 	if (cp == NULL) return 0;
 	*cp = '\0';
 
-	/*
-	 * Map /var/tmp into WSL so that the SPDK socket is shared.
-	 */
-	wpdk_add_mapping("/var/tmp", path, 1);
+	wpdk_add_mapping("/home", path, 1);
+	wpdk_add_system_drive("/mnt");
 	return 1;
 }
 
@@ -150,10 +174,13 @@ wpdk_add_msys_paths(char *dir)
 	else return;
 
 	/*
-	 * Map temporary files into the MSY2 directory
+	 * Map paths into the MSY2 directory
 	 */
 	wpdk_add_mapping("/tmp", path, 1);
 	wpdk_add_mapping("/var/tmp", path, 1);
+
+	wpdk_add_mapping("/home", path, 1);
+	wpdk_add_system_drive("");
 }
 
 
