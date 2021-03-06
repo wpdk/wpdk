@@ -1,6 +1,8 @@
 # Building SPDK for Windows
 
-SPDK can be built for Windows using either Linux, or a Windows Subsystem for Linux (WSL) distribution and the MinGW cross compiler. WSL has the advantage that it is possible to run native Windows applications directly from the shell.
+SPDK can be built for Windows using either Linux, or a Windows Subsystem for Linux (WSL) distribution and the MinGW cross compiler.
+WSL has the advantage that it is possible to run native Windows applications directly from the shell.
+WSL1 is currently recommended over WSL2 because it supports AF_UNIX sockets which are used to configure SPDK.
 
 The examples in this Getting Started guide assume a Debian based distribution with the *apt* package manager. The instructions should translate readily to other distributions.
 
