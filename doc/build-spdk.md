@@ -141,7 +141,7 @@ A shell script that will build both WPDK and SPDK is provided as a convenience:
 ## Runtime Prerequisites
 Ensure that the [Runtime Prerequisites](https://github.com/wpdk/wpdk#prereq) have been set up on the Windows host.
 
-<a id="tests"></a>
+<a id="unit"></a>
 ## Unit Tests
 
 The SPDK unit tests can then be run as detailed in the [SPDK documentation](https://github.com/spdk/spdk#unit-tests):
@@ -157,3 +157,15 @@ if [ $(uname -s) = Linux ]; then
 	: run_test "unittest_ftl" unittest_ftl
 fi
 ~~~
+
+<a id="tests"></a>
+## Tests
+
+Support for running the SPDK tests is still work in progress. To experiment with running them the following setup is required:
+
+~~~{.sh}
+sudo apt install jq
+sudo mv /var/tmp /var/tmp-
+sudo ln -s /mnt/c/Users/<user>/AppData/Local/Temp /var/tmp
+~~~
+
