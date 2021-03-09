@@ -107,7 +107,7 @@ The shell script remembers the previous configuration and only changes need to b
 
 ~~~{.sh}
 cd ../spdk
-CC=gcc ./configure --cross-prefix=x86_64-w64-mingw32 --with-wpdk=../wpdk/build --without-isal
+CC=gcc ./configure --cross-prefix=x86_64-w64-mingw32 --with-wpdk=../wpdk/build
 make -j8
 ~~~
 
