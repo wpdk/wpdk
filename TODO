@@ -1,18 +1,12 @@
-afunix - only works on build 17063 onwards - verify and document
-
-Fix env inclusion for unit tests
-
 Closing one end of AF_UNIX should generate SIGPIPE signal.
 
 Common array for fd state and flags in fd.c
-
-ifaddrs https://www.google.co.uk/search?ei=wOdNX5CuEJLHxgOhkZv4Bg&q=windows+socket+getifaddrs&oq=windows+socket+getifaddrs&gs_lcp=CgZwc3ktYWIQAzoGCAAQBxAeOggIABAIEAcQHjoCCAA6BggAEAgQHlDYV1i4Z2CybWgAcAB4AIABRogBxAaSAQIxNJgBAKABAaoBB2d3cy13aXrAAQE&sclient=psy-ab&ved=0ahUKEwiQjvbrp8frAhWSo3EKHaHIBm8Q4dUDCA0&uact=5
 
 epoll needs to define OUT option as well.
 
 Investigate impact of thread local storage https://github.com/PlushBeaver/tlstest
 
-Fix for 32-bit builds
+Define _FILE_OFFSET_BITS=64 for GCC?
 
 libiscsi - include it?
 

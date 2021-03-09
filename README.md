@@ -53,6 +53,9 @@ For more advanced use, the following Getting Started guides are also available:
 <a id="prereq"></a>
 ## Runtime Prerequisites
 
+A system running Windows build 17063 or later is required to support AF_UNIX sockets
+which are used for SPDK configuration.
+
 Running SPDK on Windows depends upon the excellent work being done by the
 [DPDK community](https://www.dpdk.org/) to add support for Windows. Please
 follow [Running DPDK Applications](https://doc.dpdk.org/guides/windows_gsg/run_apps.html)
