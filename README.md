@@ -56,21 +56,32 @@ For more advanced use, the following Getting Started guides are also available:
 A system running Windows build 17063 or later is required to support AF_UNIX sockets
 which are used for SPDK configuration.
 
-Running SPDK on Windows depends upon the excellent work being done by the
+Running SPDK on Windows depends upon the work being done by the
 [DPDK community](https://www.dpdk.org/) to add support for Windows. Please
 follow [Running DPDK Applications](https://doc.dpdk.org/guides/windows_gsg/run_apps.html)
 in the [Getting Started Guide for Windows](https://doc.dpdk.org/guides/windows_gsg/index.html)
 to grant 'lock pages in memory' privileges and to load the 'virt2phys' driver which can be
-found in the 'windows' branch of
-[dpdk-kmods](https://github.com/wpdk/dpdk-kmods/tree/windows/windows) 
+found in the [dpdk-kmods](https://github.com/wpdk/dpdk-kmods/tree/windows/windows) repository.
 
-Note: It is possible to run an iSCSI or NVMe over TCP target stack without requiring the
+Note: It is possible to run an iSCSI or NVMe over TCP target stack without the
 'virt2phys' driver, but this currently requires a patch to SPDK. The 'windows' branch of
-https://github.com/wpdk/spdk already contains this, or it
-can be obtained from https://review.spdk.io/gerrit/c/spdk/spdk/+/6697.
+[wpdk/spdk](https://github.com/wpdk/spdk) already includes this, or it
+can be obtained using:
+
+~~~{.sh}
+# https://review.spdk.io/gerrit/c/spdk/spdk/+/6697
+git apply ../wpdk/scripts/patches/spdk-rfc-when-virt2phys-is-unavailable.diff
+~~~
 
 Access to physical NVMe disks requires loading the 'netuio' and 'virt2phys' drivers from
-the 'windows' branch of [dpdk-kmods](https://github.com/wpdk/dpdk-kmods/tree/windows/windows).
+the 'windows' branch of the [wpdk/dpdk-kmods](https://github.com/wpdk/dpdk-kmods/tree/windows/windows)
+repository. This contains a patch to the 'netuio' driver to add the PCIe Class ID for NVMe
+disks which can also be found at:
+
+~~~{.sh}
+# https://patches.dpdk.org/project/dpdk/patch/20210223173508.1200-1-nick.connolly@mayadata.io/
+( cd dpdk-kmods; git apply ../../wpdk/scripts/patches/dpdk-kmods-nvme-support-for-netuio-on-Windows.diff )
+~~~
 
 <a id="status"></a>
 ## Current Status
@@ -89,6 +100,9 @@ The project is at an alpha stage:
 
 * There are still a few areas that are currently unimplemented, or where quick hacks have been applied.
 These are indicated in the code with *WPDK_UNIMPLEMENTED* and *HACK*.
+
+* Where new functionality has been implemented (epoll, aio, etc) the initial focus has been
+on functional correctness rather than performance.
 
 * Currently only x64 builds are supported.
 

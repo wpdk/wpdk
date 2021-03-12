@@ -4,7 +4,7 @@
 
 The project conforms to the following design principles:
 
-* A lightweight layer that runs as native windows code, with no surprises, that can be tested independently.
+* A lightweight layer that runs as native Windows code, with no surprises, that can be tested independently.
 * Minimal changes to the SPDK source code, for example by overloading the standard include files to add missing functionality.
 * Use *wpdk_* as a prefix for new functionality to avoid clashes with the standard library or private implementations.
 * Supporting packages such as *libcunit* should be included to simplify the use of the WPDK.
