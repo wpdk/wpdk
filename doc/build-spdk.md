@@ -20,8 +20,7 @@ To ensure that correct CR/LF line endings are used, add the definitions in
 git is being configured, then this can be done using the following:
 
 ~~~{.sh}
-cd ~
-curl -LJ -o .gitattributes https://raw.githubusercontent.com/wpdk/wpdk/master/scripts/gitattributes
+curl -LJ -o ~/.gitattributes https://raw.githubusercontent.com/wpdk/wpdk/master/scripts/gitattributes
 git config --global --add core.attributesFile ~/.gitattributes
 ~~~
 
@@ -34,7 +33,6 @@ The source code for SPDK and WPDK can be obtained using:
 git clone https://github.com/wpdk/wpdk
 git clone https://github.com/spdk/spdk
 cd spdk
-git checkout master
 git submodule update --init
 ~~~
 
@@ -100,20 +98,6 @@ make -j8
 A number of compiler warnings will be generated building DPDK.
 These can be ignored and are resolved in the latest DPDK release.
 
-SPDK usually builds executables without a suffix and the SPDK scripts are written with this expectation.
-However, on Windows the standard *.exe* suffix has to be used. In order to help resolve this, symbolic links
-can be created so that either name will work:
-
-~~~{.sh}
-../wpdk/scripts/symlink_exe.sh
-~~~
-
-These can be removed with:
-
-~~~{.sh}
-../wpdk/scripts/symlink_exe.sh rm
-~~~
-
 <a id="build"></a>
 ## Build
 
@@ -129,6 +113,20 @@ Ensure that the [Runtime Prerequisites](https://github.com/wpdk/wpdk#prereq) hav
 
 <a id="unit"></a>
 ## Unit Tests
+
+SPDK usually builds executables without a suffix and the SPDK scripts are written with this expectation.
+However, on Windows the standard *.exe* suffix has to be used. If the *../wpdk/build.sh* script is used,
+symbolic links will be created so that either name will work. Alternatively, this can be done manually with:
+
+~~~{.sh}
+../wpdk/scripts/symlink_exe.sh
+~~~
+
+The symbolic links can be removed with:
+
+~~~{.sh}
+../wpdk/scripts/symlink_exe.sh rm
+~~~
 
 The SPDK unit tests can then be run as detailed in the [SPDK documentation](https://github.com/spdk/spdk#unit-tests):
 ~~~{.sh}

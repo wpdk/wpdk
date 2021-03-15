@@ -35,8 +35,7 @@ To ensure that correct CR/LF line endings are used, add the definitions in
 git is being configured, then this can be done using the following:
 
 ~~~{.sh}
-cd %USERPROFILE%
-curl -LJ -o .gitattributes https://raw.githubusercontent.com/wpdk/wpdk/master/scripts/gitattributes
+curl -LJ -o %USERPROFILE%\.gitattributes https://raw.githubusercontent.com/wpdk/wpdk/master/scripts/gitattributes
 git config --global --add core.attributesFile %USERPROFILE%\.gitattributes
 ~~~
 
