@@ -100,10 +100,10 @@ then
 	if [ ! -d wpdk -a -d "$WPDKDIR" ]
 	then
 		(cd "$WPDKDIR"; ./build.sh )
-		CONFIG_OPTS="$CONFIG_OPTS --without-isal --with-wpdk=$WPDKDIR/build"
+		CONFIG_OPTS="$CONFIG_OPTS --with-wpdk=$WPDKDIR/build"
 	fi
 
-	[ ! -f mk/config.mk ] && CC=gcc ./configure $CONFIG_OPTS
+	[ ! -f mk/config.mk ] && CC=gcc ./configure $CONFIG_OPTS --without-isal
 	make -j8
 	"$WPDKDIR/scripts/symlink_exe.sh"
 fi
