@@ -1,4 +1,4 @@
-From 8cde96fdf26e90852899714f8db77f18467fdd9f Mon Sep 17 00:00:00 2001
+From 62ea21752b4c4cac959269c95b6b39112a08718c Mon Sep 17 00:00:00 2001
 From: Nick Connolly <nick.connolly@mayadata.io>
 Date: Wed, 03 Mar 2021 09:48:43 +0000
 Subject: [PATCH] mk: add support for mingw builds
@@ -72,7 +72,7 @@ index a50fa94..ca52c0d 100644
  shared_lib: module
  app: $(LIB)
 diff --git a/configure b/configure
-index 0316ed3..0370a65 100755
+index 0316ed3..30b96ca 100755
 --- a/configure
 +++ b/configure
 @@ -96,6 +96,8 @@
@@ -130,6 +130,22 @@ index 0316ed3..0370a65 100755
  if [ "${CONFIG[VTUNE]}" = "y" ]; then
  	if [ -z "${CONFIG[VTUNE_DIR]}" ]; then
  		echo "When VTune is enabled, you must specify the VTune directory using --with-vtune=path"
+@@ -660,9 +687,14 @@
+ 
+ 	cd $rootdir/isa-l
+ 	ISAL_LOG=$rootdir/isa-l/spdk-isal.log
++	if [[ -n "${CONFIG[CROSS_PREFIX]}" ]]; then
++		ISAL_OPTS=("--host=${CONFIG[CROSS_PREFIX]}")
++	else
++		ISAL_OPTS=()
++	fi
+ 	echo -n "Configuring ISA-L (logfile: $ISAL_LOG)..."
+ 	./autogen.sh &> $ISAL_LOG
+-	./configure CFLAGS="-fPIC -g -O2" --enable-shared=no >> $ISAL_LOG 2>&1
++	./configure CFLAGS="-fPIC -g -O2" "${ISAL_OPTS[@]}" --enable-shared=no >> $ISAL_LOG 2>&1
+ 	echo "done."
+ 	cd $rootdir
+ fi
 diff --git a/mk/spdk.common.mk b/mk/spdk.common.mk
 index 26d95f7..ba3c9d0 100644
 --- a/mk/spdk.common.mk
