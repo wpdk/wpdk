@@ -158,6 +158,8 @@ if [ $(uname -s) = Linux ]; then
 fi
 ~~~
 
+A newly introduced issue will cause nvme_io_msg_ut.exe to fail. A commit is pending to resolve this.
+
 <a id="tests"></a>
 ## Tests
 
