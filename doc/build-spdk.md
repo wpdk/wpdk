@@ -67,20 +67,6 @@ but there is one patch still being reviewed. This is required for access to phys
 <a id="patch"></a>
 ## Patch SPDK
 
-The bulk of the changes required to support SPDK on Windows have been upstreamed,
-but there are a couple of patches that are still being reviewed. These can be applied
-(one at a time) with:
-
-~~~{.sh}
-# https://review.spdk.io/gerrit/c/spdk/spdk/+/6494
-git apply ../wpdk/scripts/patches/spdk-mk-support-file-extension-for-executables.diff
-~~~
-
-~~~{.sh}
-# https://review.spdk.io/gerrit/c/spdk/spdk/+/6589
-git apply ../wpdk/scripts/patches/spdk-mk-add-support-for-mingw-builds.diff
-~~~
-
 To enable support for running SPDK without the DPDK virt2phys driver (see
 [Runtime Prerequisites](https://github.com/wpdk/wpdk#prereq)),
 apply the following patch:
