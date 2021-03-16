@@ -1,26 +1,69 @@
 # Building SPDK for Windows using WSL
 
-SPDK can be built for Windows using a WSL distribution and the MinGW cross compiler. Using WSL it is possible to run native Windows applications directly from the shell.
-WSL1 is currently recommended over WSL2 because it supports AF_UNIX sockets which are used to configure SPDK.
+SPDK can be built for Windows using a WSL distribution and the MinGW cross compiler.
 
 The examples in this Getting Started guide assume a Debian based distribution with the *apt* package manager. The instructions should translate readily to other distributions.
 
-<a id="git"></a>
-## Git Attributes
+<a id="wsl"></a>
+## Windows Subsystem for Linux (WSL)
 
-Install git and curl as follows:
+Windows Subsystem for Linux (WSL) can be used as the Linux environment,
+offering the advantage that native Windows applications can be run directly from the shell.
+Using a WSL1 installation is currently recommended over WSL2 because it supports
+AF_UNIX sockets which are used to configure SPDK.
+
+Documentation for getting started with WSL can be found at
+https://docs.microsoft.com/en-us/windows/wsl/.
+On a system that supports WSL2, a distribution can be installed as WSL1 using:
+
+~~~{.sh}
+wsl --set-default-version 1
+~~~
+
+It is recommended that the source code be located in a Windows directory, since some
+WSL installations fail to run Windows executables from Linux paths.
+To start a WSL shell within the source directory, use:
+
+~~~{.sh}
+cd <source_dir>
+wsl
+~~~
+
+<a id="git"></a>
+## Initial Setup
+
+Install git and curl in the Linux environment as follows:
 ~~~{.sh}
 sudo apt update
 sudo apt install git curl
 ~~~
 
+On Windows, run the following from an elevated command prompt:
+
+~~~{.sh}
+curl -LJ -o %TEMP%\pkgdep.bat https://raw.githubusercontent.com/wpdk/wpdk/master/scripts/pkgdep.bat
+%TEMP%\pkgdep.bat wsl
+~~~
+
+<a id="git"></a>
+## Git Attributes
+
 To ensure that correct CR/LF line endings are used, add the definitions in
-./wpdk/scripts/gitattributes as global gitattributes. If this is the first time that
-git is being configured, then this can be done using the following:
+[wpdk/scripts/gitattributes](http://raw.githubusercontent.com/wpdk/wpdk/master/scripts/gitattributes)
+as global gitattributes. If WSL is being used it is recommened that this is done
+in both the Linux and Windows environments. If this is the first time that git is being configured,
+use the following on Linux:
 
 ~~~{.sh}
 curl -LJ -o ~/.gitattributes https://raw.githubusercontent.com/wpdk/wpdk/master/scripts/gitattributes
 git config --global --add core.attributesFile ~/.gitattributes
+~~~
+
+On Windows:
+
+~~~{.sh}
+curl -LJ -o %USERPROFILE%\.gitattributes https://raw.githubusercontent.com/wpdk/wpdk/master/scripts/gitattributes
+git config --global --add core.attributesFile %USERPROFILE%\.gitattributes
 ~~~
 
 <a id="source"></a>
