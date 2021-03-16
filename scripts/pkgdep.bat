@@ -5,6 +5,7 @@ set MSC=
 set CLANG=
 set GCC=
 set WPDK=
+set WSL=
 
 for %%i in (%*) do (
 	if "%%i"=="cl" set MSC=y
@@ -12,6 +13,7 @@ for %%i in (%*) do (
 	if "%%i"=="mingw" set GCC=y
 	if "%%i"=="gcc" set GCC=y
 	if "%%i"=="wpdk" set WPDK=y
+	if "%%i"=="wsl" set WSL=y
 )
 
 if "%MSC%%CLANG%%GCC%"=="" (
@@ -41,6 +43,8 @@ if errorlevel 1 (
 	choco install git -y -r
 	if errorlevel 1 goto :eof
 )
+
+if "%WSL%"=="y" goto :eof
 
 set "PATH=%SystemDrive%\MinGW\mingw64\bin;%PATH%"
 if "%GCC%"=="y" (
