@@ -50,7 +50,7 @@ curl -LJ -o %TEMP%\pkgdep.bat https://raw.githubusercontent.com/wpdk/wpdk/master
 
 To ensure that correct CR/LF line endings are used, add the definitions in
 [wpdk/scripts/gitattributes](http://raw.githubusercontent.com/wpdk/wpdk/master/scripts/gitattributes)
-as global gitattributes. If WSL is being used it is recommened that this is done
+as global gitattributes. If WSL is being used it is recommended that this is setup
 in both the Linux and Windows environments. If this is the first time that git is being configured,
 use the following on Linux:
 
@@ -69,7 +69,10 @@ git config --global --add core.attributesFile %USERPROFILE%\.gitattributes
 <a id="source"></a>
 ## Source Code
 
-The source code for SPDK and WPDK can be obtained using:
+If WSL is being used, it is recommended that the source code for SPDK and WPDK is
+obtained using the Windows environment.
+
+The relevant commands are:
 
 ~~~{.sh}
 git clone https://github.com/wpdk/spdk
@@ -78,10 +81,23 @@ git checkout windows
 git submodule update --init
 ~~~
 
+If building with WSL, adjust the way that git symbolic links are handled
+by running the following command in the Linux environment:
+
+~~~{.sh}
+./wpdk/scripts/mksymlinks.sh
+~~~
+
+This can be undone using:
+
+~~~{.sh}
+./wpdk/scripts/mksymlinks.sh rm
+~~~
+
 <a id="prerequisites"></a>
 ## Prerequisites
 
-The prereqisites required to build WPDK and SPDK can be installed from
+The prerequisites required to build WPDK and SPDK can be installed from
 the shell, using:
 
 ~~~{.sh}
