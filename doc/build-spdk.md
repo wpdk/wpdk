@@ -113,13 +113,14 @@ The minimum requirements are:
 <a id="patchdpdk"></a>
 ## Patch DPDK
 
-The bulk of the changes required to support DPDK on Windows have been upstreamed,
-but there is one patch still being reviewed. This is required for access to physical NVMe devices and can be applied with:
+In order to access physical NVMe devices, a patch to DPDK is required which can be applied with:
 
 ~~~{.sh}
 # https://patches.dpdk.org/project/dpdk/patch/20210301095644.1711-1-nick.connolly@mayadata.io/
 ( cd dpdk; git apply ../../wpdk/scripts/patches/dpdk-bus-pci-nvme-on-Windows-requires-class-id-and-bus.diff )
 ~~~
+
+This will not be needed once SPDK updates to use the forthcoming DPDK 21.05 release.
 
 <a id="patch"></a>
 ## Patch SPDK
