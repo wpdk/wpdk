@@ -61,7 +61,7 @@ Running SPDK on Windows depends upon the work being done by the
 follow [Running DPDK Applications](https://doc.dpdk.org/guides/windows_gsg/run_apps.html)
 in the [Getting Started Guide for Windows](https://doc.dpdk.org/guides/windows_gsg/index.html)
 to grant 'lock pages in memory' privileges and to load the 'virt2phys' driver which can be
-found in the [dpdk-kmods](https://github.com/wpdk/dpdk-kmods/tree/windows/windows) repository.
+found in the [dpdk-kmods](https://git.dpdk.org/dpdk-kmods/) repository.
 
 Note: It is possible to run an iSCSI or NVMe over TCP target stack without the
 'virt2phys' driver, but this currently requires a patch to SPDK. The 'windows' branch of
@@ -74,14 +74,8 @@ git apply ../wpdk/scripts/patches/spdk-rfc-when-virt2phys-is-unavailable.diff
 ~~~
 
 Access to physical NVMe disks requires loading the 'netuio' and 'virt2phys' drivers from
-the 'windows' branch of the [wpdk/dpdk-kmods](https://github.com/wpdk/dpdk-kmods/tree/windows/windows)
-repository. This contains a patch to the 'netuio' driver to add the PCIe Class ID for NVMe
-disks which can also be found at:
-
-~~~{.sh}
-# https://patches.dpdk.org/project/dpdk/patch/20210223173508.1200-1-nick.connolly@mayadata.io/
-( cd dpdk-kmods; git apply ../../wpdk/scripts/patches/dpdk-kmods-nvme-support-for-netuio-on-Windows.diff )
-~~~
+the [dpdk-kmods](https://git.dpdk.org/dpdk-kmods/)
+repository.
 
 <a id="status"></a>
 ## Current Status
@@ -157,7 +151,6 @@ The WPDK repository currently contains the following forked projects:
 * [SPDK](https://github.com/wpdk/spdk) - based on the latest SPDK repo with Windows specific changes in the 'windows' branch.
 There is an ongoing dialog with the SPDK community and many changes have already been upstreamed.
 * [DPDK](https://github.com/wpdk/dpdk) - required temporarily until fixes are upstreamed.
-* [dpdk-kmods](https://github.com/wpdk/dpdk) - required temporarily until fixes are upstreamed.
 * [CUnit](https://github.com/wpdk/CUnit) - a convenience project for build purposes (no development).
 
 <a id="acknowledge"></a>
