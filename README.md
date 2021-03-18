@@ -47,7 +47,6 @@ A Getting Started guide is available:
 For more advanced use, the following Getting Started guides are also available:
 
 * [Building SPDK for Windows using MSYS2](https://github.com/wpdk/wpdk/blob/master/doc/build-spdk-msys2.md)
-* [Building SPDK for Windows using WSL](https://github.com/wpdk/wpdk/blob/master/doc/build-spdk-wsl.md)
 * [Building WPDK without SPDK](https://github.com/wpdk/wpdk/blob/master/doc/build-wpdk.md)
 
 <a id="prereq"></a>
