@@ -44,3 +44,16 @@ case "$1" in
 		done
 		;;
 esac
+
+mksymlinks=`realpath "$0"`
+
+git submodule | cut -d\  -f3 |
+while read submodule
+do
+	if [ -d "$submodule" ]; then
+	(
+		cd "$submodule"
+		"$mksymlinks" $*
+	)
+	fi
+done
