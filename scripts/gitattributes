@@ -1,13 +1,4 @@
-# Configuration
-configure				eol=lf
-configure.ac			eol=lf
-CONFIG					eol=lf
+* text=auto eol=lf
 
 # Scripts
-*.sh                    eol=lf
 *.bat                   eol=crlf
-*.py                    eol=lf
-
-# control Files
-.gitignore              text
-.gitattributes          text
