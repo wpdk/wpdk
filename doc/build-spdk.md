@@ -14,7 +14,7 @@ executables.
 <a id="git"></a>
 ## Initial Setup
 
-For WSL, follow the instructions in the guide to 
+For WSL, follow the instructions in
 [Getting Started with WSL](https://github.com/wpdk/wpdk/blob/master/doc/wsl.md).
 
 Install Git and curl as follows:
@@ -22,9 +22,6 @@ Install Git and curl as follows:
 sudo apt update
 sudo apt install git curl
 ~~~
-
-<a id="git"></a>
-## Git Attributes
 
 To ensure that correct CR/LF line endings are used, add the definitions in
 [wpdk/scripts/gitattributes](http://raw.githubusercontent.com/wpdk/wpdk/master/scripts/gitattributes)
@@ -48,8 +45,12 @@ cd spdk
 git submodule update --init
 ~~~
 
-If using WSL, update the symbolic links as detailed in
-[Getting Started with WSL](https://github.com/wpdk/wpdk/blob/master/doc/wsl.md#symlinks).
+For WSL, update the symbolic links as detailed in
+[Getting Started with WSL](https://github.com/wpdk/wpdk/blob/master/doc/wsl.md#symlinks):
+
+~~~{.sh}
+../wpdk/scripts/mksymlinks.sh
+~~~
 
 <a id="prerequisites"></a>
 ## Prerequisites
