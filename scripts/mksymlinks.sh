@@ -5,6 +5,12 @@ case "$1" in
 		git ls-files -s | grep '^12' | cut -f2 |
 		while read path
 		do
+			if [ -h "$path" ]; then
+				rm -f "$path"
+				cmd.exe /c git checkout -- "$path"
+				git update-index --assume-unchanged "$path"
+			fi
+
 			if [ -f "$path" ]; then
 				lines=`wc -l "$path" | cut -d\  -f1`
 				
@@ -33,7 +39,7 @@ case "$1" in
 			if [ ! -f "$path" -o "$lines" != "0" ]; then
 				rm -f "$path"
 				cmd.exe /c git checkout -- "$path"
-				git update-index --no-assume-unchanged "$path"
+				git update-index --assume-unchanged "$path"
 			fi
 		done
 		;;
