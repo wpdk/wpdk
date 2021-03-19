@@ -3,11 +3,44 @@
 # Copyright (c) 2021, MayaData Inc. All rights reserved.
 # Copyright (c) 2021, DataCore Software Corporation. All rights reserved.
 
-pid="$1"
+pid=
+sig=
+sigflag=
+fail=
 
-if [ -z "$pid" ]
+for i in $*
+do
+	if [ -n "$sigflag" ]
+	then
+		sig="-$i"
+		sigflag=
+		continue
+	fi
+
+	case "$i" in
+	-s)
+		sigflag=true
+		;;
+
+	-[0-9]|-[0-2][0-9]|-[A-Z]*)
+		sig=$i
+		;;
+
+	[0-9]*)
+		[ -n "$pid" ] && fail=true
+		pid="$i"
+		;;
+
+	*)
+		fail=true
+		break
+		;;
+	esac
+done
+
+if [ -z "$pid" -o -n "$fail" ]
 then
-	echo "usage: wpdk_kill <pid>"
+	echo "usage: wpdk_kill [options] <pid>"
 	exit 1
 fi
 
@@ -25,19 +58,10 @@ then
 	_pid=`tasklist.exe | grep "^${exe} " | cut -c27-34`
 fi
 
-if [ -z "$_pid" ]
-then
-	exec kill "$pid"
-fi
+[ -z "$_pid" ] && exec kill $*
 
 # Terminate any Windows PIDs that match. Potentially killing multiple
 # processes is not ideal but WSL doesn't identify the mapping. The
 # script is intended for use during testing rather than production.
 
-for i in $_pid
-do
-	PATH=`dirname "$0"`:$PATH
-	wpdk_terminate.exe $i || kill $pid
-done
-
-exit 0
+exec `dirname "$0"`/wpdk_terminate.exe $sig $_pid

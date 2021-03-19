@@ -29,7 +29,7 @@ static INIT_ONCE wpdk_signal_once = INIT_ONCE_STATIC_INIT;
 
 #define SIGNAL_EVENT "Global\\WPDK_%lu_%d"
 
-static int wpdk_siglist[] = { SIGTERM };
+static int wpdk_siglist[] = { SIGINT, SIGTERM };
 static unsigned int wpdk_signal_worker(void *arg);
 
 

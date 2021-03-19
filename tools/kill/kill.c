@@ -18,44 +18,92 @@
 void
 usage()
 {
-	fprintf(stderr, "Usage: wpdk_terminate <pid>\n");
+	fprintf(stderr, "Usage: wpdk_terminate [-<sig>] <pid>\n");
 	exit(1);
+}
+
+
+int
+process_exited(HANDLE h)
+{
+	DWORD rc;
+	int i;
+
+	for (i = 0; i < 250; i++, Sleep(20))
+		if (GetExitCodeProcess(h, &rc) != STILL_ACTIVE)
+			return 1;
+
+	return 0;
+}
+
+
+int
+notify_process(int pid, int sig)
+{
+	HANDLE h;
+	int rc;
+
+	h = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_TERMINATE,
+			FALSE, (DWORD)pid);
+
+	if (h == NULL) {
+		fprintf(stderr, "wpdk_terminate: (%d) - No such process\n", pid);
+		return 1;
+	}
+
+	switch (sig) {
+	case SIGTERM:
+		/*
+		* On Linux SIGTERM invokes a signal handler, but on Windows
+		* TerminateProcess is a hard stop, so send the signal and wait
+		* to see if the process exits before calling TerminateProcess.
+		*/
+		rc = wpdk_kill(pid, sig);
+
+		if (rc != 0 || !process_exited(h))
+			rc = (TerminateProcess(h, 128 + sig) != 0);
+		break;
+
+	case SIGKILL:
+		rc = (TerminateProcess(h, 128 + sig) != 0);
+		break;
+
+	case SIGINT:
+		rc = wpdk_kill(pid, sig);
+		break;
+
+	case 0:
+		rc = 0;
+		break;
+	}
+
+	CloseHandle(h);
+	return rc;
 }
 
 
 int
 main(int argc, char **argv)
 {
-	int pid = (argc > 1) ? atoi(argv[1]) : 0;
-	HANDLE h;
-	DWORD rc;
-	int i;
+	int rc = 0, i = 1;
+	int sig = SIGTERM;
 
-	if (pid <= 0) usage();
+	if (argc < 2) usage();
 
-	/*
-	 * Terminate the process. On Linux this invokes the SIGTERM handler,
-	 * but on Windows TerminateProcess is a hard stop. Provoke a SIGTERM
-	 * callback if possible and wait to see if the process exits before
-	 * calling TerminateProcess.
-	 */
-	h = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_TERMINATE,
-			FALSE, (DWORD)pid);
-
-	if (h == NULL) {
-		fprintf(stderr, "wpdk_terminate: (%d) - No such process\n", pid);
-		exit(1);
+	if (argv[i][0] == '-') {
+		if (strcmp(argv[i], "-SIGINT") == 0) sig = SIGINT;
+		else if (strcmp(argv[i], "-INT") == 0) sig = SIGINT;
+		else if (strcmp(argv[i], "-9") == 0) sig = SIGKILL;
+		else if (strcmp(argv[i], "-0") == 0) sig = 0;
+		else usage();
+		i++;
 	}
 
-	if (wpdk_kill(pid, SIGTERM) == 0) {
-		for (i = 0; i < 250; i++, Sleep(20))
-			if (GetExitCodeProcess(h, &rc) != STILL_ACTIVE) {
-				CloseHandle(h);
-				exit(0);
-			}
-		}
+	for (; i < argc; i++) {
+		if (!isdigit(argv[i][0])) usage();
+		if (notify_process(atoi(argv[i]), sig) != 0)
+			rc = 1;
+	}
 
-	TerminateProcess(h, 128 + SIGTERM);
-	CloseHandle(h);
-	exit(0);
+	exit(rc);
 }
