@@ -12,6 +12,7 @@
  */
 
 #include <wpdk/internal.h>
+#include <process.h>
 #include <stdlib.h>
 #include <signal.h>
 #include <unistd.h>
@@ -25,6 +26,11 @@ static struct sigaction wpdk_sig_default = {
 
 static CRITICAL_SECTION wpdk_sig_lock;
 static INIT_ONCE wpdk_signal_once = INIT_ONCE_STATIC_INIT;
+
+#define SIGNAL_EVENT "Global\\WPDK_%lu_%d"
+
+static int wpdk_siglist[] = { SIGTERM };
+static unsigned int wpdk_signal_worker(void *arg);
 
 
 int
@@ -105,6 +111,9 @@ wpdk_signal_init(INIT_ONCE *pInit, void *arg, void **pContext)
 
 	InitializeCriticalSectionAndSpinCount(&wpdk_sig_lock, 4000);
 
+	if (_beginthreadex(NULL, 0, wpdk_signal_worker, NULL, 0, NULL) == 0)
+		WPDK_WARNING("Unable to create signal worker");
+
 	*pContext = NULL;
 	return TRUE;
 }
@@ -143,6 +152,54 @@ wpdk_signal_handler(int sig)
 
 	info.si_signo = sig;
 	(act.sa_sigaction)(sig, &info, &context);
+}
+
+
+static unsigned int
+wpdk_signal_worker(void *arg)
+{
+	char buf[MAX_PATH];
+	HANDLE h[NSIG];
+	int sig[NSIG];
+	int n = 0;
+	size_t i;
+	DWORD rc;
+
+	UNREFERENCED_PARAMETER(arg);
+
+	/*
+	 * Create events for signals that could be sent to the process.
+	 * This is primarily intended as a way of sending SIGTERM to allow
+	 * an orderly shutdown.
+	 */
+	for (i = 0; i < sizeof(wpdk_siglist) / sizeof(wpdk_siglist[0]); i++) {
+		sprintf_s(buf, MAX_PATH, SIGNAL_EVENT, wpdk_getpid(), wpdk_siglist[i]);
+
+		if ((h[n] = CreateEvent(NULL, TRUE, FALSE, buf)) == NULL) {
+			WPDK_WARNING("Unable to create event for signal %d", wpdk_siglist[i]);
+			continue;
+		}
+
+		sig[n++] = wpdk_siglist[i];
+	}
+
+	/*
+	 * Wait for events to occur and call the signal handler.
+	 */
+	for (rc = WAIT_OBJECT_0; n && rc != WAIT_FAILED; ) {
+		rc = WaitForMultipleObjectsEx(n, h, FALSE, INFINITE, TRUE);
+
+		if (rc < WAIT_OBJECT_0 + n) {
+			ResetEvent(h[rc]);
+			wpdk_signal_handler(sig[rc]);
+		}
+	}
+
+	while (n >= 0)
+		CloseHandle(h[n]);
+
+	WPDK_WARNING("Signal worker is terminating");
+	return 0;
 }
 
 
@@ -218,13 +275,32 @@ wpdk_pthread_sigmask(int how, const sigset_t *set, sigset_t *oset)
 int
 wpdk_kill(pid_t pid, int sig)
 {
+	char buf[MAX_PATH];
+	HANDLE h;
+	DWORD rc;
+	
 	wpdk_set_invalid_handler();
 
-	if ((pid > 0 && pid != wpdk_getpid()) ||
-			(pid < -1 && (-pid) != wpdk_getpid())) {
-		WPDK_UNIMPLEMENTED();
-		return wpdk_posix_error(ENOSYS);
+	if (pid == 0 || pid == -1 || pid == wpdk_getpid()
+			|| (-pid) == wpdk_getpid())
+		return (sig != 0) ? raise(sig) : 0;
+
+	/*
+	 * If the signal is being sent to another process,
+	 * try and set the corresponding event.
+	 */
+	sprintf_s(buf, MAX_PATH, SIGNAL_EVENT,
+		(pid > 0) ? pid : (-pid), sig);
+
+	if ((h = OpenEvent(EVENT_MODIFY_STATE, FALSE, buf)) != NULL) {
+		rc = SetEvent(h);
+		CloseHandle(h);
+		if (rc != 0) return 0;
 	}
 
-	return (sig != 0) ? raise(sig) : 0;
+	/*
+	 * If the signal hasn't been sent, return an error.
+	 */
+	WPDK_UNIMPLEMENTED();
+	return wpdk_posix_error(ENOSYS);
 }

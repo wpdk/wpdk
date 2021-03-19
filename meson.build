@@ -51,9 +51,10 @@ subdir('config')
 
 subdir('inc')
 subdir('src')
+subdir('tools')
 
 if not meson.is_subproject()
-	subdir('test/unit')
+	subdir('test')
 endif
 
 wpdk_static_dep = declare_dependency(
