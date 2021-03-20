@@ -10,4 +10,8 @@ if [[ -e $wpdk_bin/wpdk_kill.sh ]]; then
 	alias kill="$wpdk_bin/wpdk_kill.sh"
 fi
 
+if [ -n "$MSYSTEM" ]; then
+	alias sudo=
+fi
+
 alias uname='echo Windows ;:'
