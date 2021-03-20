@@ -67,4 +67,5 @@ fi
 # processes is not ideal but WSL doesn't identify the mapping. The
 # script is intended for use during testing rather than production.
 
-exec "$(dirname "$0")/wpdk_kill.exe" "$sig" "$_pid"
+# shellcheck disable=SC2086
+exec "$(dirname "$0")/wpdk_kill.exe" "$sig" $_pid
