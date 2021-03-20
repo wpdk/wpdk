@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+# SPDX-License-Identifier: BSD-3-Clause
+# Copyright (c) 2021, MayaData Inc. All rights reserved.
+# Copyright (c) 2021, DataCore Software Corporation. All rights reserved.
 
 CC=xgcc
 ARCH=x64
@@ -12,10 +15,10 @@ SPDK=
 [ -d drivers ] && DPDK=y
 [ -d dpdkbuild ] && SPDK=y
 
-WPDKDIR=`dirname "$0"`
+WPDKDIR=$(dirname "$0")
 
 DESTDIR=
-[ "$SPDK" != "y" ] && DESTDIR=`pwd`/build
+[ "$SPDK" != "y" ] && DESTDIR="$(pwd)/build"
 
 CONFDIR=build
 if [ "$SPDK" != "y" ]
@@ -28,9 +31,9 @@ then
 fi
 
 cfg=
-[ -f $CONFDIR/_config ] && cfg=`cat $CONFDIR/_config | tr -d '\r'`
+[ -f $CONFDIR/_config ] && cfg=$(tr -d '\r' < "$CONFDIR/_config")
 
-for i in $cfg $*
+for i in $cfg "$@"
 do
 	case $i in
 	debug)
@@ -50,7 +53,7 @@ done
 
 if [ "$CLEAN" != "clean" ]
 then
-	[ "$SPDK" = "y" -a ! -f mk/config.mk ] && CLEAN=y
+	[ "$SPDK" = "y" ] && [ ! -f mk/config.mk ] && CLEAN=y
 	if [ "$cfg" != "$CC $ARCH $TYPE" ]
 	then
 		echo Config changed from "$cfg" to "$CC $ARCH $TYPE"
@@ -62,23 +65,19 @@ if [ -n "$CLEAN" ]
 then
 	echo Cleaning...
 	for i in . dpdp wpdk "$WPDKDIR"
-	do rm -rf $i/build $i/build-tmp
+	do rm -rf "$i/build" "$i/build-tmp"
 	done
 	rm -f mk/config.mk
-	find . -type f -name \*.d -print | xargs rm -f
+	find . "$WPDKDIR" -type f -name \*.d -exec rm -f {} +
 	"$WPDKDIR/scripts/symlink_exe.sh" rm
-	(
-		cd "$WPDKDIR"
-		find . -type f -name \*.d -print | xargs rm -f
-		./scripts/symlink_exe.sh rm
-	)
+	( cd "$WPDKDIR" && ./scripts/symlink_exe.sh rm )
 fi
 
 [ "$CLEAN" = "clean" ] && exit 0
 
 cfg="$CC $ARCH $TYPE"
 
-echo Building $cfg...
+echo "Building $cfg..."
 
 [ -d $CONFDIR ] || mkdir $CONFDIR
 echo "$cfg" > $CONFDIR/_config
@@ -97,12 +96,13 @@ then
 	CONFIG_OPTS="--cross-prefix=x86_64-w64-mingw32"
 	[ "$TYPE" == "debug" ] && CONFIG_OPTS="$CONFIG_OPTS --enable-debug"
 	
-	if [ ! -d wpdk -a -d "$WPDKDIR" ]
+	if [ ! -d wpdk ] && [ -d "$WPDKDIR" ]
 	then
-		(cd "$WPDKDIR"; ./build.sh )
+		(cd "$WPDKDIR" && ./build.sh )
 		CONFIG_OPTS="$CONFIG_OPTS --with-wpdk=$WPDKDIR/build"
 	fi
 
+	# shellcheck disable=SC2086
 	[ ! -f mk/config.mk ] && CC=gcc ./configure $CONFIG_OPTS --without-isal
 	make -j8
 	"$WPDKDIR/scripts/symlink_exe.sh"
