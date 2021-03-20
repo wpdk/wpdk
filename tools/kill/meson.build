@@ -9,7 +9,7 @@ sources = [
 	wrap_header,
 ]
 
-wpdk_terminate = executable('wpdk_terminate',
+wpdk_terminate = executable('wpdk_kill',
 		sources,
 		c_args: cflags,
 		include_directories: [ global_includes ],
@@ -18,6 +18,6 @@ wpdk_terminate = executable('wpdk_terminate',
 		install: true
 )
 
-wpdk_kill = configure_file(input : 'kill.sh', output : 'wpdk_kill',
+wpdk_kill = configure_file(input : 'kill.sh', output : 'wpdk_kill.sh',
 		copy: true, install: true, install_dir: 'bin',
 		install_mode: 'rwxr-xr-x')

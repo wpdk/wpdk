@@ -18,7 +18,7 @@
 void
 usage()
 {
-	fprintf(stderr, "Usage: wpdk_terminate [-<sig>] <pid>\n");
+	fprintf(stderr, "Usage: wpdk_kill.exe [-<sig>] <pid>\n");
 	exit(1);
 }
 
@@ -47,7 +47,7 @@ notify_process(int pid, int sig)
 			FALSE, (DWORD)pid);
 
 	if (h == NULL) {
-		fprintf(stderr, "wpdk_terminate: (%d) - No such process\n", pid);
+		fprintf(stderr, "wpdk_kill.exe: (%d) - No such process\n", pid);
 		return 1;
 	}
 

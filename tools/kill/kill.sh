@@ -40,7 +40,7 @@ done
 
 if [ -z "$pid" -o -n "$fail" ]
 then
-	echo "usage: wpdk_kill [options] <pid>"
+	echo "usage: wpdk_kill.sh [options] <pid>"
 	exit 1
 fi
 
@@ -64,4 +64,4 @@ fi
 # processes is not ideal but WSL doesn't identify the mapping. The
 # script is intended for use during testing rather than production.
 
-exec `dirname "$0"`/wpdk_terminate.exe $sig $_pid
+exec `dirname "$0"`/wpdk_kill.exe $sig $_pid
