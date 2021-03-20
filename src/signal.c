@@ -173,7 +173,7 @@ wpdk_signal_worker(void *arg)
 	 * an orderly shutdown.
 	 */
 	for (i = 0; i < sizeof(wpdk_siglist) / sizeof(wpdk_siglist[0]); i++) {
-		sprintf_s(buf, MAX_PATH, SIGNAL_EVENT, wpdk_getpid(), wpdk_siglist[i]);
+		sprintf_s(buf, sizeof(buf), SIGNAL_EVENT, wpdk_getpid(), wpdk_siglist[i]);
 
 		if ((h[n] = CreateEvent(NULL, TRUE, FALSE, buf)) == NULL) {
 			WPDK_WARNING("Unable to create event for signal %d", wpdk_siglist[i]);
@@ -289,7 +289,7 @@ wpdk_kill(pid_t pid, int sig)
 	 * If the signal is being sent to another process,
 	 * try and set the corresponding event.
 	 */
-	sprintf_s(buf, MAX_PATH, SIGNAL_EVENT,
+	sprintf_s(buf, sizeof(buf), SIGNAL_EVENT,
 		(pid > 0) ? pid : (-pid), sig);
 
 	if ((h = OpenEvent(EVENT_MODIFY_STATE, FALSE, buf)) != NULL) {

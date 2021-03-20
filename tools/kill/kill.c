@@ -94,6 +94,7 @@ main(int argc, char **argv)
 		if (strcmp(argv[i], "-SIGINT") == 0) sig = SIGINT;
 		else if (strcmp(argv[i], "-INT") == 0) sig = SIGINT;
 		else if (strcmp(argv[i], "-9") == 0) sig = SIGKILL;
+		else if (strcmp(argv[i], "-2") == 0) sig = SIGINT;
 		else if (strcmp(argv[i], "-0") == 0) sig = 0;
 		else usage();
 		i++;

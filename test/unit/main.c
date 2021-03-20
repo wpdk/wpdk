@@ -52,16 +52,45 @@ static int fatal_count;
 static const char *fatal_function;
 
 
+char test_bin_dir[MAX_PATH] = ".\\";
+
+
+static void
+set_bin_dir(void)
+{
+	size_t i;
+
+	if (GetModuleFileName(NULL, test_bin_dir, sizeof(test_bin_dir)) == 0) {
+		strcpy_s(test_bin_dir, sizeof(test_bin_dir), ".\\");
+		return;
+	}
+
+	for (i = strlen(test_bin_dir); 1; i--) {
+		if (test_bin_dir[i] == '/' || test_bin_dir[i] == '\\') {
+			test_bin_dir[i + 1] = 0;
+			break;
+		}
+
+		if (i == 0) {
+			strcpy_s(test_bin_dir, sizeof(test_bin_dir), ".\\");
+			break;
+		}
+	}
+}
+
+
 int
 main(int argc, char **argv)
 {
-	unsigned int	num_failures;
+	unsigned int num_failures;
 
 	UNREFERENCED_PARAMETER(argc);
 	UNREFERENCED_PARAMETER(argv);
 
 	CU_set_error_action(CUEA_ABORT);
 	CU_initialize_registry();
+
+	set_bin_dir();
 
 	add_dirent_tests();
 	add_error_tests();

@@ -15,8 +15,12 @@
 #include <signal.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <process.h>
 
 #include <CUnit/Basic.h>
+
+
+extern char test_bin_dir[];
 
 
 static int
@@ -293,6 +297,109 @@ test_kill(void)
 }
 
 
+static void
+test_signum(int signum)
+{
+	struct sigaction act = { 0 };
+	struct sigaction oact;
+	int rc;
+
+	/* Check custom handler */
+	act.sa_handler = test_signal_handler;
+	act.sa_flags = 0;
+	rc = sigaction(signum, &act, &oact);
+	CU_ASSERT(rc == 0);
+	CU_ASSERT(oact.sa_handler == SIG_DFL);
+
+	/* Check kill */
+	test_signal_count[signum] = 0;
+	rc = kill(0, signum);
+	CU_ASSERT(rc == 0);
+	CU_ASSERT(test_signal_count[signum] == 1);
+
+	/* Reset handler */
+	act.sa_handler = SIG_DFL;
+	act.sa_flags = 0;
+	rc = sigaction(signum, &act, &oact);
+	CU_ASSERT(rc == 0);
+	CU_ASSERT(oact.sa_handler == test_signal_handler);
+}
+
+
+static intptr_t
+test_run_kill(DWORD processid, int signum)
+{
+	char path[MAX_PATH], pid[64], sig[32];
+
+	sprintf_s(path, sizeof(path), "%swpdk_kill.exe", test_bin_dir);
+	sprintf_s(sig, sizeof(sig), "-%d", signum);
+	sprintf_s(pid, sizeof(pid), "%lu", processid);
+
+	return _spawnl(_P_WAIT, path, path, sig, pid, NULL);
+}
+
+
+static void
+test_signum_kill(int signum)
+{
+	struct sigaction act = { 0 };
+	struct sigaction oact;
+	intptr_t exitcode;
+	int i, rc;
+
+	/* Check custom handler */
+	act.sa_handler = test_signal_handler;
+	act.sa_flags = 0;
+	rc = sigaction(signum, &act, &oact);
+	CU_ASSERT(rc == 0);
+	CU_ASSERT(oact.sa_handler == SIG_DFL);
+
+	/* Invoke kill */
+	test_signal_count[signum] = 0;
+	exitcode = test_run_kill(GetCurrentProcessId(), signum);
+	CU_ASSERT(exitcode == 0);
+
+	/* Wait for signal */
+	for (i = 0; i < 5000; Sleep(1), i++)
+		if (test_signal_count[signum] != 0) break;
+	CU_ASSERT(test_signal_count[signum] == 1);
+
+	/* Reset handler */
+	act.sa_handler = SIG_DFL;
+	act.sa_flags = 0;
+	rc = sigaction(signum, &act, &oact);
+	CU_ASSERT(rc == 0);
+	CU_ASSERT(oact.sa_handler == test_signal_handler);
+}
+
+
+static void
+test_sigint(void)
+{
+	test_signum(SIGINT);
+	test_signum_kill(SIGINT);
+	test_signum_kill(SIGINT);
+}
+
+
+static void
+test_sigterm(void)
+{
+	test_signum(SIGTERM);
+}
+
+
+static void
+test_sig_zero(void)
+{
+	intptr_t exitcode;
+
+	/* Check process exists */
+	exitcode = test_run_kill(GetCurrentProcessId(), 0);
+	CU_ASSERT(exitcode == 0);
+}
+
+
 void add_signal_tests()
 {
 	CU_pSuite suite = NULL;
@@ -303,4 +410,7 @@ void add_signal_tests()
 	CU_ADD_TEST(suite, test_signal);
 	CU_ADD_TEST(suite, test_sigaction);
 	CU_ADD_TEST(suite, test_kill);
+	CU_ADD_TEST(suite, test_sigint);
+	CU_ADD_TEST(suite, test_sigterm);
+	CU_ADD_TEST(suite, test_sig_zero);
 }
