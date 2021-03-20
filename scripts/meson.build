@@ -15,3 +15,7 @@ map_to_wrap_cmd = py3 + files('map_to_wrap.py')
 sudo = configure_file(input : 'sudo.sh', output : 'sudo',
 		copy: true, install: true, install_dir: 'bin/msys2',
 		install_mode: 'rwxr-xr-x')
+
+bashrc = configure_file(input : 'bashrc.sh', output : 'wpdk_bashrc.sh',
+		copy: true, install: true, install_dir: 'bin',
+		install_mode: 'rwxr-xr-x')
