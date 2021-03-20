@@ -68,4 +68,4 @@ fi
 # script is intended for use during testing rather than production.
 
 # shellcheck disable=SC2086
-exec "$(dirname "$0")/wpdk_kill.exe" "$sig" $_pid
+exec "$(dirname "$0")/wpdk_kill.exe" $sig $_pid
