@@ -15,6 +15,18 @@
 #include <stdio.h>
 
 
+struct siglist_s {
+	char *name;
+	int num;
+};
+
+static struct siglist_s siglist[] = {
+	{ "SIGTERM", SIGTERM },
+	{ "SIGKILL", SIGKILL },
+	{ "SIGINT", SIGINT },
+};
+
+
 void
 usage()
 {
@@ -83,27 +95,44 @@ notify_process(int pid, int sig)
 
 
 int
+arg_to_signum(char *arg)
+{
+	size_t i;
+
+	if (isdigit(arg[0])) return atoi(&arg[0]);
+
+	for (i = 0; i < sizeof(siglist) / sizeof(siglist[0]); i++)
+		if (_stricmp(arg, siglist[i].name) == 0 ||
+				_stricmp(arg, &siglist[i].name[3]) == 0)
+			return siglist[i].num;
+
+	usage();
+	return 0;
+}
+
+
+int
 main(int argc, char **argv)
 {
-	int rc = 0, i = 1;
+	int rc = 1, i, expectpid = 0;
 	int sig = SIGTERM;
 
 	if (argc < 2) usage();
 
-	if (argv[i][0] == '-') {
-		if (strcmp(argv[i], "-SIGINT") == 0) sig = SIGINT;
-		else if (strcmp(argv[i], "-INT") == 0) sig = SIGINT;
-		else if (strcmp(argv[i], "-9") == 0) sig = SIGKILL;
-		else if (strcmp(argv[i], "-2") == 0) sig = SIGINT;
-		else if (strcmp(argv[i], "-0") == 0) sig = 0;
+	for (i = 1; i < argc; i++) {
+		if (argv[i][0] == '-' && !expectpid) {
+			if (strcmp(argv[i], "-s") != 0)
+				sig = arg_to_signum(&argv[i][1]);
+			else if (i + 1 < argc)
+				sig = arg_to_signum(argv[++i]);
+			else usage();
+		}
+		else if (isdigit(argv[i][0])) {
+			if (notify_process(atoi(argv[i]), sig) == 0)
+				rc = 0;
+			expectpid = 1;
+		}
 		else usage();
-		i++;
-	}
-
-	for (; i < argc; i++) {
-		if (!isdigit(argv[i][0])) usage();
-		if (notify_process(atoi(argv[i]), sig) != 0)
-			rc = 1;
 	}
 
 	exit(rc);
