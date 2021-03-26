@@ -62,7 +62,6 @@ if "%CROSS%"=="" (
 
 if "%SPDK%"=="y" (
 	set "PATH=%CD%\dpdk\build\bin;%CD%\wpdk\build\bin;!PATH!"
-	if "%CROSS%"=="" set "PATH=%CD%\wpdk\build\bin\msys2;!PATH!"
 )
 
 if not "%CLEAN%"=="clean" (
