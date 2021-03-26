@@ -174,3 +174,10 @@ if "%ver%"=="" (
 	echo Installing autoconf ...
 	%MSYS2% -c "pacman --noconfirm -Syy msys/autoconf"
 )
+
+set ver=
+( for /f "tokens=*" %%f in ('%MSYS2% -c "procps -V 2>/dev/null"') do (set ver=%%f) ) 2>nul:
+if "%ver%"=="" (
+	echo Installing procps-ng ...
+	%MSYS2% -c "pacman --noconfirm -Syy msys/procps-ng"
+)
