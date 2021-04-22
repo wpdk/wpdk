@@ -70,15 +70,6 @@ The minimum requirements are:
 <a id="patch"></a>
 ## Apply Patches
 
-In order to access physical NVMe devices, a patch to DPDK is required which can be applied with:
-
-~~~{.sh}
-# https://patches.dpdk.org/project/dpdk/patch/20210301095644.1711-1-nick.connolly@mayadata.io/
-( cd dpdk; git apply ../../wpdk/scripts/patches/dpdk-bus-pci-nvme-on-Windows-requires-class-id-and-bus.diff )
-~~~
-
-This will not be needed once SPDK updates to use the forthcoming DPDK 21.05 release.
-
 To enable support for running SPDK without the DPDK virt2phys driver (see
 [Runtime Prerequisites](https://github.com/wpdk/wpdk#prereq)),
 apply the following patch:
@@ -105,9 +96,6 @@ This is equivalent to:
 CC=gcc ./configure --cross-prefix=x86_64-w64-mingw32 --with-wpdk=../wpdk/build --without-isal
 make -j8
 ~~~
-
-A number of compiler warnings will be generated building DPDK.
-These can be ignored and are resolved in the latest DPDK release.
 
 <a id="runtime"></a>
 ## Runtime Prerequisites
