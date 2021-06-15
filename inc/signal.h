@@ -51,6 +51,7 @@ typedef struct sigset {
 typedef struct siginfo {
 	int		si_signo;
 	int		si_code;
+	void	*si_addr;
 } siginfo_t;
 
 typedef struct ucontext {
