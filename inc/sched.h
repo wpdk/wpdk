@@ -36,6 +36,7 @@ typedef struct cpuset_s {
 
 // HACK - rte_cpuset_t not defined by DPDK
 typedef cpuset_t rte_cpuset_t;
+#define RTE_HAS_CPUSET
 
 #define CPU_SET(b, s) ((s)->_bits[_WHICH_SET(b)] |= (1LL << _WHICH_BIT(b)))
 #define CPU_CLR(b, s) ((s)->_bits[_WHICH_SET(b)] &= ~(1LL << _WHICH_BIT(b)))
