@@ -74,7 +74,8 @@ git apply ../wpdk/scripts/patches/spdk-rfc-when-virt2phys-is-unavailable.diff
 
 Access to physical NVMe disks requires loading the 'netuio' and 'virt2phys' drivers from
 the [dpdk-kmods](https://git.dpdk.org/dpdk-kmods/)
-repository.
+repository. See the README files in the repository for build and installation instructions.
+Additional information can be found in [Using a Physical NVMe Disk](https://github.com/wpdk/wpdk/blob/master/doc/physical-disk.md).
 
 <a id="status"></a>
 ## Current Status
