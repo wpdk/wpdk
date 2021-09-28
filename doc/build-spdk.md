@@ -70,6 +70,10 @@ The minimum requirements are:
 <a id="patch"></a>
 ## Apply Patches
 
+There is currently a warning generated when compiling lib\thread\thread.c. This is harmless, but can be resolved with:
+
+https://review.spdk.io/gerrit/c/spdk/spdk/+/9663
+
 To enable support for running SPDK without the DPDK virt2phys driver (see
 [Runtime Prerequisites](https://github.com/wpdk/wpdk#prereq)),
 apply the following patch:
