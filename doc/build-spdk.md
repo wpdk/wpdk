@@ -60,7 +60,7 @@ the shell, using:
 
 ~~~{.sh}
 sudo scripts/pkgdep.sh
-sudo apt install gcc-mingw-w64 g++-mingw-w64 yasm
+sudo apt install gcc-mingw-w64 g++-mingw-w64 yasm pkg-config
 ~~~
 The minimum requirements are:
 
