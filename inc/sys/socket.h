@@ -99,6 +99,7 @@ struct msghdr {
 #define SCM_RIGHTS			1
 #define SCM_CREDENTIALS		2
 
+#define MSG_NOSIGNAL		0
 #define SOCK_NONBLOCK		0x1000
 
 typedef unsigned short sa_family_t;
