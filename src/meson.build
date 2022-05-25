@@ -53,7 +53,7 @@ static_lib = static_library('wpdk',
 		install: true)
 
 # build empty libraries
-foreach name:[ 'aio', 'crypto', 'numa', 'pthread', 'rt', 'uuid' ]
+foreach name:[ 'aio', 'crypto', 'numa', 'pthread', 'rt', 'ssl', 'uuid' ]
 	null_lib = static_library(name,
 			['empty.c'],
 			c_args: cflags,
