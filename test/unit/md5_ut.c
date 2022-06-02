@@ -16,6 +16,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <openssl/md5.h>
+#include <openssl/evp.h>
 
 #include <CUnit/Basic.h>
 
@@ -69,6 +70,41 @@ test_md5(void)
 }
 
 
+static void
+test_evp_md5(void)
+{
+	static unsigned char md5[] = {
+		0xED, 0x07, 0x62, 0x87, 0x53, 0x2E, 0x86, 0x36,
+		0x5E, 0x84, 0x1E, 0x92, 0xBF, 0xC5, 0x0D, 0x8C
+	};
+	const unsigned char s[] = "Hello World!";
+	unsigned char buf[MD5_DIGEST_LENGTH];
+	EVP_MD_CTX *ctx;
+	int rc;
+
+	/* Check create */
+	ctx = EVP_MD_CTX_create();
+	CU_ASSERT(ctx != NULL);
+
+	/* Check initialisation */
+	rc = EVP_DigestInit_ex(ctx, EVP_md5(), NULL);
+	CU_ASSERT(rc == 1);
+
+	/* Check update */
+	rc = EVP_DigestUpdate(ctx, s, 12);
+	CU_ASSERT(rc == 1);
+
+	/* Check final */
+	memset(buf, 0, sizeof(buf));
+	rc = EVP_DigestFinal_ex(ctx, buf, NULL);
+	CU_ASSERT(rc == 1);
+	CU_ASSERT(memcmp(buf, md5, sizeof(md5)) == 0);
+
+	/* Check destroy */
+	EVP_MD_CTX_destroy(ctx);
+}
+
+
 void add_md5_tests()
 {
 	CU_pSuite suite = NULL;
@@ -76,4 +112,5 @@ void add_md5_tests()
 	suite = CU_add_suite("md5", null_init, null_clean);
 
 	CU_ADD_TEST(suite, test_md5);
+	CU_ADD_TEST(suite, test_evp_md5);
 }

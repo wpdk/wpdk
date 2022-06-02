@@ -39,6 +39,7 @@ DEF_TEST(netinet_ip_h);
 DEF_TEST(netinet_ip6_h);
 DEF_TEST(netinet_tcp_h);
 DEF_TEST(openssl_md5_h);
+DEF_TEST(openssl_evp_h);
 DEF_TEST(sys_cdefs_h);
 DEF_TEST(sys_epoll_h);
 DEF_TEST(sys_file_h);
@@ -121,6 +122,7 @@ ADD_TESTS()
 	ADD_TEST(netinet_ip6_h);
 	ADD_TEST(netinet_tcp_h);
 	ADD_TEST(openssl_md5_h);
+	ADD_TEST(openssl_evp_h);
 	ADD_TEST(sys_cdefs_h);
 	ADD_TEST(sys_epoll_h);
 	ADD_TEST(sys_file_h);

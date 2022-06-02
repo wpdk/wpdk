@@ -12,6 +12,7 @@ c_files = [
 	'netinet_ip6_h.c',
 	'netinet_tcp_h.c',
 	'openssl_md5_h.c',
+	'openssl_evp_h.c',
 	'sys_cdefs_h.c',
 	'sys_epoll_h.c',
 	'sys_file_h.c',

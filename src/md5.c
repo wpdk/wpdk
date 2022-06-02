@@ -17,6 +17,7 @@
 
 #include <wpdk/internal.h>
 #include <openssl/md5.h>
+#include <openssl/evp.h>
 
 
 static void (*MD5Init)(MD5_CTX *context);
@@ -24,6 +25,14 @@ static void (*MD5Update)(MD5_CTX *context, const unsigned char *data, unsigned i
 static void (*MD5Final)(MD5_CTX *context);
 
 static INIT_ONCE wpdk_md5_once = INIT_ONCE_STATIC_INIT;
+
+struct EVP_MD_CTX_s {
+	MD5_CTX c;
+};
+
+static const struct EVP_MD_s {
+	int dummy;
+} wpdk_md5;
 
 
 #ifdef __MINGW32__
@@ -119,4 +128,64 @@ wpdk_MD5(const unsigned char *d, unsigned long n, unsigned char *md)
 	wpdk_MD5_Final(buf, &context);
 
 	return buf;
+}
+
+
+const EVP_MD *
+wpdk_EVP_md5(void)
+{
+	return &wpdk_md5;
+}
+
+
+EVP_MD_CTX *
+wpdk_EVP_MD_CTX_create(void)
+{
+	EVP_MD_CTX *c = calloc(1, sizeof(EVP_MD_CTX));
+
+	if (c == NULL)
+		wpdk_posix_error(ENOMEM);
+
+	return c;
+}
+
+
+void
+wpdk_EVP_MD_CTX_destroy(EVP_MD_CTX *ctx)
+{
+	free(ctx);
+}
+
+
+int
+wpdk_EVP_DigestInit_ex(EVP_MD_CTX *ctx, const EVP_MD *type, ENGINE *impl)
+{
+	UNREFERENCED_PARAMETER(impl);
+
+	if (!ctx) {
+		wpdk_posix_error(EINVAL);
+		return 0;
+	}
+
+	if (type != &wpdk_md5) {
+		WPDK_UNIMPLEMENTED();
+		return 0;
+	}
+
+	return (wpdk_MD5_Init(&ctx->c) == 1) ? 1 : 0;
+}
+
+
+int
+wpdk_EVP_DigestUpdate(EVP_MD_CTX *ctx, const void *data, size_t len)
+{
+	return wpdk_MD5_Update(&ctx->c, data, len);
+}
+
+
+int
+wpdk_EVP_DigestFinal_ex(EVP_MD_CTX *ctx, unsigned char *md, unsigned int *s)
+{
+	UNREFERENCED_PARAMETER(s);
+	return wpdk_MD5_Final(md, &ctx->c);
 }

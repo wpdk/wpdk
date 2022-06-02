@@ -85,6 +85,7 @@ install_headers(
 
 install_headers(
 	'openssl/md5.h',
+	'openssl/evp.h',
 	subdir: include_prefix + 'openssl'
 )
 
