@@ -10,6 +10,5 @@ Descriptions of section entries:
 
 ## Main Branch
 
-    M: Nick Connolly <Nick.Connolly@mayadata.io>
     M: Nick Connolly <Nick.Connolly@datacore.com>
     T: git://github.com/wpdk/wpdk

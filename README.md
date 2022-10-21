@@ -2,7 +2,7 @@
 
 The Windows Platform Development Kit (WPDK) enables applications based on the Storage Performance Development Kit ([SPDK](http://www.spdk.io)) to build and run as native Windows executables, bringing the power and performance of NVMe and NVMe-oF to Windows. It provides header files and a lightweight library that implement the required POSIX/Linux functionality.
 
-The project grew out of work being done by [MayaData](https://mayadata.io/), the Data Agility company, to build [OpenEBS Mayastor](https://github.com/openebs/mayastor), a high speed Container Attached Storage stack for [OpenEBS](https://openebs.io/).
+The project grew out of work being done by [DataCore](https://datacore.com/), to build [OpenEBS Mayastor](https://github.com/openebs/mayastor), a high speed Container Attached Storage stack for [OpenEBS](https://openebs.io/).
 
 The scope of the project is limited to supporting the Storage Performance Development Kit. Unlike Cygwin, it is not intended to be a generic POSIX emulation library. Functionality is mapped as closely as possible to existing Windows semantics with the minimum of emulation.
 
@@ -155,7 +155,7 @@ There is an ongoing dialog with the SPDK community and many changes have already
 
 <a id="acknowledge"></a>
 ## Acknowledments
-The Windows Platform Development Kit has been developed and contributed by [MayaData](https://mayadata.io/), the Data Agility company.
+The Windows Platform Development Kit has been developed and contributed by [DataCore](https://datacore.com/).
 
 Portions of the code are based on work done by the [DPDK community](https://www.dpdk.org/) to add support for Windows.
 
@@ -163,4 +163,4 @@ Portions of the code are based on work done by the [DPDK community](https://www.
 ## Core Maintainers
 
 The [core maintainers](https://github.com/wpdk/wpdk/blob/master/MAINTAINERS.md) primary responsibility is to provide technical oversight for the WPDK Project. The current list includes:
-* [Nick Connolly](https://github.com/nconnolly1), [MayaData](https://mayadata.io/)
+* [Nick Connolly](https://github.com/nconnolly1), [DataCore](https://datacore.com/)
