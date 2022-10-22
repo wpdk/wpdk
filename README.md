@@ -6,6 +6,12 @@ The project grew out of work being done by [DataCore](https://datacore.com/), to
 
 The scope of the project is limited to supporting the Storage Performance Development Kit. Unlike Cygwin, it is not intended to be a generic POSIX emulation library. Functionality is mapped as closely as possible to existing Windows semantics with the minimum of emulation.
 
+# Recent News
+
+[DataCore](https://datacore.com) has contributed the Windows Driver Unit Test Framework (WDUTF) to enable the unit testing of Windows kernel drivers. This has been a key tool in DataCore's test and development process for many years.
+
+For more details, see the [WDUTF Repository](https://github.com/wpdk/wdutf) where the code and documentation can be found!
+
 # In this ReadMe
 
 * [Documentation](#documentation)
