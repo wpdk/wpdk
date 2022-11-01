@@ -45,6 +45,16 @@ cd spdk
 git submodule update --init
 ~~~
 
+## SPDK Version
+
+In general, WPDK should enable the latest SPDK tree to build, but from time to time recent commits may introduce compatability issues. The latest release that is known to build successfully and run the unit tests is **v22.05**. This can be selected with:
+
+~~~{.sh}
+git checkout v22.05.x
+~~~
+
+## Symbolic Links
+
 For WSL, update the symbolic links as detailed in
 [Getting Started with WSL](https://github.com/wpdk/wpdk/blob/master/doc/wsl.md#symlinks):
 
