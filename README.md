@@ -2,13 +2,15 @@
 
 The Windows Platform Development Kit (WPDK) enables applications based on the Storage Performance Development Kit ([SPDK](http://www.spdk.io)) to build and run as native Windows executables, bringing the power and performance of NVMe and NVMe-oF to Windows. It provides header files and a lightweight library that implement the required POSIX/Linux functionality.
 
-The project grew out of work being done by [DataCore](https://datacore.com/), to build [OpenEBS Mayastor](https://github.com/openebs/mayastor), a high speed Container Attached Storage stack for [OpenEBS](https://openebs.io/).
-
 The scope of the project is limited to supporting the Storage Performance Development Kit. Unlike Cygwin, it is not intended to be a generic POSIX emulation library. Functionality is mapped as closely as possible to existing Windows semantics with the minimum of emulation.
+
+[rtegrity](https://rtegrity.com/) is leading the ongoing development of the project, which was contributed by [DataCore](https://datacore.com/) as part of the work to build [OpenEBS Mayastor](https://github.com/openebs/mayastor), a high speed Container Attached Storage solution for [OpenEBS](https://openebs.io/).
+
 
 # Recent News
 
-[DataCore](https://datacore.com) has contributed the Windows Driver Unit Test Framework (WDUTF) to enable the unit testing of Windows kernel drivers. This has been a key tool in DataCore's test and development process for many years.
+The [Windows Driver Unit Test Framework (WDUTF)](https://github.com/wpdk/wdutf) has
+been added to [WPDK](https://github.com/wpdk), to enable the unit testing of Windows kernel drivers. This has been a key tool in DataCore's test and development process for many years.
 
 For more details, see the [WDUTF Repository](https://github.com/wpdk/wdutf) where the code and documentation can be found!
 
@@ -50,7 +52,7 @@ A Getting Started guide is available:
 
 * [Building SPDK for Windows](https://github.com/wpdk/wpdk/blob/master/doc/build-spdk.md)
 
-For more advanced use, the following Getting Started guides are also available:
+For more advanced use, the following guides are available, but these are almost certainly **not** the documentation that you want to follow!
 
 * [Building SPDK for Windows using MSYS2](https://github.com/wpdk/wpdk/blob/master/doc/build-spdk-msys2.md)
 * [Building WPDK without SPDK](https://github.com/wpdk/wpdk/blob/master/doc/build-wpdk.md)
@@ -154,14 +156,13 @@ Please join the [SPDK community](https://spdk.io/community) and tell us how you 
 
 The WPDK repository currently contains the following forked projects:
 
-* [SPDK](https://github.com/wpdk/spdk) - based on the latest SPDK repo with Windows specific changes in the 'windows' branch.
-There is an ongoing dialog with the SPDK community and many changes have already been upstreamed.
-* [DPDK](https://github.com/wpdk/dpdk) - required temporarily until fixes are upstreamed.
+* [SPDK](https://github.com/wpdk/spdk) - contains experimental changes for Clang support on Windows in the 'windows' branch. This is only needed with the advanced guides in [Getting Started](#start).
+* [DPDK](https://github.com/wpdk/dpdk) - temporarily required in conjunction with the [SPDK](https://github.com/wpdk/spdk) fork until fixes are upstreamed.
 * [CUnit](https://github.com/wpdk/CUnit) - a convenience project for build purposes (no development).
 
 <a id="acknowledge"></a>
 ## Acknowledments
-The Windows Platform Development Kit has been developed and contributed by [DataCore](https://datacore.com/).
+[rtegrity](https://rtegrity.com/) is leading the ongoing development of the Windows Platform Development Kit, which was contributed by [DataCore](https://datacore.com/). 
 
 Portions of the code are based on work done by the [DPDK community](https://www.dpdk.org/) to add support for Windows.
 
@@ -169,4 +170,4 @@ Portions of the code are based on work done by the [DPDK community](https://www.
 ## Core Maintainers
 
 The [core maintainers](https://github.com/wpdk/wpdk/blob/master/MAINTAINERS.md) primary responsibility is to provide technical oversight for the WPDK Project. The current list includes:
-* [Nick Connolly](https://github.com/nconnolly1), [DataCore](https://datacore.com/)
+* [Nick Connolly](https://github.com/nconnolly1), [rtegrity](https://rtegrity.com/)

@@ -10,5 +10,5 @@ Descriptions of section entries:
 
 ## Main Branch
 
-    M: Nick Connolly <Nick.Connolly@datacore.com>
+    M: Nick Connolly <info@rtegrity.com>
     T: git://github.com/wpdk/wpdk
