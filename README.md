@@ -161,7 +161,7 @@ The WPDK repository currently contains the following forked projects:
 * [CUnit](https://github.com/wpdk/CUnit) - a convenience project for build purposes (no development).
 
 <a id="acknowledge"></a>
-## Acknowledments
+## Acknowledgements
 [rtegrity](https://rtegrity.com/) is leading the ongoing development of the Windows Platform Development Kit, which was contributed by [DataCore](https://datacore.com/). 
 
 Portions of the code are based on work done by the [DPDK community](https://www.dpdk.org/) to add support for Windows.
