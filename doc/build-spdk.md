@@ -42,15 +42,18 @@ The source code for SPDK and WPDK can be obtained with:
 git clone https://github.com/wpdk/wpdk
 git clone https://github.com/spdk/spdk
 cd spdk
-git submodule update --init
 ~~~
-
-## SPDK Version
 
 In general, WPDK should enable the latest SPDK tree to build, but from time to time recent commits may introduce compatability issues. The latest release that is known to build successfully and run the unit tests is **v22.05**. This can be selected with:
 
 ~~~{.sh}
 git checkout v22.05.x
+~~~
+
+The dependent projects should then be initialised with:
+
+~~~{.sh}
+git submodule update --init
 ~~~
 
 ## Symbolic Links
