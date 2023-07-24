@@ -19,7 +19,7 @@ and in Windows Server 2019.
 * WSL 2 - runs within a lightweight virtual machine with a full Linux kernel.\
 Only available in Windows 10, Version 1903, Build 18362 or higher.
 
-Both versions of WSL are fully supported, and where WSL 2 is available,
+Both versions of WSL are fully supported by Microsoft, and where WSL 2 is available,
 an installed distribution can be configured to run using either version.
 For further information see
 [Comparing WSL 2 and WSL 1](https://docs.microsoft.com/en-us/windows/wsl/compare-versions).
@@ -73,7 +73,7 @@ wsl -d <Distro>
 
 ## Git
 
-If Git is not already setup on Windows, it can be installed using the Chocolatey package manager by
+Git must be installed on the Windows host. This can be done using the Chocolatey package manager by
 running the following from an elevated command prompt:
 
 ~~~{.sh}
