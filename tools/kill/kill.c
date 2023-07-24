@@ -52,8 +52,8 @@ process_exited(HANDLE h)
 int
 notify_process(int pid, int sig)
 {
+	int rc = 1;
 	HANDLE h;
-	int rc;
 
 	h = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_TERMINATE,
 			FALSE, (DWORD)pid);
