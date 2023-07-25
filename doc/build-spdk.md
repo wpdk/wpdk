@@ -48,6 +48,7 @@ In general, WPDK should enable the latest SPDK tree to build, but from time to t
 
 ~~~{.sh}
 git checkout v22.05.x
+git checkout 9bb64b6b6ecfe57cab4c41b8fe886deaab4e8cbb -- scripts/pkgdep/debian.sh
 ~~~
 
 The dependent projects should then be initialised with:
