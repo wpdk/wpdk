@@ -115,15 +115,19 @@ WSL installations fail to run Windows executables from Linux paths.
 <a id="symlinks"></a>
 ## Symbolic Links
 
-Git symbolic links are handled differently on Windows and Linux. To resolve this,
-run the following command in the Linux environment after the source code has
-been obtained:
+Git symbolic links are handled differently on Windows and Linux. To resolve this, ensure that
+Git has been installed on the Windows host as detailed above.
+Then run the following command in the Linux environment, after the source code has
+been obtained and before any scripts such as pkgdep.sh are run:
 
 ~~~{.sh}
 ../wpdk/scripts/mksymlinks.sh
 ~~~
 
-This can be undone using:
+The expected output will typically consist of details about hardlinks being created.
+Any error messages indicate that the build environment is incorrectly set up and this must be resolved before proceeding.
+
+The changes made by _mksymlinks.sh_ can be undone using:
 
 ~~~{.sh}
 ../wpdk/scripts/mksymlinks.sh rm
