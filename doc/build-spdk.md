@@ -2,8 +2,9 @@
 
 SPDK can be built for Windows using a Linux environment and the MinGW cross compiler.
 
-The examples in this Getting Started guide assume a Debian based distribution with
+The examples in this Getting Started guide assume an Ubuntu or Debian distribution with
 the *apt* package manager. The instructions should translate readily to other distributions.
+The examples are intended to be run from a non-root shell and explicitly include _sudo_ if root access is required.
 
 [Windows Subsystem for Linux (WSL)](https://github.com/wpdk/wpdk/blob/master/doc/wsl.md)
 can be used as the Linux environment,
@@ -17,7 +18,7 @@ executables.
 For WSL, follow the instructions in
 [Getting Started with WSL](https://github.com/wpdk/wpdk/blob/master/doc/wsl.md).
 
-Install Git and curl as follows:
+Install Git and curl from a Linux shell as follows:
 ~~~{.sh}
 sudo apt update
 sudo apt install git curl
