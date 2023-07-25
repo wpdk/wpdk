@@ -34,6 +34,10 @@ The following distributions have been tested with SPDK:
 * Ubuntu 20.04 LTS
 * Debian (latest)
 
+The following have minor issues that can be resolved with workarounds:
+
+* Ubuntu 22.04 LTS - scripts/pkgdep/debian.sh needs updating with SPDK 22.05
+
 The following have been found not to work:
 
 * Ubuntu 18.04 or older - MingGW package is not recent enough
