@@ -65,6 +65,8 @@ For WSL, update the symbolic links as detailed in
 ../wpdk/scripts/mksymlinks.sh
 ~~~
 
+This must be done before any scripts such as pkgdep.sh are run.
+
 <a id="prerequisites"></a>
 ## Prerequisites
 
