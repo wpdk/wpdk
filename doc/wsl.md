@@ -38,7 +38,7 @@ The following have been found not to work:
 
 * Ubuntu 18.04 or older - MingGW package is not recent enough
 
-The examples below assume a Debian based distribution with the *apt* package manager.
+The examples below assume an Ubuntu or Debian distribution with the *apt* package manager.
 The instructions should translate readily to other distributions.
 
 ## Installation
