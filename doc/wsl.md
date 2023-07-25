@@ -27,22 +27,6 @@ For further information see
 WSL 1 is recommended for use with SPDK because it supports
 AF_UNIX sockets between Windows and Linux which are used for configuration.
 
-## Installation
-
-Installation instructions can be found in the
-[WSL Documentation](https://docs.microsoft.com/en-us/windows/wsl/):
-
-* [Installation Guide for Windows 10](https://docs.microsoft.com/en-us/windows/wsl/install-win10)
-* [Windows Server Installation Guide](https://docs.microsoft.com/en-us/windows/wsl/install-on-server)
-
-Multiple Linux distributions can be installed on a system at the same time.
-
-If WSL 2 is supported, a distribution can be installed as WSL 1 using:
-
-~~~{.sh}
-wsl --set-default-version 1
-~~~
-
 ## Distributions
 
 The following distributions have been tested with SPDK:
@@ -56,6 +40,36 @@ The following have been found not to work:
 
 The examples below assume a Debian based distribution with the *apt* package manager.
 The instructions should translate readily to other distributions.
+
+## Installation
+
+Installation instructions can be found in the
+[WSL Documentation](https://docs.microsoft.com/en-us/windows/wsl/):
+
+* [Installation Guide for Windows 10 and 11](https://learn.microsoft.com/en-us/windows/wsl/install)
+* [Windows Server Installation Guide](https://docs.microsoft.com/en-us/windows/wsl/install-on-server)
+
+Multiple Linux distributions can be installed on a system at the same time.
+
+If WSL 2 is supported, it will be used as the default. The simplest way to install a distribution as WSL 1 is by changing the default version before starting the installation:
+
+~~~{.sh}
+wsl --set-default-version 1
+~~~
+
+The default version can be restored once the installation has proceeded to a usable shell prompt, by running the following from the Windows command prompt:
+
+~~~{.sh}
+wsl --set-default-version 2
+~~~
+
+It is recommended that the version of a distribution be verified after installation with:
+
+~~~{.sh}
+wsl -l -v
+~~~
+
+If necessary, the version can be changed with _wsl --set-version_ as described in the [Installation Guide](https://learn.microsoft.com/en-us/windows/wsl/install#upgrade-version-from-wsl-1-to-wsl-2), but this can take significantly longer than setting the default version before starting the installation.
 
 ## Linux Shell
 
@@ -74,7 +88,7 @@ wsl -d <Distro>
 ## Git
 
 Git must be installed on the Windows host. This can be done using the Chocolatey package manager by
-running the following from an elevated command prompt:
+running the following from an elevated (Admin) command prompt on the Windows host:
 
 ~~~{.sh}
 curl -LJ -o %TEMP%\pkgdep.bat https://raw.githubusercontent.com/wpdk/wpdk/master/scripts/pkgdep.bat
