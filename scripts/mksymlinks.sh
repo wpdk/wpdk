@@ -3,6 +3,12 @@
 # Copyright (c) 2021, MayaData Inc. All rights reserved.
 # Copyright (c) 2021, DataCore Software Corporation. All rights reserved.
 
+ver=$(cmd.exe /c git --version 2>/dev/null)
+if [ -z "$ver" ]; then
+	echo "Unable to find an installation of Git on the Windows host" 1>&2
+	exit 1
+fi
+
 case "$1" in
 	"")
 		git ls-files -s | grep '^12' | cut -f2 |
