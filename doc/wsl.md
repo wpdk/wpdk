@@ -55,6 +55,8 @@ Installation instructions can be found in the
 
 Multiple Linux distributions can be installed on a system at the same time.
 
+The examples below should be issued from a non-elevated (non-Admin) Windows command prompt.
+
 If WSL 2 is supported, it will be used as the default. The simplest way to install a distribution as WSL 1 is by changing the default version before starting the installation:
 
 ~~~{.sh}
@@ -77,6 +79,7 @@ If necessary, the version can be changed with _wsl --set-version_ as described i
 
 ## Linux Shell
 
+The WSL environment should be started from a non-elevated (non-Admin) Windows command prompt.
 To start a Linux shell in the current directory, use:
 
 ~~~{.sh}
@@ -88,6 +91,12 @@ If a specific distribution is required, use:
 ~~~{.sh}
 wsl -d <Distro>
 ~~~
+
+Note: all development and testing has been done successfully using a WSL shell started from a non-elevated
+(non-Admin) Windows command prompt. However, there is a report of an SPDK build failure 
+_'Error getting authority: Error initializing authority: Could not connect: No such file or directory'_
+being resolved by using an elevated shell. This is an isolated incident, which has not been fully investigated
+and it is not a recommended approach.
 
 ## Git
 
