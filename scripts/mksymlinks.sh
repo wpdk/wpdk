@@ -16,7 +16,7 @@ case "$1" in
 		do
 			if [ -h "$path" ]; then
 				rm -f "$path"
-				cmd.exe /c git checkout -- "$path"
+				cmd.exe /c git checkout -- "$path" </dev/null
 				git update-index --assume-unchanged "$path"
 			fi
 
@@ -27,9 +27,9 @@ case "$1" in
 					dir=$(dirname "$path")
 					file=$(basename "$path")
 					src=$(cat "$path")
-					rm -f "$path"
 
-					( cd "$dir" && cmd.exe /c mklink /h "$file" "$(wslpath -w "$src")" )
+					rm -f "$path"
+					( cd "$dir" && cmd.exe /c mklink /h "$file" "$(wslpath -w "$src")" < /dev/null )
 					git update-index --assume-unchanged "$path"
 				fi
 			fi
@@ -43,8 +43,8 @@ case "$1" in
 			lines=$(wc -l "$path" 2>/dev/null | cut -d\  -f1)
 			if [ ! -f "$path" ] || [ "$lines" != "0" ]; then
 				rm -f "$path"
-				cmd.exe /c git checkout -- "$path"
-				git update-index --assume-unchanged "$path"
+				git update-index --no-assume-unchanged "$path"
+				git checkout -- "$path"
 			fi
 		done
 		;;
