@@ -36,7 +36,7 @@ The following distributions have been tested with SPDK:
 
 The following have minor issues that can be resolved with workarounds:
 
-* Ubuntu 22.04 LTS - scripts/pkgdep/debian.sh needs updating with SPDK 22.05
+* Ubuntu 22.04 LTS - scripts/pkgdep/debian.sh needs updating for SPDK 22.05
 
 The following have been found not to work:
 
@@ -47,8 +47,7 @@ The instructions should translate readily to other distributions.
 
 ## Installation
 
-Installation instructions can be found in the
-[WSL Documentation](https://docs.microsoft.com/en-us/windows/wsl/):
+WSL must be enabled before a distribution can be installed. The installation instructions are dependent upon the version of Windows and can be found in the [WSL Documentation](https://docs.microsoft.com/en-us/windows/wsl/):
 
 * [Installation Guide for Windows 10 and 11](https://learn.microsoft.com/en-us/windows/wsl/install)
 * [Windows Server Installation Guide](https://docs.microsoft.com/en-us/windows/wsl/install-on-server)
@@ -69,7 +68,7 @@ The default version can be restored once the installation has proceeded to a usa
 wsl --set-default-version 2
 ~~~
 
-It is recommended that the version of a distribution be verified after installation with:
+If WSL2 is supported, it is recommended that the version of the distribution is verified after installation with:
 
 ~~~{.sh}
 wsl -l -v
