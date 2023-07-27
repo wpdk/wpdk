@@ -56,7 +56,7 @@ Multiple Linux distributions can be installed on a system at the same time.
 
 The examples below should be issued from a non-elevated (non-Admin) Windows command prompt.
 
-If WSL 2 is supported, it will be used as the default. The simplest way to install a distribution as WSL 1 is by changing the default version before starting the installation:
+If WSL 2 is already installed and running, then the simplest way to add a new distribution as WSL 1 may be to change the default version before starting the installation:
 
 ~~~{.sh}
 wsl --set-default-version 1
