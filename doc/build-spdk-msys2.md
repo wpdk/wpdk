@@ -8,7 +8,7 @@ Using cross compilation from a WSL or Linux environment as described in
 [Building SPDK for Windows](https://github.com/wpdk/wpdk/blob/master/doc/build-spdk.md)
 gives a much better experience.
 
-The instructions for building natively using MSYS2 are below. Note that these are based aroung a local fork of SPDK that has been modified to work with Clang. The fork is not being maintained and is currently a couple of years behind the main SPDK tree.
+The instructions for building natively using MSYS2 are below. Note that these are based around a local fork of SPDK that has been modified to work with Clang. The fork is not being maintained and is currently a couple of years behind the main SPDK tree.
 
 <a id="prerequisites"></a>
 ## Prerequisites
