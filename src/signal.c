@@ -195,7 +195,7 @@ wpdk_signal_worker(void *arg)
 		}
 	}
 
-	while (n >= 0)
+	while (n-- > 0)
 		CloseHandle(h[n]);
 
 	WPDK_WARNING("Signal worker is terminating");
