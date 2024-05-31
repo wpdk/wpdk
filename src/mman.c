@@ -83,16 +83,14 @@ wpdk_mmap(void *addr, size_t len, int prot, int flags, int fildes, off_t off)
 	}
 
 	// HACK - mmap ignores prot
+	// HACK - if file mapping exists, rc is ERROR_ALREADY_EXISTS
+	// HACK - and size is current size not requested size
 	hMap = CreateFileMapping(h, NULL, PAGE_READWRITE, end.HighPart, end.LowPart, NULL);
+	rc = GetLastError();
 
-	if (h == INVALID_HANDLE_VALUE) {
-		rc = GetLastError();
-
-		// HACK - if exists, size is current size not requested size
-		if (rc != ERROR_ALREADY_EXISTS) {
-			wpdk_windows_error(rc);
-			return MAP_FAILED;
-		}
+	if (hMap == NULL) {
+		wpdk_windows_error(rc);
+		return MAP_FAILED;
 	}
 
 	pMap = MapViewOfFile(hMap, FILE_MAP_ALL_ACCESS, start.HighPart, start.LowPart, size.LowPart);
