@@ -85,6 +85,8 @@ the [dpdk-kmods](https://git.dpdk.org/dpdk-kmods/)
 repository. See the README files in the repository for build and installation instructions.
 Additional information can be found in [Using a Physical NVMe Disk](https://github.com/wpdk/wpdk/blob/master/doc/physical-disk.md).
 
+Note: There is a [report](https://github.com/wpdk/wpdk/issues/6) that the current version of 'virt2phys' fails to load correctly and a suggestion that [documentation](https://openvisualcloud.github.io/Media-Transport-Library/doc/run_WIN.html#compile-the-driver) in the Open Visual Cloud Media Transport Library may help with setting up the prerequisites.
+
 <a id="status"></a>
 ## Current Status
 

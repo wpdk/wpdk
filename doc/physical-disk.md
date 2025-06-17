@@ -5,6 +5,8 @@ repository. This needs to be exclusive, rather than shared with the O/S.
 
 See the README files in the [dpdk-kmods](https://git.dpdk.org/dpdk-kmods/) repository for build and installation instructions.
 
+Note: There is a [report](https://github.com/wpdk/wpdk/issues/6) that the current version of 'virt2phys' fails to load correctly and a suggestion that [documentation](https://openvisualcloud.github.io/Media-Transport-Library/doc/run_WIN.html#compile-the-driver) in the Open Visual Cloud Media Transport Library may help resolve this.
+
 ## Using a Hyper-V VM
 
 When using a Hyper-V VM, the physical NVMe device must be passed through with Discrete Device Assignment rather than attaching it as a 'Physical hard disk'. Instructions on how to do this can be found in [Deploying Storage Devices Using DDA](https://docs.microsoft.com/en-us/windows-server/virtualization/hyper-v/deploy/deploying-storage-devices-using-dda).
